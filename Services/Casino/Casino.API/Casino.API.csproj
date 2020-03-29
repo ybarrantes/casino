@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200327230346_Initial.cs" />
+    <Compile Remove="Data\Migrations\20200327230346_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200327230407_Two.cs" />
+    <Compile Remove="Data\Migrations\20200327230407_Two.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200327231455_UsuarioCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200327231455_UsuarioCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329101106_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329101106_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329101649_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329101649_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329101941_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329101941_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329102319_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329102319_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329102934_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329102934_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329105856_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329105856_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329110246_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329110246_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329110538_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329110538_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329145637_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329145637_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329145846_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329145846_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329151925_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329151925_UsuariosCreateTable.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.Development.json~RF49b492ac.TMP" />
+    <None Remove="Components\Authentication\IAuthenticationSignIn.cs~RF44fd71e5.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.3.109.7" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.105.4" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Queries\" />
+    <Folder Include="Runtime\Logs\" />
+  </ItemGroup>
+
+
+</Project>
