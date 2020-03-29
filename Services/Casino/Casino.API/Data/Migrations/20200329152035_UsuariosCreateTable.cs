@@ -5,8 +5,6 @@ namespace Casino.API.Data.Migrations
 {
     public partial class UsuariosCreateTable : Migration
     {
-        private string trgUsuariosAfterUpdateName = "trgUsuariosAfterUpdate";
-
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -26,16 +24,10 @@ namespace Casino.API.Data.Migrations
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.Id);
                 });
-
-            //migrationBuilder.CreateIndex(name: "IX_Cloud_Identity_Id", table: "Usuarios", columns: new[] { "CloudIdentityId" }, unique: false);
-
-            migrationBuilder.Sql($"CREATE TRIGGER {trgUsuariosAfterUpdateName} ON Usuarios AFTER INSERT, UPDATE AS UPDATE f set UpdatedAt = GETDATE() FROM Usuarios AS f INNER JOIN inserted AS i ON f.id = i.id;");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql($"DROP TRIGGER {trgUsuariosAfterUpdateName};");
-
             migrationBuilder.DropTable(
                 name: "Usuarios");
         }
