@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Casino.API.App.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -24,8 +25,8 @@ namespace Casino.API.App.Controllers
             _logger = logger;
         }
 
+        [Authorize(Policy = "Player")]
         [HttpGet]
-        [Authorize]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();

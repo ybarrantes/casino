@@ -17,7 +17,8 @@ namespace Casino.API.Components.Authentication.AwsCognito
             try
             {
                 AdminInitiateAuthRequest authRequest = GetAuthRequest(user.Username, user.Password);
-                authResponse = await GetAmazonCognitoIdentity().AdminInitiateAuthAsync(authRequest);
+                AmazonCognitoIdentityProviderClient client = GetAmazonCognitoIdentity();
+                authResponse = await client.AdminInitiateAuthAsync(authRequest);
             }
             catch (NotAuthorizedException e)
             {

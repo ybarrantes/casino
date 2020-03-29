@@ -8,21 +8,16 @@ namespace Casino.API.Util.Logging
 {
     public class Logger
     {
-        private static ILoggerFactory loggerFactory = null;
-        protected static ILogger logger;
-
-        public static void ConfigureLogger(ILoggerFactory factory)
-        {
-            loggerFactory = factory;
-            logger = loggerFactory.CreateLogger<Logger>();
-        }
+        protected static ILogger logger = null;
 
         protected static ILogger Log
         {
             get
             {
-                if (loggerFactory == null)
-                    throw new NullReferenceException();
+                if (logger == null)
+                    logger = Config.ApiConfig.Singleton.LoggerFactory.CreateLogger<Logger>();
+
+                if (logger == null) throw new NullReferenceException();
 
                 return logger;
             }

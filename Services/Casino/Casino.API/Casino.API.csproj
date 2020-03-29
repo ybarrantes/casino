@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.Development.json~RF49b492ac.TMP" />
     <None Remove="Components\Authentication\IAuthenticationSignIn.cs~RF44fd71e5.TMP" />
   </ItemGroup>
 
