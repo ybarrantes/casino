@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Casino.API.Components.Authentication.AwsCognito;
 
 namespace Casino.API.Config
 {
@@ -41,10 +43,12 @@ namespace Casino.API.Config
         public IWebHostEnvironment Environment { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
         public IServiceCollection Services { get; set; }
+        public IHttpContextAccessor HttpContextAccessor { get; set; }
 
 
-
-
+        /// <summary>
+        /// Add application configuration
+        /// </summary>
         public void ApplyAppConfiguracion()
         {
             if (appConfigApplied) throw new InvalidOperationException("The app configuration has already been applied");
@@ -76,25 +80,29 @@ namespace Casino.API.Config
 
 
 
-
+        /// <summary>
+        /// Add services configuration
+        /// </summary>
         public void ApplyServicesConfiguration()
         {
             if (serviceConfigApplied) throw new InvalidOperationException("The services configuration has already been applied");
 
-            AddControllers();
+            Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            AddDbContext();
+            AddControllersToServices();
 
-            AddAuthentication();
+            AddDbContextToServices();
 
-            AddAuthorization();
+            AddAuthenticationToServices();
+
+            AddAuthorizationToServices();
 
             Services.AddMvc();
 
             serviceConfigApplied = true;
         }
 
-        private void AddControllers()
+        private void AddControllersToServices()
         {
             Services.AddControllers(
                     options => options.Filters.Add(new HttpResponseExceptionFilter())
@@ -104,20 +112,15 @@ namespace Casino.API.Config
                 );
         }
 
-        private void AddDbContext()
+        private void AddDbContextToServices()
         {
             Services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
         }
 
-        private void AddAuthentication()
+        private void AddAuthenticationToServices()
         {
-            string Region = Configuration["AWS:Cognito:Region"];
-            string PoolId = Configuration["AWS:Cognito:PoolId"];
-            string AppClientId = Configuration["AWS:Cognito:AppClientId"];
-            string MetadataAddress = Configuration["AWS:Cognito:MetadataAddress"];
-
             // TODO: mejorar a singleton
             Services.AddAuthentication(options =>
                 {
@@ -126,27 +129,19 @@ namespace Casino.API.Config
                 })
                 .AddJwtBearer(options =>
                 {
-                    options.SaveToken = true;
-                    options.Audience = AppClientId;
-                    options.MetadataAddress = MetadataAddress;
-                    options.IncludeErrorDetails = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = false,
-                        LifetimeValidator = (before, expires, token, param) => expires > DateTime.UtcNow,
-                    };
+                    IConfigJwtBearerAuthentication configJwtBearerAuthentication = new AwsCognitoConfigJwtBearerAuthentication();
+                    configJwtBearerAuthentication.GetJwtBearerAuthenticationOptions(options);
                 });
         }
 
-        private void AddAuthorization()
+        private void AddAuthorizationToServices()
         {
             // TODO: mejorar a singleton
             Services
                 .AddAuthorization(options =>
                 {
-                    //options.AddPolicy("SuperAdmin", policy => policy.require ("custom: groupId", new List<string> { "1" }));
-                    options.AddPolicy("Admin", policy => policy.RequireClaim("cognito:groups", new List<string> { "Admin" }));
-                    options.AddPolicy("Player", policy => policy.RequireClaim("cognito:groups", new List<string> { "Player" }));
+                    IConfigAuthorization configAuthorization = new AwsCognitoConfigAuthorization();
+                    configAuthorization.GetAuthorizationOptions(options);
                 });
         }
     }

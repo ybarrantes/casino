@@ -1,11 +1,20 @@
 ﻿using Amazon;
 using Amazon.CognitoIdentityProvider;
 using Casino.API.Config;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace Casino.API.Components.Authentication.AwsCognito
 {
     public abstract class AwsCognitoAuthenticationBase
     {
+        public readonly string DEFAULT_COGNITO_GROUP = ApiConfig.Singleton.Configuration.GetSection("AWS:Cognito:DefaultGroup").Value;
+
+        public List<string> GetAuthorizedGroups()
+        {
+            return ApiConfig.Singleton.Configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
+        }
+
         public string GetClientId()
         {
             return ApiConfig.Singleton.Configuration["AWS:Cognito:AppClientId"];

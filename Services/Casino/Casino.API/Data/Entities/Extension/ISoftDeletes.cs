@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Casino.API.Data.Entities
+namespace Casino.API.Data.Entities.Extension
 {
     /// <summary>
     /// Agrega la capacidad de 'borrado suave' de una entidad

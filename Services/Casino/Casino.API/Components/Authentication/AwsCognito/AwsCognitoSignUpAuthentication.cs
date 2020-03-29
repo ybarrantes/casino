@@ -5,13 +5,30 @@ using System;
 using Casino.API.Exceptions;
 using Amazon.CognitoIdentityProvider;
 using Casino.API.Util.Logging;
+using Casino.API.Data.Entities;
 
 namespace Casino.API.Components.Authentication.AwsCognito
 {
     public class AwsCognitoSignUpAuthentication : AwsCognitoAuthenticationBase, ISignUpRequest
     {
 
-        async Task ISignUpRequest.SignUpUser(UsuarioSignUpDTO user)
+        async Task<Usuario> ISignUpRequest.SignUpUser(UsuarioSignUpDTO userDTO)
+        {
+            // try signup user in aws cognito
+            await TrySignUpUser(userDTO);
+
+            // if signup is successful then try add user to default group
+            await TryAddUserToGroup(userDTO.Username);
+
+            Usuario userEntity = new Usuario()
+            {
+                
+            };
+
+            return userEntity;
+        }
+
+        private async Task TrySignUpUser(UsuarioSignUpDTO user)
         {
             try
             {
@@ -35,11 +52,14 @@ namespace Casino.API.Components.Authentication.AwsCognito
             {
                 throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, e.Message);
             }
+        }
 
-            // if signup is successful then try add user to default group
+        private async Task TryAddUserToGroup(string Username)
+        {
             try
             {
-                AdminAddUserToGroupResponse responseAddUserToGroup = await AddUserToGroup(user.Username);
+                AwsCognitoUserGroupAuthentication awsCognitoUserGroup = new AwsCognitoUserGroupAuthentication();
+                AdminAddUserToGroupResponse responseAddUserToGroup = await awsCognitoUserGroup.AddUserToGroup(Username, awsCognitoUserGroup.DEFAULT_COGNITO_GROUP);
             }
             catch (Exception e)
             {
@@ -99,22 +119,6 @@ namespace Casino.API.Components.Authentication.AwsCognito
             {
                 throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, e.Message);
             }
-        }
-
-        public async Task<AdminAddUserToGroupResponse> AddUserToGroup(string Username, string GroupName = "Player")
-        {
-            AdminAddUserToGroupRequest request = new AdminAddUserToGroupRequest()
-            {
-                GroupName = GroupName,
-                Username = Username,
-                UserPoolId = GetUserPoolId(),
-            };
-            AmazonCognitoIdentityProviderClient client = GetAmazonCognitoIdentity();
-            AdminAddUserToGroupResponse response = await client.AdminAddUserToGroupAsync(request);
-
-            Logger.Info($"Se agregó el usuario '{Username}' al grupo '{GroupName}' exitosamente");
-
-            return response;
         }
     }
 }

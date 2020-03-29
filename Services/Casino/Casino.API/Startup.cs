@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Casino.API.Config;
+using Microsoft.AspNetCore.Http;
 
 namespace Casino.API
 {
@@ -31,7 +32,7 @@ namespace Casino.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor)
         {
             ApiConfig.Singleton.App = app;
             ApiConfig.Singleton.Environment = env;
