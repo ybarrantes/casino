@@ -4,21 +4,34 @@ using Casino.API.Data.Models.Usuario;
 using System.Threading.Tasks;
 using System;
 using Casino.API.Exceptions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Casino.API.Components.Authentication.AwsCognito
 {
     public class AwsCognitoSignInAuthentication : AwsCognitoAuthenticationBase, ISignInRequest
     {
+        public AwsCognitoSignInAuthentication(IConfiguration configuration, ILogger logger)
+            : base(configuration, logger)
+        {
+        }
 
         async Task<ISignInResponse> ISignInRequest.SignInUser(UsuarioSignInDTO user)
         {
-            AdminInitiateAuthResponse authResponse = null;
+            AdminInitiateAuthResponse authResponse = await TrySignInUser(user);
 
+            return new AwsCognitoSignInAuthenticationResponse(authResponse);            
+        }
+
+        private async Task<AdminInitiateAuthResponse> TrySignInUser(UsuarioSignInDTO user)
+        {
             try
             {
                 AdminInitiateAuthRequest authRequest = GetAuthRequest(user.Username, user.Password);
-                AmazonCognitoIdentityProviderClient client = GetAmazonCognitoIdentity();
-                authResponse = await client.AdminInitiateAuthAsync(authRequest);
+
+                AmazonCognitoIdentityProviderClient identityProviderClient = GetAmazonCognitoIdentity();
+
+                return await identityProviderClient.AdminInitiateAuthAsync(authRequest);
             }
             catch (NotAuthorizedException e)
             {
@@ -32,8 +45,6 @@ namespace Casino.API.Components.Authentication.AwsCognito
             {
                 throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, e.Message);
             }
-
-            return new AwsCognitoSignInAuthenticationResponse(authResponse);            
         }
 
         private AdminInitiateAuthRequest GetAuthRequest(string username, string password)

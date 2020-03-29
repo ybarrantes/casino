@@ -1,5 +1,7 @@
 ﻿using Casino.API.Config;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,11 @@ namespace Casino.API.Components.Authentication.AwsCognito
 {
     public class AwsCognitoConfigAuthorization : AwsCognitoAuthenticationBase, IConfigAuthorization
     {
+        public AwsCognitoConfigAuthorization(IConfiguration configuration, ILogger logger)
+            : base(configuration, logger)
+        {
+        }
+
         public AuthorizationOptions GetAuthorizationOptions(AuthorizationOptions options)
         {
             List<string> groups = GetAuthorizedGroups();

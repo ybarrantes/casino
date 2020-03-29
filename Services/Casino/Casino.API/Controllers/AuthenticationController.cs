@@ -7,28 +7,34 @@ using Casino.API.Exceptions;
 using Casino.API.Util.Logging;
 using Casino.API.Util.Response;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Casino.API
+namespace Casino.API.Controllers
 {
     [ApiController]
     [Route("api/auth")]
     public class AuthenticationController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly IConfiguration configuration;
+        private readonly ILogger<AuthenticationController> logger;
 
-        public AuthenticationController(ApplicationDbContext dbContext)
+        public AuthenticationController(ApplicationDbContext dbContext, IConfiguration configuration, ILogger<AuthenticationController> logger)
         {
             this.dbContext = dbContext;
+            this.configuration = configuration;
+            this.logger = logger;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<HttpResponse>> SignUp([FromBody] UsuarioSignUpDTO userDTO)
         {
-            ISignUpRequest request = new AwsCognitoSignUpAuthentication();
+            ISignUpRequest request = new AwsCognitoSignUpAuthentication(configuration, logger);
             string userSub = await request.SignUpUser(userDTO);
 
             await TrySaveUserInLocalDB(userDTO, userSub);
@@ -50,7 +56,7 @@ namespace Casino.API
                 dbContext.Usuarios.Add(userEntity);
                 await dbContext.SaveChangesAsync();
 
-                Logger.Info($"user '{userDTO.Username}' has been saved in local db");
+                logger.LogInformation($"user '{userDTO.Username}' has been saved in local db");
             }
             catch (Exception e)
             {
@@ -61,7 +67,7 @@ namespace Casino.API
         [HttpPost("register-confirmation")]
         public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UsuarioConfirmationSignUpDTO confirmation)
         {
-            ISignUpRequest confirmRequest = new AwsCognitoSignUpAuthentication();
+            ISignUpRequest confirmRequest = new AwsCognitoSignUpAuthentication(configuration, logger);
             await confirmRequest.SignUpUserConfirmation(confirmation);
             return new HttpResponse().Success();
         }
@@ -69,7 +75,7 @@ namespace Casino.API
         [HttpPost("signin")]
         public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UsuarioSignInDTO userDTO)
         {
-            ISignInRequest authRequest = new AwsCognitoSignInAuthentication();
+            ISignInRequest authRequest = new AwsCognitoSignInAuthentication(configuration, logger);
             ISignInResponse authResponse = await authRequest.SignInUser(userDTO);
             return new HttpResponse().Success().SetData(authResponse);
         }

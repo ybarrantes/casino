@@ -32,13 +32,12 @@ namespace Casino.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor)
+        public void Configure(ILoggerFactory loggerFactory, IApplicationBuilder app, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor)
         {
             ApiConfig.Singleton.App = app;
             ApiConfig.Singleton.Environment = env;
-            ApiConfig.Singleton.LoggerFactory = loggerFactory;
             ApiConfig.Singleton.HttpContextAccessor = httpContextAccessor;
-
+            ApiConfig.Singleton.LoggerFactory = loggerFactory;
             ApiConfig.Singleton.ApplyAppConfiguracion();
         }
     }

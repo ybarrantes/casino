@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Casino.API.Data.Entities.Extension
+namespace Casino.API.Data.Extension
 {
     /// <summary>
     /// Agrega la capacidad de 'borrado suave' de una entidad
     /// </summary>
-    interface ISoftDeletes
+    interface ISoftDeletesEntityModel
     {
         public DateTime? DeletedAt { get; set; }
     }

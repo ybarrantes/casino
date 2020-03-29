@@ -87,6 +87,7 @@ namespace Casino.API.Config
         {
             if (serviceConfigApplied) throw new InvalidOperationException("The services configuration has already been applied");
 
+
             Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             AddControllersToServices();
@@ -129,7 +130,7 @@ namespace Casino.API.Config
                 })
                 .AddJwtBearer(options =>
                 {
-                    IConfigJwtBearerAuthentication configJwtBearerAuthentication = new AwsCognitoConfigJwtBearerAuthentication();
+                    IConfigJwtBearerAuthentication configJwtBearerAuthentication = new AwsCognitoConfigJwtBearerAuthentication(Configuration, null);
                     configJwtBearerAuthentication.GetJwtBearerAuthenticationOptions(options);
                 });
         }
@@ -140,7 +141,7 @@ namespace Casino.API.Config
             Services
                 .AddAuthorization(options =>
                 {
-                    IConfigAuthorization configAuthorization = new AwsCognitoConfigAuthorization();
+                    IConfigAuthorization configAuthorization = new AwsCognitoConfigAuthorization(Configuration, null);
                     configAuthorization.GetAuthorizationOptions(options);
                 });
         }

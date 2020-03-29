@@ -1,38 +1,50 @@
 ﻿using Amazon;
 using Amazon.CognitoIdentityProvider;
-using Casino.API.Config;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace Casino.API.Components.Authentication.AwsCognito
 {
     public abstract class AwsCognitoAuthenticationBase
     {
-        public readonly string DEFAULT_COGNITO_GROUP = ApiConfig.Singleton.Configuration.GetSection("AWS:Cognito:DefaultGroup").Value;
+        public string defaultCognitoGroup;
+
+        protected readonly IConfiguration configuration;
+        protected readonly ILogger logger;
+
+        public AwsCognitoAuthenticationBase(IConfiguration configuration, ILogger logger)
+        {
+            this.configuration = configuration;
+            this.logger = logger;
+            this.defaultCognitoGroup = configuration.GetSection("AWS:Cognito:DefaultGroup").Value;
+        }
+
+        public string DefaultCognitoGroup { get => defaultCognitoGroup; }
 
         public List<string> GetAuthorizedGroups()
         {
-            return ApiConfig.Singleton.Configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
+            return configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
         }
 
         public string GetClientId()
         {
-            return ApiConfig.Singleton.Configuration["AWS:Cognito:AppClientId"];
+            return configuration["AWS:Cognito:AppClientId"];
         }
 
         public string GetUserPoolId()
         {
-            return ApiConfig.Singleton.Configuration["AWS:Cognito:Region"] + "_" + ApiConfig.Singleton.Configuration["AWS:Cognito:PoolId"];
+            return configuration["AWS:Cognito:Region"] + "_" + configuration["AWS:Cognito:PoolId"];
         }
 
         public string GetAccessKeyId()
         {
-            return ApiConfig.Singleton.Configuration["AWS:Credentials:AppAccessKeyId"];
+            return configuration["AWS:Credentials:AppAccessKeyId"];
         }
 
         public string GetSecretAccessKey()
         {
-            return ApiConfig.Singleton.Configuration["AWS:Credentials:SecretAccessKey"];
+            return configuration["AWS:Credentials:SecretAccessKey"];
         }
 
         public AmazonCognitoIdentityProviderClient GetAmazonCognitoIdentity()

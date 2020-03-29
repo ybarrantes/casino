@@ -6,11 +6,18 @@ using Casino.API.Exceptions;
 using Amazon.CognitoIdentityProvider;
 using Casino.API.Util.Logging;
 using Casino.API.Data.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Casino.API.Components.Authentication.AwsCognito
 {
     public class AwsCognitoSignUpAuthentication : AwsCognitoAuthenticationBase, ISignUpRequest
     {
+
+        public AwsCognitoSignUpAuthentication(IConfiguration configuration, ILogger logger)
+            : base(configuration, logger)
+        {
+        }
 
         async Task<string> ISignUpRequest.SignUpUser(UsuarioSignUpDTO userDTO)
         {
@@ -55,12 +62,12 @@ namespace Casino.API.Components.Authentication.AwsCognito
         {
             try
             {
-                AwsCognitoUserGroupAuthentication awsCognitoUserGroup = new AwsCognitoUserGroupAuthentication();
-                AdminAddUserToGroupResponse responseAddUserToGroup = await awsCognitoUserGroup.AddUserToGroup(Username, awsCognitoUserGroup.DEFAULT_COGNITO_GROUP);
+                AwsCognitoUserGroupAuthentication awsCognitoUserGroup = new AwsCognitoUserGroupAuthentication(base.configuration, base.logger);
+                AdminAddUserToGroupResponse responseAddUserToGroup = await awsCognitoUserGroup.AddUserToGroup(Username, awsCognitoUserGroup.DefaultCognitoGroup);
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error intentando asignar el grupo al usuario: ");
+                logger.LogError(e, "Error intentando asignar el grupo al usuario: ");
             }
         }
 

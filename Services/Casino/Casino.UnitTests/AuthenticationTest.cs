@@ -1,14 +1,9 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Casino.UnitTests
 {
-    public class Tests
+    class AuthenticationTest
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void Test1()
         {

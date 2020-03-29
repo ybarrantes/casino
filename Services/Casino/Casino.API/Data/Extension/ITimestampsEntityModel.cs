@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Casino.API.Data.Entities.Extension
+namespace Casino.API.Data.Extension
 {
-    interface ITimestamps
+    interface ITimestampsEntityModel
     {
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

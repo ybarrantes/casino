@@ -10,7 +10,7 @@ namespace Casino.API.Util.Logging
     {
         protected static ILogger logger = null;
 
-        protected static ILogger Log
+        public static ILogger Log
         {
             get
             {

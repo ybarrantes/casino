@@ -1,4 +1,4 @@
-﻿using Casino.API.Data.Entities.Extension;
+﻿using Casino.API.Data.Extension;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Casino.API.Data.Entities
 {
-    public class Usuario : ITimestamps, ISoftDeletes
+    public class Usuario : IApiEntityModel, ITimestampsEntityModel, ISoftDeletesEntityModel
     {
         protected DateTime _CreatedAt;
         protected DateTime _UpdatedAt;
