@@ -16,6 +16,6 @@ namespace Casino.API.Data.Context
         {
         }
 
-        public DbSet<Usuario> User { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }

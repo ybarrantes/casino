@@ -1,5 +1,7 @@
 ﻿using Casino.API.Components.Authentication;
 using Casino.API.Components.Authentication.AwsCognito;
+using Casino.API.Data.Context;
+using Casino.API.Data.Entities;
 using Casino.API.Data.Models.Usuario;
 using Casino.API.Exceptions;
 using Casino.API.Util.Logging;
@@ -13,32 +15,62 @@ using System.Threading.Tasks;
 namespace Casino.API
 {
     [ApiController]
+    [Route("api/auth")]
     public class AuthenticationController : ControllerBase
     {
-        [HttpPost]
-        [Route("api/auth/register")]
-        public async Task<ActionResult<HttpResponse>> SignUp(UsuarioSignUpDTO user)
+        private readonly ApplicationDbContext dbContext;
+
+        public AuthenticationController(ApplicationDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult<HttpResponse>> SignUp([FromBody] UsuarioSignUpDTO userDTO)
         {
             ISignUpRequest request = new AwsCognitoSignUpAuthentication();
-            await request.SignUpUser(user);
+            string userSub = await request.SignUpUser(userDTO);
+
+            await TrySaveUserInLocalDB(userDTO, userSub);
+
             return new HttpResponse().Success();
         }
 
-        [HttpPost]
-        [Route("api/auth/register-confirmation")]
-        public async Task<ActionResult<HttpResponse>> SignIn(UsuarioConfirmationSignUpDTO confirmation)
+        private async Task TrySaveUserInLocalDB(UsuarioSignUpDTO userDTO, string userSub)
+        {
+            try
+            {
+                Usuario userEntity = new Usuario()
+                {
+                    Username = userDTO.Username,
+                    Email = userDTO.Email,
+                    CloudIdentityId = userSub,
+                };
+
+                dbContext.Usuarios.Add(userEntity);
+                await dbContext.SaveChangesAsync();
+
+                Logger.Info($"user '{userDTO.Username}' has been saved in local db");
+            }
+            catch (Exception e)
+            {
+                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPost("register-confirmation")]
+        public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UsuarioConfirmationSignUpDTO confirmation)
         {
             ISignUpRequest confirmRequest = new AwsCognitoSignUpAuthentication();
             await confirmRequest.SignUpUserConfirmation(confirmation);
             return new HttpResponse().Success();
         }
 
-        [HttpPost]
-        [Route("api/auth/signin")]
-        public async Task<ActionResult<HttpResponse>> SignIn(UsuarioSignInDTO user)
+        [HttpPost("signin")]
+        public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UsuarioSignInDTO userDTO)
         {
             ISignInRequest authRequest = new AwsCognitoSignInAuthentication();
-            ISignInResponse authResponse = await authRequest.SignInUser(user);
+            ISignInResponse authResponse = await authRequest.SignInUser(userDTO);
             return new HttpResponse().Success().SetData(authResponse);
         }
     }

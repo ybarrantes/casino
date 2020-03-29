@@ -12,29 +12,26 @@ namespace Casino.API.Components.Authentication.AwsCognito
     public class AwsCognitoSignUpAuthentication : AwsCognitoAuthenticationBase, ISignUpRequest
     {
 
-        async Task<Usuario> ISignUpRequest.SignUpUser(UsuarioSignUpDTO userDTO)
+        async Task<string> ISignUpRequest.SignUpUser(UsuarioSignUpDTO userDTO)
         {
             // try signup user in aws cognito
-            await TrySignUpUser(userDTO);
+            SignUpResponse response = await TrySignUpUser(userDTO);
 
             // if signup is successful then try add user to default group
             await TryAddUserToGroup(userDTO.Username);
 
-            Usuario userEntity = new Usuario()
-            {
-                
-            };
-
-            return userEntity;
+            return response.UserSub;
         }
 
-        private async Task TrySignUpUser(UsuarioSignUpDTO user)
+        private async Task<SignUpResponse> TrySignUpUser(UsuarioSignUpDTO user)
         {
             try
             {
                 SignUpRequest request = GetSignUpRequest(user);
                 AmazonCognitoIdentityProviderClient client = GetAmazonCognitoIdentity();
                 SignUpResponse response = await client.SignUpAsync(request);
+
+                return response;
             }
             catch (UsernameExistsException e)
             {

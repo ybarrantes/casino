@@ -37,6 +37,7 @@ namespace Casino.API
             ApiConfig.Singleton.App = app;
             ApiConfig.Singleton.Environment = env;
             ApiConfig.Singleton.LoggerFactory = loggerFactory;
+            ApiConfig.Singleton.HttpContextAccessor = httpContextAccessor;
 
             ApiConfig.Singleton.ApplyAppConfiguracion();
         }

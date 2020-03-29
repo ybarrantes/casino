@@ -11,6 +11,28 @@
     <Compile Remove="Data\Migrations\20200327230407_Two.Designer.cs" />
     <Compile Remove="Data\Migrations\20200327231455_UsuarioCreateTable.cs" />
     <Compile Remove="Data\Migrations\20200327231455_UsuarioCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329101106_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329101106_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329101649_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329101649_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329101941_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329101941_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329102319_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329102319_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329102934_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329102934_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329105856_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329105856_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329110246_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329110246_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329110538_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329110538_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329145637_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329145637_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329145846_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329145846_UsuariosCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329151925_UsuariosCreateTable.cs" />
+    <Compile Remove="Data\Migrations\20200329151925_UsuariosCreateTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +58,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
     <Folder Include="Data\Queries\" />
     <Folder Include="Runtime\Logs\" />
   </ItemGroup>

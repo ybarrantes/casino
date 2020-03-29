@@ -6,7 +6,7 @@ namespace Casino.API.Components.Authentication
 {
     interface ISignUpRequest
     {
-        public abstract Task<Usuario> SignUpUser(UsuarioSignUpDTO user);
+        public abstract Task<string> SignUpUser(UsuarioSignUpDTO user);
         public abstract Task SignUpUserConfirmation(UsuarioConfirmationSignUpDTO confirmation);
     }
 }

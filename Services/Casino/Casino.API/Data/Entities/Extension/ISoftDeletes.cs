@@ -7,6 +7,6 @@ namespace Casino.API.Data.Entities.Extension
     /// </summary>
     interface ISoftDeletes
     {
-        public DateTime DeletedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 }
