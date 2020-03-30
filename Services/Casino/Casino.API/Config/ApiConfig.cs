@@ -20,6 +20,11 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Casino.API.Components.Authentication.AwsCognito;
+using AutoMapper;
+using Casino.API.Data.Entities;
+using Casino.API.Data.Models.Ruleta;
+using System.Security.Claims;
+using Casino.API.Data.Models.Dominio;
 
 namespace Casino.API.Config
 {
@@ -78,8 +83,6 @@ namespace Casino.API.Config
             appConfigApplied = true;
         }
 
-
-
         /// <summary>
         /// Add services configuration
         /// </summary>
@@ -87,10 +90,11 @@ namespace Casino.API.Config
         {
             if (serviceConfigApplied) throw new InvalidOperationException("The services configuration has already been applied");
 
-
             Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             AddControllersToServices();
+
+            AddAutoMapperToServices();
 
             AddDbContextToServices();
 
@@ -111,6 +115,20 @@ namespace Casino.API.Config
                 .AddNewtonsoftJson(
                     options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                 );
+        }
+
+        private void AddAutoMapperToServices()
+        {
+            Services.AddAutoMapper(config =>
+            {
+                config.CreateMap<Ruleta, RuletaCreateDTO>();
+                config.CreateMap<RuletaCreateDTO, Ruleta>();
+                config.CreateMap<Ruleta, RuletaShowDTO>();
+                //config.CreateMap<RuletaShowDTO, Ruleta>();
+
+                config.CreateMap<Data.Entities.Dominio, DominioShowDTO>();
+                config.CreateMap<DominioShowDTO, Data.Entities.Dominio>();
+            }, typeof(Startup));
         }
 
         private void AddDbContextToServices()
