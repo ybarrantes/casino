@@ -8,13 +8,11 @@ using Casino.API.Data.Context;
 using Casino.API.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
-using Casino.API.Util.Response;
 using Casino.API.Exceptions;
 using Casino.API.Data.Models.Ruleta;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 using Casino.API.Config;
+using Casino.API.Services;
 
 namespace Casino.API.Controllers
 {
@@ -26,14 +24,18 @@ namespace Casino.API.Controllers
         private readonly ApplicationDbContext dbContext;
         private readonly ILogger<RuletasController> logger;
         private readonly IMapper mapper;
-        private readonly IHttpContextAccessor httpContext;
+        private readonly IIdentityApp identityApp;
 
-        public RuletasController(ApplicationDbContext dbContext, ILogger<RuletasController> logger, IMapper mapper, IHttpContextAccessor httpContext)
+        public RuletasController(
+            ApplicationDbContext dbContext,
+            ILogger<RuletasController> logger,
+            IMapper mapper,
+            IIdentityApp identityApp)
         {
             this.dbContext = dbContext;
             this.logger = logger;
             this.mapper = mapper;
-            this.httpContext = httpContext;
+            this.identityApp = identityApp;
         }
 
 
@@ -43,6 +45,7 @@ namespace Casino.API.Controllers
             IEnumerable<Ruleta> ruletas = await dbContext.Ruletas
                 .Include(r => r.Estado)
                 .Include(b => b.Tipo)
+                .Where(x => x.DeletedAt == null)
                 .ToListAsync();
 
             List<RuletaShowDTO> ruletasDTO = mapper.Map<List<RuletaShowDTO>>(ruletas);
@@ -114,27 +117,41 @@ namespace Casino.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Util.Response.HttpResponse>> PostRuleta(RuletaCreateDTO ruletaDTO)
         {
-            Dominio dominiosEstadoRuleta = ApiDomains.ValidateIfDomainIdExistsInChildDomains(dbContext, ApiDomains.ESTADOS_RULETAS, ruletaDTO.Estado);
-            if (dominiosEstadoRuleta == null)
-                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, "Estado is not valid!");
-
-            Dominio dominiosTipoRuleta = ApiDomains.ValidateIfDomainIdExistsInChildDomains(dbContext, ApiDomains.TIPOS_RULETAS, ruletaDTO.TipoRuleta);
-            if (dominiosTipoRuleta == null)
-                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, "TipoRuleta is not valid!");
-
-            Ruleta ruleta = new Ruleta()
-            {
-                Descripcion = ruletaDTO.Descripcion,
-                Estado = dominiosEstadoRuleta,
-                Tipo = dominiosTipoRuleta,
-                UsuarioRegistraId = ApiAuthUser.Singleton(httpContext, dbContext).User
-            };
+            Ruleta ruleta = await CreateRuletaEntity(ruletaDTO);
 
             await TrySaveRuleta(ruleta);
 
             RuletaShowDTO ruletaGetDTO = mapper.Map<RuletaShowDTO>(ruleta);
 
             return new CreatedAtRouteResult("GetRuleta", new { id = ruleta.Id }, ruletaGetDTO);
+        }
+
+        private async Task<Ruleta> CreateRuletaEntity(RuletaCreateDTO ruletaDTO)
+        {
+            Ruleta ruleta = new Ruleta()
+            {
+                Descripcion = ruletaDTO.Descripcion,
+                Estado = await GetAndValidateDominiosRuletaFromId(ruletaDTO.Estado, DominiosAppNamesSingleton.GetInstance.ESTADOS_RULETAS, "Estado"),
+                Tipo = await GetAndValidateDominiosRuletaFromId(ruletaDTO.TipoRuleta, DominiosAppNamesSingleton.GetInstance.TIPOS_RULETAS, "Tipo"),
+                UsuarioRegistraId = identityApp.GetUser(dbContext)
+            };
+
+            return ruleta;
+        }
+
+        private async Task<Dominio> GetAndValidateDominiosRuletaFromId(int idDominio, string nombreDominioPadre, string field)
+        {
+            Dominio padre = await dbContext.Dominios.FirstOrDefaultAsync<Dominio>(d => d.Nombre.Equals(nombreDominioPadre));
+
+            if(padre == null)
+                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, $"domain '{nombreDominioPadre}' not found!");
+
+            Dominio dominio = await dbContext.Dominios.FirstOrDefaultAsync<Dominio>(d => d.Padre != null && d.Padre.Id.Equals(padre.Id) && d.Id.Equals(idDominio));
+
+            if (dominio == null)
+                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, $"{field}: value '{idDominio}' is invalid!'");
+
+            return dominio;
         }
 
         private async Task TrySaveRuleta(Ruleta ruleta)
