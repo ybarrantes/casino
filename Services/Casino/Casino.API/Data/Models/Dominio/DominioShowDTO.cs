@@ -13,7 +13,5 @@ namespace Casino.API.Data.Models.Dominio
         public string? Nombre { get; set; }
 
         public string? Descripcion { get; set; }
-
-        public DominioShowDTO? Padre { get; set; }
     }
 }
