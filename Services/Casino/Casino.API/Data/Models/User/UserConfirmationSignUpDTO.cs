@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Casino.API.Data.Models.Usuario
+namespace Casino.API.Data.Models.User
 {
-    public class UsuarioConfirmationSignUpDTO
+    public class UserConfirmationSignUpDTO
     {
         [Required]
         [StringLength(128, MinimumLength = 3)]

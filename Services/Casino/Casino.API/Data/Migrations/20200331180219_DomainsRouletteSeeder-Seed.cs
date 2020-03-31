@@ -1,17 +1,18 @@
-﻿using Casino.API.Data.Queries;
+﻿using Casino.API.Data.Seeders;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Casino.API.Data.Migrations
 {
-    public partial class DominiosRuletaSeeder : Migration
+    public partial class DomainsRouletteSeederSeed : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            InsertDefaultDomainsQuery.addDomains(migrationBuilder);
+            AddRoulettesDomainsSeed.AddDomains(migrationBuilder);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+
         }
     }
 }

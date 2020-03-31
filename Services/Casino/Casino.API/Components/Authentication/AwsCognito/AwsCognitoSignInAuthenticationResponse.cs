@@ -12,7 +12,7 @@ namespace Casino.API.Components.Authentication.AwsCognito
         protected string _tokenType;
         protected string _refreshToken;
         protected int _expiresIn;
-        protected AdminInitiateAuthResponse adminInitiateAuthResponse;
+        protected AdminInitiateAuthResponse _adminInitiateAuthResponse;
 
         public string AccessToken { get => _accessToken; }
         public string IdToken { get => _idToken; }
@@ -22,22 +22,23 @@ namespace Casino.API.Components.Authentication.AwsCognito
 
         public AwsCognitoSignInAuthenticationResponse(AdminInitiateAuthResponse authResponse)
         {
-            adminInitiateAuthResponse = authResponse;
+            _adminInitiateAuthResponse = authResponse;
             ValidateAdminInitiateAuthResponse();
 
-            _accessToken = adminInitiateAuthResponse.AuthenticationResult.AccessToken;
-            _idToken = adminInitiateAuthResponse.AuthenticationResult.IdToken;
-            _tokenType = adminInitiateAuthResponse.AuthenticationResult.TokenType;
-            _refreshToken = adminInitiateAuthResponse.AuthenticationResult.RefreshToken;
-            _expiresIn = adminInitiateAuthResponse.AuthenticationResult.ExpiresIn;
+            _accessToken = _adminInitiateAuthResponse.AuthenticationResult.AccessToken;
+            _idToken = _adminInitiateAuthResponse.AuthenticationResult.IdToken;
+            _tokenType = _adminInitiateAuthResponse.AuthenticationResult.TokenType;
+            _refreshToken = _adminInitiateAuthResponse.AuthenticationResult.RefreshToken;
+            _expiresIn = _adminInitiateAuthResponse.AuthenticationResult.ExpiresIn;
         }
 
         private void ValidateAdminInitiateAuthResponse()
         {
-            if (adminInitiateAuthResponse == null || adminInitiateAuthResponse.AuthenticationResult == null)
+            if (_adminInitiateAuthResponse == null || _adminInitiateAuthResponse.AuthenticationResult == null)
                 throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, "Aws Cognito Service Error");
 
-            if (adminInitiateAuthResponse.ChallengeName == ChallengeNameType.NEW_PASSWORD_REQUIRED)
+            // TODO: validate other cases of ChallengeName
+            if (_adminInitiateAuthResponse.ChallengeName == ChallengeNameType.NEW_PASSWORD_REQUIRED)
             {
                 throw new HttpResponseException(System.Net.HttpStatusCode.Forbidden, "Please, change password");
             }

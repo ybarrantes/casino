@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Casino.API.Data.Context;
 using Casino.API.Data.Entities;
-using Casino.API.Data.Models.Dominio;
-using Casino.API.Data.Models.Ruleta;
+using Casino.API.Data.Models.Domain;
+using Casino.API.Data.Models.Roulette;
 using Casino.API.Services;
 using Casino.API.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,7 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
-using Casino.API.Components.Ruletas;
+using Casino.API.Components.Roulettes;
 
 namespace Casino.API.Config
 {
@@ -47,7 +47,7 @@ namespace Casino.API.Config
 
             // custom services
             _services.AddScoped<IIdentityApp, IdentityAppService>();
-            _services.AddScoped<IRuletasComponent, RuletasComponent>();
+            _services.AddScoped<IRoulettesComponent, RoulettesComponent>();
         }
 
         private static void AddControllersToServicesContainer()
@@ -64,13 +64,13 @@ namespace Casino.API.Config
         {
             _services.AddAutoMapper(config =>
             {
-                config.CreateMap<Ruleta, RuletaCreateDTO>();
-                config.CreateMap<RuletaCreateDTO, Ruleta>();
-                config.CreateMap<Ruleta, RuletaShowDTO>();
+                config.CreateMap<Roulette, RouletteCreateDTO>();
+                config.CreateMap<RouletteCreateDTO, Roulette>();
+                config.CreateMap<Roulette, RouletteShowDTO>();
                 //config.CreateMap<RuletaShowDTO, Ruleta>();
 
-                config.CreateMap<Dominio, DominioShowDTO>();
-                config.CreateMap<DominioShowDTO, Dominio>();
+                config.CreateMap<Domain, DomainShowDTO>();
+                config.CreateMap<DomainShowDTO, Domain>();
             }, typeof(Startup));
         }
 

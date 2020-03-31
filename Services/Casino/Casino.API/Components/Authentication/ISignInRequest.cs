@@ -1,10 +1,10 @@
-﻿using Casino.API.Data.Models.Usuario;
+﻿using Casino.API.Data.Models.User;
 using System.Threading.Tasks;
 
 namespace Casino.API.Components.Authentication
 {
-    interface ISignInRequest
+    public interface ISignInRequest
     {
-        public abstract Task<ISignInResponse> SignInUser(UsuarioSignInDTO user);
+        Task<ISignInResponse> SignInUser(UserSignInDTO user);
     }
 }

@@ -2,7 +2,7 @@
 using Casino.API.Data.Context;
 using Casino.API.Data.Entities;
 using Casino.API.Data.Extension;
-using Casino.API.Data.Models.Usuario;
+using Casino.API.Data.Models.User;
 using Casino.API.Exceptions;
 using Casino.API.Util.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -18,14 +18,14 @@ using System.Threading.Tasks;
 namespace Casino.API.Controllers
 {
     [ApiController]
-    [Route("api/usuarios")]
-    public class UsuariosController : ControllerBase
+    [Route("api/users")]
+    public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IConfiguration configuration;
-        private readonly ILogger<UsuariosController> logger;
+        private readonly ILogger<UsersController> logger;
 
-        public UsuariosController(ApplicationDbContext dbContext, IConfiguration configuration, ILogger<UsuariosController> logger)
+        public UsersController(ApplicationDbContext dbContext, IConfiguration configuration, ILogger<UsersController> logger)
         {
             this.dbContext = dbContext;
             this.configuration = configuration;
@@ -34,33 +34,33 @@ namespace Casino.API.Controllers
 
         [Authorize]
         [HttpGet("{id}", Name = "GetUsuario")]
-        public async Task<ActionResult<HttpResponse>> GetUsuario(long id)
+        public async Task<ActionResult<HttpResponse>> GetUser(long id)
         {
-            Usuario usuario = await FindUsuarioById(id);
-            return new HttpResponse().Success().SetData(usuario);
+            User user = await FindUsuarioById(id);
+            return new HttpResponse().Success().SetData(user);
         }
 
-        private async Task<Usuario> FindUsuarioById(long id)
+        private async Task<User> FindUsuarioById(long id)
         {
-            Usuario usuario = await dbContext.Usuarios.FirstOrDefaultAsync(user => user.Id.Equals(id));
+            User user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id.Equals(id));
 
-            if(usuario == null) throw new HttpResponseException(System.Net.HttpStatusCode.NotFound, $"User '{id}' not found");
+            if(user == null) throw new HttpResponseException(System.Net.HttpStatusCode.NotFound, $"User '{id}' not found");
 
-            return usuario;
+            return user;
         }
 
         [Authorize(Policy = "SuperAdmin")]
         [HttpPost("{id}/roles")]
-        public async Task<ActionResult<HttpResponse>> AddRol(long id, [FromBody] RolDTO rol)
+        public async Task<ActionResult<HttpResponse>> AddRol(long id, [FromBody] RoleDTO role)
         {
-            Usuario usuario = await FindUsuarioById(id);
+            User user = await FindUsuarioById(id);
 
             List<string> roles = configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
-            if (!roles.Contains(rol.Rol))
-                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, $"The rol '{rol.Rol}' is not authorized in aws cognito groups, see configuration");
+            if (!roles.Contains(role.Role))
+                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, $"The role '{role.Role}' is not authorized in aws cognito groups, see configuration");
 
             AwsCognitoUserGroupAuthentication userGroupAuthentication = new AwsCognitoUserGroupAuthentication(this.configuration, logger);
-            await userGroupAuthentication.AddUserToGroup(usuario.Username, rol.Rol);
+            await userGroupAuthentication.AddUserToGroup(user.Username, role.Role);
 
             return new HttpResponse().Success();
         }

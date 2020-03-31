@@ -13,6 +13,6 @@ namespace Casino.API.Services
         bool Authenticated { get; }
 
         IEnumerable<Claim> GetClaims();
-        Usuario GetUser(ApplicationDbContext dbContext);
+        User GetUser(ApplicationDbContext dbContext);
     }
 }

@@ -1,10 +1,9 @@
 ﻿using Amazon.CognitoIdentityProvider.Model;
-using Casino.API.Data.Models.Usuario;
+using Casino.API.Data.Models.User;
 using System.Threading.Tasks;
 using System;
 using Casino.API.Exceptions;
 using Amazon.CognitoIdentityProvider;
-using Casino.API.Data.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -18,7 +17,7 @@ namespace Casino.API.Components.Authentication.AwsCognito
         {
         }
 
-        async Task<string> ISignUpRequest.SignUpUser(UsuarioSignUpDTO userDTO)
+        async Task<string> ISignUpRequest.SignUpUser(UserSignUpDTO userDTO)
         {
             // try signup user in aws cognito
             SignUpResponse response = await TrySignUpUser(userDTO);
@@ -29,7 +28,7 @@ namespace Casino.API.Components.Authentication.AwsCognito
             return response.UserSub;
         }
 
-        private async Task<SignUpResponse> TrySignUpUser(UsuarioSignUpDTO user)
+        private async Task<SignUpResponse> TrySignUpUser(UserSignUpDTO user)
         {
             try
             {
@@ -61,16 +60,16 @@ namespace Casino.API.Components.Authentication.AwsCognito
         {
             try
             {
-                AwsCognitoUserGroupAuthentication awsCognitoUserGroup = new AwsCognitoUserGroupAuthentication(base.configuration, base.logger);
+                AwsCognitoUserGroupAuthentication awsCognitoUserGroup = new AwsCognitoUserGroupAuthentication(base._configuration, base._logger);
                 AdminAddUserToGroupResponse responseAddUserToGroup = await awsCognitoUserGroup.AddUserToGroup(Username, awsCognitoUserGroup.DefaultCognitoGroup);
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Error intentando asignar el grupo al usuario: ");
+                _logger.LogError(e, "Error trying to assign group to user");
             }
         }
 
-        private SignUpRequest GetSignUpRequest(UsuarioSignUpDTO user)
+        private SignUpRequest GetSignUpRequest(UserSignUpDTO user)
         {
             SignUpRequest request = new SignUpRequest
             {
@@ -79,15 +78,15 @@ namespace Casino.API.Components.Authentication.AwsCognito
                 Username = user.Username
             };
 
-            request.UserAttributes.Add(GetAttributeTypeFromNameAndValue(AwsCognitoAuthenticationParameters.NAME, user.Name));
-            request.UserAttributes.Add(GetAttributeTypeFromNameAndValue(AwsCognitoAuthenticationParameters.MIDDLE_NAME, user.MiddleName));
-            request.UserAttributes.Add(GetAttributeTypeFromNameAndValue(AwsCognitoAuthenticationParameters.EMAIL, user.Email));
-            request.UserAttributes.Add(GetAttributeTypeFromNameAndValue(AwsCognitoAuthenticationParameters.BIRTHDAY, user.BirthDate.ToString("dd/MM/yyyy")));
+            request.UserAttributes.Add(CreateAttributeType(AwsCognitoAuthenticationParameters.NAME, user.Name));
+            request.UserAttributes.Add(CreateAttributeType(AwsCognitoAuthenticationParameters.MIDDLE_NAME, user.MiddleName));
+            request.UserAttributes.Add(CreateAttributeType(AwsCognitoAuthenticationParameters.EMAIL, user.Email));
+            request.UserAttributes.Add(CreateAttributeType(AwsCognitoAuthenticationParameters.BIRTHDAY, user.BirthDate.ToString("dd/MM/yyyy")));
 
             return request;
         }
 
-        private AttributeType GetAttributeTypeFromNameAndValue(string name, string value)
+        private AttributeType CreateAttributeType(string name, string value)
         {
             return new AttributeType
             {
@@ -96,7 +95,7 @@ namespace Casino.API.Components.Authentication.AwsCognito
             };
         }
 
-        public async Task SignUpUserConfirmation(UsuarioConfirmationSignUpDTO confirmation)
+        public async Task SignUpUserConfirmation(UserConfirmationSignUpDTO confirmation)
         {
             try
             {

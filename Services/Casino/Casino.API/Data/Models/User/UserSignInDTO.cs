@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Casino.API.Data.Models.Usuario
+namespace Casino.API.Data.Models.User
 {
-    public class UsuarioSignInDTO
+    public class UserSignInDTO
     {
         [Required]
         [StringLength(128, MinimumLength = 3)]

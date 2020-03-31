@@ -16,7 +16,7 @@ namespace Casino.API.Services
         private bool _authenticated = false;
         private bool _initialized = false;
         private IEnumerable<Claim> _claims = null;
-        private Usuario _user = null;
+        private User _user = null;
         private string _username = "";
         private string _cloudIdentityId = "";
 
@@ -56,7 +56,7 @@ namespace Casino.API.Services
             return _claims;
         }
 
-        public Usuario GetUser(ApplicationDbContext dbContext)
+        public User GetUser(ApplicationDbContext dbContext)
         {
             if (_initialized)
                 return _user;
@@ -64,8 +64,8 @@ namespace Casino.API.Services
             if (!String.IsNullOrEmpty(_username) && !String.IsNullOrEmpty(_cloudIdentityId))
             {
 
-                _user = dbContext.Usuarios
-                    .FirstOrDefault<Usuario>(u =>
+                _user = dbContext.Users
+                    .FirstOrDefault<User>(u =>
                     u.Username.Equals(_username) && u.CloudIdentityId.Equals(_cloudIdentityId));
              
 

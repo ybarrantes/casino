@@ -9,12 +9,8 @@ using System.Threading.Tasks;
 
 namespace Casino.API.Data.Entities
 {
-    public class Usuario : IApiEntityModel, ITimestampsEntityModel, ISoftDeletesEntityModel
+    public class User : IApiEntityModel, ITimestampsEntityModel, ISoftDeletesEntityModel
     {
-        protected DateTime? _CreatedAt;
-        protected DateTime? _UpdatedAt;
-        protected DateTime? _DeletedAt;
-
         [Key]
         public long Id { get; set; }
 
@@ -29,9 +25,11 @@ namespace Casino.API.Data.Entities
         public string CloudIdentityId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? CreatedAt { get => _CreatedAt; set => _CreatedAt = value; }
+        public DateTime? CreatedAt { get; set; }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? UpdatedAt { get => _UpdatedAt; set => _UpdatedAt = value; }
-        public DateTime? DeletedAt { get => _DeletedAt; set => _DeletedAt = value; }
+        public DateTime? UpdatedAt { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
     }
 }

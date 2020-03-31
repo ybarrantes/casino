@@ -2,7 +2,7 @@
 using Casino.API.Components.Authentication.AwsCognito;
 using Casino.API.Data.Context;
 using Casino.API.Data.Entities;
-using Casino.API.Data.Models.Usuario;
+using Casino.API.Data.Models.User;
 using Casino.API.Exceptions;
 using Casino.API.Util.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -19,43 +19,43 @@ namespace Casino.API.Controllers
     [Route("api/auth")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ApplicationDbContext dbContext;
-        private readonly IConfiguration configuration;
-        private readonly ILogger<AuthenticationController> logger;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthenticationController> _logger;
 
         public AuthenticationController(ApplicationDbContext dbContext, IConfiguration configuration, ILogger<AuthenticationController> logger)
         {
-            this.dbContext = dbContext;
-            this.configuration = configuration;
-            this.logger = logger;
+            this._dbContext = dbContext;
+            this._configuration = configuration;
+            this._logger = logger;
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult<HttpResponse>> SignUp([FromBody] UsuarioSignUpDTO userDTO)
+        [HttpPost("signup")]
+        public async Task<ActionResult<HttpResponse>> SignUp([FromBody] UserSignUpDTO userDTO)
         {
-            ISignUpRequest request = new AwsCognitoSignUpAuthentication(configuration, logger);
-            string userSub = await request.SignUpUser(userDTO);
+            ISignUpRequest request = new AwsCognitoSignUpAuthentication(_configuration, _logger);
+            string cloudIdentityId = await request.SignUpUser(userDTO);
 
-            await TrySaveUserInLocalDB(userDTO, userSub);
+            await TrySaveUserInLocalDB(userDTO, cloudIdentityId);
 
             return new HttpResponse().Success();
         }
 
-        private async Task TrySaveUserInLocalDB(UsuarioSignUpDTO userDTO, string userSub)
+        private async Task TrySaveUserInLocalDB(UserSignUpDTO userDTO, string cloudIdentityId)
         {
             try
             {
-                Usuario userEntity = new Usuario()
+                User userEntity = new User()
                 {
                     Username = userDTO.Username,
                     Email = userDTO.Email,
-                    CloudIdentityId = userSub,
+                    CloudIdentityId = cloudIdentityId,
                 };
 
-                dbContext.Usuarios.Add(userEntity);
-                await dbContext.SaveChangesAsync();
+                _dbContext.Users.Add(userEntity);
+                await _dbContext.SaveChangesAsync();
 
-                logger.LogInformation($"user '{userDTO.Username}' has been saved in local db");
+                _logger.LogInformation($"user '{userDTO.Username}' has been saved in local db");
             }
             catch (Exception e)
             {
@@ -63,18 +63,18 @@ namespace Casino.API.Controllers
             }
         }
 
-        [HttpPost("register-confirmation")]
-        public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UsuarioConfirmationSignUpDTO confirmation)
+        [HttpPost("signup/confirmation")]
+        public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UserConfirmationSignUpDTO confirmation)
         {
-            ISignUpRequest confirmRequest = new AwsCognitoSignUpAuthentication(configuration, logger);
+            ISignUpRequest confirmRequest = new AwsCognitoSignUpAuthentication(_configuration, _logger);
             await confirmRequest.SignUpUserConfirmation(confirmation);
             return new HttpResponse().Success();
         }
 
         [HttpPost("signin")]
-        public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UsuarioSignInDTO userDTO)
+        public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UserSignInDTO userDTO)
         {
-            ISignInRequest authRequest = new AwsCognitoSignInAuthentication(configuration, logger);
+            ISignInRequest authRequest = new AwsCognitoSignInAuthentication(_configuration, _logger);
             ISignInResponse authResponse = await authRequest.SignInUser(userDTO);
             return new HttpResponse().Success().SetData(authResponse);
         }

@@ -1,6 +1,6 @@
 ﻿using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
-using Casino.API.Data.Models.Usuario;
+using Casino.API.Data.Models.User;
 using System.Threading.Tasks;
 using System;
 using Casino.API.Exceptions;
@@ -16,14 +16,14 @@ namespace Casino.API.Components.Authentication.AwsCognito
         {
         }
 
-        async Task<ISignInResponse> ISignInRequest.SignInUser(UsuarioSignInDTO user)
+        async Task<ISignInResponse> ISignInRequest.SignInUser(UserSignInDTO user)
         {
             AdminInitiateAuthResponse authResponse = await TrySignInUser(user);
 
             return new AwsCognitoSignInAuthenticationResponse(authResponse);            
         }
 
-        private async Task<AdminInitiateAuthResponse> TrySignInUser(UsuarioSignInDTO user)
+        private async Task<AdminInitiateAuthResponse> TrySignInUser(UserSignInDTO user)
         {
             try
             {

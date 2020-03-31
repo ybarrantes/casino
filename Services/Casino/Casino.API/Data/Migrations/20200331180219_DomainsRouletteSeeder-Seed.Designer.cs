@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Casino.API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200330061807_DominiosRuletaSeeder")]
-    partial class DominiosRuletaSeeder
+    [Migration("20200331180219_DomainsRouletteSeeder-Seed")]
+    partial class DomainsRouletteSeederSeed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace Casino.API.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Casino.API.Data.Entities.Dominio", b =>
+            modelBuilder.Entity("Casino.API.Data.Entities.Domain", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,16 +32,16 @@ namespace Casino.API.Data.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Descripcion")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
-                    b.Property<string>("Nombre")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
-                    b.Property<int?>("PadreId")
+                    b.Property<int?>("ParentDomainId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -50,12 +50,12 @@ namespace Casino.API.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PadreId");
+                    b.HasIndex("ParentDomainId");
 
-                    b.ToTable("Dominios");
+                    b.ToTable("Domains");
                 });
 
-            modelBuilder.Entity("Casino.API.Data.Entities.Ruleta", b =>
+            modelBuilder.Entity("Casino.API.Data.Entities.Roulette", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,35 +69,35 @@ namespace Casino.API.Data.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Descripcion")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
-                    b.Property<int>("EstadoId")
+                    b.Property<int>("StateId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TipoId")
+                    b.Property<int>("TypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("UsuarioRegistraIdId")
+                    b.Property<long>("UserRegisterId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EstadoId");
+                    b.HasIndex("StateId");
 
-                    b.HasIndex("TipoId");
+                    b.HasIndex("TypeId");
 
-                    b.HasIndex("UsuarioRegistraIdId");
+                    b.HasIndex("UserRegisterId");
 
-                    b.ToTable("Ruletas");
+                    b.ToTable("Roulettes");
                 });
 
-            modelBuilder.Entity("Casino.API.Data.Entities.Usuario", b =>
+            modelBuilder.Entity("Casino.API.Data.Entities.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,33 +129,33 @@ namespace Casino.API.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Casino.API.Data.Entities.Dominio", b =>
+            modelBuilder.Entity("Casino.API.Data.Entities.Domain", b =>
                 {
-                    b.HasOne("Casino.API.Data.Entities.Dominio", "Padre")
+                    b.HasOne("Casino.API.Data.Entities.Domain", "ParentDomain")
                         .WithMany()
-                        .HasForeignKey("PadreId");
+                        .HasForeignKey("ParentDomainId");
                 });
 
-            modelBuilder.Entity("Casino.API.Data.Entities.Ruleta", b =>
+            modelBuilder.Entity("Casino.API.Data.Entities.Roulette", b =>
                 {
-                    b.HasOne("Casino.API.Data.Entities.Dominio", "Estado")
+                    b.HasOne("Casino.API.Data.Entities.Domain", "State")
                         .WithMany()
-                        .HasForeignKey("EstadoId")
+                        .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Casino.API.Data.Entities.Dominio", "Tipo")
+                    b.HasOne("Casino.API.Data.Entities.Domain", "Type")
                         .WithMany()
-                        .HasForeignKey("TipoId")
+                        .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Casino.API.Data.Entities.Usuario", "UsuarioRegistraId")
+                    b.HasOne("Casino.API.Data.Entities.User", "UserRegister")
                         .WithMany()
-                        .HasForeignKey("UsuarioRegistraIdId")
+                        .HasForeignKey("UserRegisterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

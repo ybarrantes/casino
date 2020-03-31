@@ -53,6 +53,8 @@
     <Compile Remove="Data\Migrations\20200330055311_FixRuleta.Designer.cs" />
     <Compile Remove="Data\Migrations\20200330061056_RuletaCreateTable-DominioCreateTable.cs" />
     <Compile Remove="Data\Migrations\20200330061056_RuletaCreateTable-DominioCreateTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200331174733_Domains-Create-Table.cs" />
+    <Compile Remove="Data\Migrations\20200331174733_Domains-Create-Table.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,6 +83,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Queries\" />
     <Folder Include="Runtime\Logs\" />
   </ItemGroup>
 

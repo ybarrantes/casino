@@ -1,12 +1,11 @@
-﻿using Casino.API.Data.Entities;
-using Casino.API.Data.Models.Usuario;
+﻿using Casino.API.Data.Models.User;
 using System.Threading.Tasks;
 
 namespace Casino.API.Components.Authentication
 {
-    interface ISignUpRequest
+    public interface ISignUpRequest
     {
-        public abstract Task<string> SignUpUser(UsuarioSignUpDTO user);
-        public abstract Task SignUpUserConfirmation(UsuarioConfirmationSignUpDTO confirmation);
+        Task<string> SignUpUser(UserSignUpDTO user);
+        Task SignUpUserConfirmation(UserConfirmationSignUpDTO confirmation);
     }
 }

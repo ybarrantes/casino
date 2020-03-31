@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿
 namespace Casino.API.Config
 {
     public class DominiosAppNamesSingleton
@@ -23,7 +19,7 @@ namespace Casino.API.Config
         }
 
         // constantes de nombres de dominios
-        public string ESTADOS_RULETAS => "ESTADOS_RULETAS";
-        public string TIPOS_RULETAS => "TIPOS_RULETAS";
+        public string ROULETTES_STATES => "ROULETTES_STATES";
+        public string ROULETTES_TYPES => "ROULETTES_TYPES";
     }
 }

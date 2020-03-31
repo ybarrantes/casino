@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Casino.API.Data.Models.Usuario
+namespace Casino.API.Data.Models.User
 {
-    public class UsuarioSignUpDTO
+    public class UserSignUpDTO
     {
         [Required]
         [StringLength(40, MinimumLength = 3)]

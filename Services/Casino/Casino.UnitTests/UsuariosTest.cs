@@ -1,6 +1,6 @@
 using Casino.API.Controllers;
 using Casino.API.Data.Context;
-using Casino.API.Data.Models.Usuario;
+using Casino.API.Data.Models.User;
 using NUnit.Framework;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -33,9 +33,9 @@ namespace Casino.UnitTests
                 // set context
                 using (var dbContext = new ApplicationDbContext(optionsDbContext))
                 {
-                    dbContext.Usuarios.Add(new Usuario { Id = (long)1, Username = "ybarrantes", Email = "y@y.com", CloudIdentityId = "xxxx-aaaaa-bbbbbb-cc", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
-                    dbContext.Usuarios.Add(new Usuario { Id = (long)2, Username = "ybarrantes2", Email = "y2@y.com", CloudIdentityId = "dddd-aaaaa-bbbbbb-cc", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
-                    dbContext.Usuarios.Add(new Usuario { Id = (long)3, Username = "ybarrantes3", Email = "y3@y.com", CloudIdentityId = "mmmm-aaaaa-bbbbbb-cc", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
+                    dbContext.Users.Add(new User { Id = (long)1, Username = "ybarrantes", Email = "y@y.com", CloudIdentityId = "xxxx-aaaaa-bbbbbb-cc", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
+                    dbContext.Users.Add(new User { Id = (long)2, Username = "ybarrantes2", Email = "y2@y.com", CloudIdentityId = "dddd-aaaaa-bbbbbb-cc", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
+                    dbContext.Users.Add(new User { Id = (long)3, Username = "ybarrantes3", Email = "y3@y.com", CloudIdentityId = "mmmm-aaaaa-bbbbbb-cc", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
 
                     dbContext.SaveChanges();
                 }
@@ -45,7 +45,7 @@ namespace Casino.UnitTests
                 {
                     //UsuariosController usuarioController = new UsuariosController(dbContext);
                     //ActionResult<HttpResponse> response = await usuarioController.GetUsuario((long)1);
-                    List<Usuario> usuario = await dbContext.Usuarios.ToListAsync<Usuario>();
+                    List<User> usuario = await dbContext.Users.ToListAsync<User>();
                     Assert.AreEqual(3, usuario.Count);
                 }
             }
@@ -64,7 +64,7 @@ namespace Casino.UnitTests
                 // set context
                 using (var dbContext = Helpers.GetNewDbContext())
                 {
-                    dbContext.Usuarios.Add(new Usuario { Id = (long)4, Username = "ybarrantes", Email = "y4@y.com", CloudIdentityId = "iiii-aaaaa-bbbbbb-cc", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
+                    dbContext.Users.Add(new User { Id = (long)4, Username = "ybarrantes", Email = "y4@y.com", CloudIdentityId = "iiii-aaaaa-bbbbbb-cc", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now });
 
                     dbContext.SaveChanges();
                 }
@@ -72,8 +72,8 @@ namespace Casino.UnitTests
                 // change context
                 using (var dbContext = Helpers.GetNewDbContext())
                 {
-                    UsuariosController usuarioController = new UsuariosController(dbContext, Helpers.GetConfiguration(), null);
-                    ActionResult<HttpResponse> response = await usuarioController.GetUsuario((long)1);
+                    UsersController usuarioController = new UsersController(dbContext, Helpers.GetConfiguration(), null);
+                    ActionResult<HttpResponse> response = await usuarioController.GetUser((long)1);
 
                     Assert.Pass();
                 }

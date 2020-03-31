@@ -2,9 +2,6 @@
 using Amazon.CognitoIdentityProvider.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Casino.API.Components.Authentication.AwsCognito
@@ -28,7 +25,7 @@ namespace Casino.API.Components.Authentication.AwsCognito
             AmazonCognitoIdentityProviderClient identityProvider = GetAmazonCognitoIdentity();
             AdminAddUserToGroupResponse response = await identityProvider.AdminAddUserToGroupAsync(request);
 
-            logger.LogInformation($"add user '{Username}' to group '{GroupName}' successful. [{response.HttpStatusCode.ToString()}]");
+            _logger.LogInformation($"Add user '{Username}' to group '{GroupName}' successful. [{response.HttpStatusCode}]");
 
             return response;
         }
