@@ -7,20 +7,6 @@ namespace Casino.API.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "UpdatedAt",
-                table: "Usuarios",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "CreatedAt",
-                table: "Usuarios",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2");
-
             migrationBuilder.CreateTable(
                 name: "Dominios",
                 columns: table => new
@@ -30,8 +16,8 @@ namespace Casino.API.Data.Migrations
                     Nombre = table.Column<string>(maxLength: 100, nullable: false),
                     Descripcion = table.Column<string>(maxLength: 200, nullable: true),
                     PadreId = table.Column<int>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: true),
-                    UpdatedAt = table.Column<DateTime>(nullable: true)
+                    CreatedAt = table.Column<DateTime>(nullable: true, defaultValueSql: "GetDate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: true, defaultValueSql: "GetDate()")
                 },
                 constraints: table =>
                 {
@@ -54,8 +40,8 @@ namespace Casino.API.Data.Migrations
                     UsuarioRegistraIdId = table.Column<long>(nullable: false),
                     EstadoId = table.Column<int>(nullable: false),
                     TipoId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: true),
-                    UpdatedAt = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: true, defaultValueSql: "GetDate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: true, defaultValueSql: "GetDate()"),
                     DeletedAt = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
@@ -109,22 +95,6 @@ namespace Casino.API.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Dominios");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "UpdatedAt",
-                table: "Usuarios",
-                type: "datetime2",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "CreatedAt",
-                table: "Usuarios",
-                type: "datetime2",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldNullable: true);
         }
     }
 }

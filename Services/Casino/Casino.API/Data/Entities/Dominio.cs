@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Casino.API.Data.Entities
 {
-#nullable enable
     public class Dominio : IApiEntityModel, ITimestampsEntityModel
     {
         protected DateTime? _CreatedAt;
@@ -19,13 +18,13 @@ namespace Casino.API.Data.Entities
 
         [Required]
         [StringLength(100, MinimumLength = 1)]
-        public string? Nombre { get; set; }
+        public string Nombre { get; set; }
 
 
         [StringLength(200)]
-        public string? Descripcion { get; set; }
+        public string Descripcion { get; set; }
 
-        public Dominio? Padre { get; set; }
+        public Dominio Padre { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreatedAt { get => _CreatedAt; set => _CreatedAt = value; }

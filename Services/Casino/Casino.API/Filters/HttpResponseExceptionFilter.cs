@@ -1,5 +1,4 @@
 ﻿using Casino.API.Exceptions;
-using Casino.API.Util.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -25,7 +24,7 @@ namespace Casino.API.Filters
                 context.ExceptionHandled = true;
             }
             
-            Logger.Error(context.Exception, "Exception capturada en filtro HttpResponseExceptionFilter: ");
+            //Logger.Error(context.Exception, "Exception capturada en filtro HttpResponseExceptionFilter: ");
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
