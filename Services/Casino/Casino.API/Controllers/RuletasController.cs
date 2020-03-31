@@ -8,12 +8,9 @@ using Casino.API.Data.Context;
 using Casino.API.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
-using Casino.API.Util.Response;
 using Casino.API.Exceptions;
 using Casino.API.Data.Models.Ruleta;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 using Casino.API.Config;
 using Casino.API.Services;
 
@@ -48,6 +45,7 @@ namespace Casino.API.Controllers
             IEnumerable<Ruleta> ruletas = await dbContext.Ruletas
                 .Include(r => r.Estado)
                 .Include(b => b.Tipo)
+                .Where(x => x.DeletedAt == null)
                 .ToListAsync();
 
             List<RuletaShowDTO> ruletasDTO = mapper.Map<List<RuletaShowDTO>>(ruletas);
@@ -133,30 +131,25 @@ namespace Casino.API.Controllers
             Ruleta ruleta = new Ruleta()
             {
                 Descripcion = ruletaDTO.Descripcion,
-                Estado = await GetAndValidateDominiosRuletaFromId(ruletaDTO.Estado, DominiosAppNamesSingleton.GetInstance.ESTADOS_RULETAS),
-                Tipo = await GetAndValidateDominiosRuletaFromId(ruletaDTO.TipoRuleta, DominiosAppNamesSingleton.GetInstance.TIPOS_RULETAS),
+                Estado = await GetAndValidateDominiosRuletaFromId(ruletaDTO.Estado, DominiosAppNamesSingleton.GetInstance.ESTADOS_RULETAS, "Estado"),
+                Tipo = await GetAndValidateDominiosRuletaFromId(ruletaDTO.TipoRuleta, DominiosAppNamesSingleton.GetInstance.TIPOS_RULETAS, "Tipo"),
                 UsuarioRegistraId = identityApp.GetUser(dbContext)
             };
-
-            /*Ruleta ruleta2 = new Ruleta()
-            {
-                Descripcion = ruletaDTO.Descripcion,
-                UsuarioRegistraId = identityApp.GetUser(dbContext),
-                Estado = dbContext.Dominios.FirstOrDefault(x => x.Id == ruletaDTO.Estado),
-                Tipo = dbContext.Dominios.FirstOrDefault(x => x.Id == ruletaDTO.TipoRuleta)
-            };*/
 
             return ruleta;
         }
 
-        private async Task<Dominio> GetAndValidateDominiosRuletaFromId(int idDominio, string nombreDominioPadre)
+        private async Task<Dominio> GetAndValidateDominiosRuletaFromId(int idDominio, string nombreDominioPadre, string field)
         {
             Dominio padre = await dbContext.Dominios.FirstOrDefaultAsync<Dominio>(d => d.Nombre.Equals(nombreDominioPadre));
+
+            if(padre == null)
+                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, $"domain '{nombreDominioPadre}' not found!");
+
             Dominio dominio = await dbContext.Dominios.FirstOrDefaultAsync<Dominio>(d => d.Padre != null && d.Padre.Id.Equals(padre.Id) && d.Id.Equals(idDominio));
 
-            //Dominio dominio = (await DominiosAppServiceSingleton.GetInstance(dbContext)).GetChildDomainFromParentDomain(idDominio, nombreDominioPadre);
             if (dominio == null)
-                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, "validate data!");
+                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, $"{field}: value '{idDominio}' is invalid!'");
 
             return dominio;
         }

@@ -4,10 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 using Casino.API.Data.Extension;
-using Casino.API.Exceptions;
 using System.Threading;
 
 namespace Casino.API.Data.Context
@@ -62,13 +59,29 @@ namespace Casino.API.Data.Context
 
             foreach (var entity in entities)
             {
-                entity.State = _newState;
-
                 foreach(string columnName in columnNames)
                 {
-                    entity.CurrentValues[columnName] = DateTime.Now;
+                    bool changeValue = true;
+                    if (entity.State.Equals(EntityState.Deleted))
+                    {
+                        changeValue = (columnName.Equals("DeletedAt") && entity.CurrentValues[columnName] == null);
+                    }
+
+                    if(changeValue)
+                        entity.CurrentValues[columnName] = DateTime.Now;
                 }
+
+                entity.State = _newState;
             }
+        }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            //modelBuilder.Entity<Ruleta>().Property<Nullable<DateTime>>("DeletedAt");
+            //modelBuilder.Entity<Ruleta>().HasQueryFilter(x => EF.Property<Nullable<DateTime>>(Ruletas, "DeletedAt") == null);
         }
     }
 }

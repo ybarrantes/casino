@@ -45,8 +45,6 @@ namespace Casino.API.Config
             _services.AddMvc();
 
             // custom services
-            //_services.AddTransient<IApplicationDbContextService, ApplicationDbContextService>();
-            //_services.AddSingleton<IDominiosApp, DominiosAppServiceSingleton>();
             _services.AddScoped<IIdentityApp, IdentityAppService>();
         }
 
