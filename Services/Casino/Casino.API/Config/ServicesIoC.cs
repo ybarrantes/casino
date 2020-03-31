@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using Casino.API.Components.Ruletas;
 
 namespace Casino.API.Config
 {
@@ -46,6 +47,7 @@ namespace Casino.API.Config
 
             // custom services
             _services.AddScoped<IIdentityApp, IdentityAppService>();
+            _services.AddScoped<IRuletasComponent, RuletasComponent>();
         }
 
         private static void AddControllersToServicesContainer()
