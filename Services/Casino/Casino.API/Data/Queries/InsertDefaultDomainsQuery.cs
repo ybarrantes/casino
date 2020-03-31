@@ -1,4 +1,5 @@
 ﻿using Casino.API.Config;
+using Casino.API.Services;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,8 @@ namespace Casino.API.Data.Queries
         {
             Dictionary<string, List<string>> dictDomains = new Dictionary<string, List<string>> { };
 
-            dictDomains.Add(ApiDomains.ESTADOS_RULETAS, new List<string> { "Activo", "Inactivo", "Suspendido" });
-            dictDomains.Add(ApiDomains.TIPOS_RULETAS, new List<string> { "Americana", "Europea" });
+            dictDomains.Add(DominiosAppNamesSingleton.GetInstance.ESTADOS_RULETAS, new List<string> { "Activo", "Inactivo", "Suspendido" });
+            dictDomains.Add(DominiosAppNamesSingleton.GetInstance.TIPOS_RULETAS, new List<string> { "Americana", "Europea" });
 
             insertData(migrationBuilder, dictDomains);
         }

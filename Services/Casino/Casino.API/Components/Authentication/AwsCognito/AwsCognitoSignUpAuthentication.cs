@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System;
 using Casino.API.Exceptions;
 using Amazon.CognitoIdentityProvider;
-using Casino.API.Util.Logging;
 using Casino.API.Data.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

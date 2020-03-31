@@ -4,7 +4,6 @@ using Casino.API.Data.Entities;
 using Casino.API.Data.Extension;
 using Casino.API.Data.Models.Usuario;
 using Casino.API.Exceptions;
-using Casino.API.Util.Logging;
 using Casino.API.Util.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

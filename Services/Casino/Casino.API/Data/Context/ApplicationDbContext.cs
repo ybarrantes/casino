@@ -4,10 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 using Casino.API.Data.Extension;
-using Casino.API.Exceptions;
+using System.Threading;
 
 namespace Casino.API.Data.Context
 {
@@ -24,73 +22,67 @@ namespace Casino.API.Data.Context
 
 
 
+        public override int SaveChanges()
+        {
+            OnBeforeSaving();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            OnBeforeSaving();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void OnBeforeSaving()
+        {
+            BeforeSavingPrepareEntries(EntityState.Added, EntityState.Added, new List<string> { "CreatedAt", "UpdatedAt" });
+            
+            BeforeSavingPrepareEntries(EntityState.Modified, EntityState.Modified, new List<string> { "UpdatedAt" });
+
+            BeforeSavingPrepareEntries(EntityState.Deleted, EntityState.Modified, new List<string> { "DeletedAt" });
+        }
+
+
         /// <summary>
         /// Add support feature ITimestampsEntityModel, ISoftDeletesEntityModel
         /// </summary>
-        /// <returns></returns>
-        public override int SaveChanges()
+        /// <param name="_state">Estado actual de la entidad</param>
+        /// <param name="_newState">Nuevo estado a asignar</param>
+        /// <param name="columnNames">Columnas a modificar la marca de fecha y hora</param>
+        private void BeforeSavingPrepareEntries(EntityState _state, EntityState _newState, List<string> columnNames)
         {
-            string _DeletedAtColumnName = "DeletedAt";
-            string _CreatedAtColumnName = "CreatedAt";
-            string _UpdatedAtColumnName = "UpdatedAt";
+            var entities = ChangeTracker.Entries()
+                .Where(e => e.State.Equals(_state) && e.Metadata.GetProperties()
+                    .Any(x => columnNames.Contains(x.Name)))
+                .ToList();
 
-            try
+            foreach (var entity in entities)
             {
-                // created at
-                var entitiesAdded = ChangeTracker.Entries()
-                    .Where(e => e.State == EntityState.Added && e.Metadata.GetProperties()
-                        .Any(x => x.Name == _CreatedAtColumnName))
-                    .ToList();
-
-                foreach (var entity in entitiesAdded)
+                foreach(string columnName in columnNames)
                 {
-                    entity.CurrentValues[_CreatedAtColumnName] = DateTime.Now;
-                    entity.CurrentValues[_UpdatedAtColumnName] = DateTime.Now;
+                    bool changeValue = true;
+                    if (entity.State.Equals(EntityState.Deleted))
+                    {
+                        changeValue = (columnName.Equals("DeletedAt") && entity.CurrentValues[columnName] == null);
+                    }
+
+                    if(changeValue)
+                        entity.CurrentValues[columnName] = DateTime.Now;
                 }
+
+                entity.State = _newState;
             }
-            catch (Exception)
-            {
-            }
+        }
 
 
-            try
-            {
-                // updated at
-                var entitiesModified = ChangeTracker.Entries()
-                    .Where(e => e.State == EntityState.Modified && e.Metadata.GetProperties()
-                        .Any(x => x.Name == _UpdatedAtColumnName))
-                    .ToList();
+        // TODO: pendiente agregar filtro deleted at
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-                foreach (var entity in entitiesModified)
-                {
-                    entity.CurrentValues[_UpdatedAtColumnName] = DateTime.Now;
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-
-            try
-            {
-                // soft deletes
-                var entitiesDeleted = ChangeTracker.Entries()
-                    .Where(e => e.State == EntityState.Deleted && e.Metadata.GetProperties()
-                        .Any(x => x.Name == _DeletedAtColumnName))
-                    .ToList();
-
-                foreach (var entity in entitiesDeleted)
-                {
-                    entity.State = EntityState.Unchanged;
-                    entity.CurrentValues[_DeletedAtColumnName] = DateTime.Now;
-                }
-            }
-            catch (Exception e)
-            {
-                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, "soft deletes failed: " + e.Message);
-            }
-
-            return base.SaveChanges();
+            //modelBuilder.Entity<Ruleta>().Property<Nullable<DateTime>>("DeletedAt");
+            //modelBuilder.Entity<Ruleta>().HasQueryFilter(x => EF.Property<Nullable<DateTime>>(Ruletas, "DeletedAt") == null);
         }
     }
 }
