@@ -1,7 +1,6 @@
 ﻿using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
-using Casino.API.Exceptions;
-using System;
+using Casino.Services.WebApi;
 
 namespace Casino.API.Components.Authentication.AwsCognito
 {
@@ -35,12 +34,12 @@ namespace Casino.API.Components.Authentication.AwsCognito
         private void ValidateAdminInitiateAuthResponse()
         {
             if (_adminInitiateAuthResponse == null || _adminInitiateAuthResponse.AuthenticationResult == null)
-                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, "Aws Cognito Service Error");
+                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, "Aws Cognito Service Error");
 
             // TODO: validate other cases of ChallengeName
             if (_adminInitiateAuthResponse.ChallengeName == ChallengeNameType.NEW_PASSWORD_REQUIRED)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.Forbidden, "Please, change password");
+                throw new WebApiException(System.Net.HttpStatusCode.Forbidden, "Please, change password");
             }
         }
     }

@@ -1,19 +1,15 @@
 ﻿using Casino.API.Components.Authentication.AwsCognito;
-using Casino.API.Data.Context;
-using Casino.API.Data.Entities;
-using Casino.API.Data.Extension;
-using Casino.API.Data.Models.User;
-using Casino.API.Exceptions;
-using Casino.API.Util.Response;
+using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Casino.Data.Context;
+using Casino.Data.Models.DTO;
+using Casino.Data.Models.Entities;
 
 namespace Casino.API.Controllers
 {
@@ -34,35 +30,35 @@ namespace Casino.API.Controllers
 
         [Authorize]
         [HttpGet("{id}", Name = "GetUsuario")]
-        public async Task<ActionResult<HttpResponse>> GetUser(long id)
+        public async Task<ActionResult<WebApiResponse>> GetUser(long id)
         {
             User user = await FindUsuarioById(id);
-            return new HttpResponse().Success().SetData(user);
+            return new WebApiResponse().Success().SetData(user);
         }
 
         private async Task<User> FindUsuarioById(long id)
         {
             User user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id.Equals(id));
 
-            if(user == null) throw new HttpResponseException(System.Net.HttpStatusCode.NotFound, $"User '{id}' not found");
+            if(user == null) throw new WebApiException(System.Net.HttpStatusCode.NotFound, $"User '{id}' not found");
 
             return user;
         }
 
         [Authorize(Policy = "SuperAdmin")]
         [HttpPost("{id}/roles")]
-        public async Task<ActionResult<HttpResponse>> AddRol(long id, [FromBody] RoleDTO role)
+        public async Task<ActionResult<WebApiResponse>> AddRol(long id, [FromBody] UserRoleDTO role)
         {
             User user = await FindUsuarioById(id);
 
             List<string> roles = configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
             if (!roles.Contains(role.Role))
-                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, $"The role '{role.Role}' is not authorized in aws cognito groups, see configuration");
+                throw new WebApiException(System.Net.HttpStatusCode.BadRequest, $"The role '{role.Role}' is not authorized in aws cognito groups, see configuration");
 
             AwsCognitoUserGroupAuthentication userGroupAuthentication = new AwsCognitoUserGroupAuthentication(this.configuration, logger);
             await userGroupAuthentication.AddUserToGroup(user.Username, role.Role);
 
-            return new HttpResponse().Success();
+            return new WebApiResponse().Success();
         }
     }
 }

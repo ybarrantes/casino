@@ -8,7 +8,7 @@ using System;
 using System.Threading.Tasks;
 using Casino.API.Util.Response;
 using Microsoft.AspNetCore.Mvc;
-using Casino.API.Data.Entities;
+using Casino.API.Data.Models;
 using System.Collections.Generic;
 
 namespace Casino.UnitTests
@@ -73,7 +73,7 @@ namespace Casino.UnitTests
                 using (var dbContext = Helpers.GetNewDbContext())
                 {
                     UsersController usuarioController = new UsersController(dbContext, Helpers.GetConfiguration(), null);
-                    ActionResult<HttpResponse> response = await usuarioController.GetUser((long)1);
+                    ActionResult<WebApiResponse> response = await usuarioController.GetUser((long)1);
 
                     Assert.Pass();
                 }

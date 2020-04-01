@@ -1,17 +1,14 @@
 ﻿using Casino.API.Components.Authentication;
 using Casino.API.Components.Authentication.AwsCognito;
-using Casino.API.Data.Context;
-using Casino.API.Data.Entities;
-using Casino.API.Data.Models.User;
-using Casino.API.Exceptions;
-using Casino.API.Util.Response;
+using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Casino.Data.Context;
+using Casino.Data.Models.DTO;
+using Casino.Data.Models.Entities;
 
 namespace Casino.API.Controllers
 {
@@ -31,14 +28,14 @@ namespace Casino.API.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<ActionResult<HttpResponse>> SignUp([FromBody] UserSignUpDTO userDTO)
+        public async Task<ActionResult<WebApiResponse>> SignUp([FromBody] UserSignUpDTO userDTO)
         {
             ISignUpRequest request = new AwsCognitoSignUpAuthentication(_configuration, _logger);
             string cloudIdentityId = await request.SignUpUser(userDTO);
 
             await TrySaveUserInLocalDB(userDTO, cloudIdentityId);
 
-            return new HttpResponse().Success();
+            return new WebApiResponse().Success();
         }
 
         private async Task TrySaveUserInLocalDB(UserSignUpDTO userDTO, string cloudIdentityId)
@@ -59,24 +56,24 @@ namespace Casino.API.Controllers
             }
             catch (Exception e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
         [HttpPost("signup/confirmation")]
-        public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UserConfirmationSignUpDTO confirmation)
+        public async Task<ActionResult<WebApiResponse>> SignIn([FromBody] UserConfirmationSignUpDTO confirmation)
         {
             ISignUpRequest confirmRequest = new AwsCognitoSignUpAuthentication(_configuration, _logger);
             await confirmRequest.SignUpUserConfirmation(confirmation);
-            return new HttpResponse().Success();
+            return new WebApiResponse().Success();
         }
 
         [HttpPost("signin")]
-        public async Task<ActionResult<HttpResponse>> SignIn([FromBody] UserSignInDTO userDTO)
+        public async Task<ActionResult<WebApiResponse>> SignIn([FromBody] UserSignInDTO userDTO)
         {
             ISignInRequest authRequest = new AwsCognitoSignInAuthentication(_configuration, _logger);
             ISignInResponse authResponse = await authRequest.SignInUser(userDTO);
-            return new HttpResponse().Success().SetData(authResponse);
+            return new WebApiResponse().Success().SetData(authResponse);
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Amazon.CognitoIdentityProvider.Model;
-using Casino.API.Data.Models.User;
 using System.Threading.Tasks;
 using System;
-using Casino.API.Exceptions;
+using Casino.Services.WebApi;
 using Amazon.CognitoIdentityProvider;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Casino.Data.Models.DTO;
 
 namespace Casino.API.Components.Authentication.AwsCognito
 {
@@ -40,19 +40,19 @@ namespace Casino.API.Components.Authentication.AwsCognito
             }
             catch (UsernameExistsException e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.Forbidden, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.Forbidden, e.Message);
             }
             catch (InvalidPasswordException e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.BadRequest, e.Message);
             }
             catch (InvalidParameterException e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.BadRequest, e.Message);
             }
             catch (Exception e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -111,15 +111,15 @@ namespace Casino.API.Components.Authentication.AwsCognito
             }
             catch(CodeMismatchException e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.Forbidden, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.Forbidden, e.Message);
             }
             catch (ExpiredCodeException e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.Forbidden, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.Forbidden, e.Message);
             }            
             catch (Exception e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, e.Message);
             }
         }
     }

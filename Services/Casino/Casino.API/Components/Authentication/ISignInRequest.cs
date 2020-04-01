@@ -1,5 +1,5 @@
-﻿using Casino.API.Data.Models.User;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Casino.Data.Models.DTO;
 
 namespace Casino.API.Components.Authentication
 {

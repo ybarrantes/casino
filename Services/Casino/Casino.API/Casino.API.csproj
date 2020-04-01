@@ -5,59 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\20200327230346_Initial.cs" />
-    <Compile Remove="Data\Migrations\20200327230346_Initial.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200327230407_Two.cs" />
-    <Compile Remove="Data\Migrations\20200327230407_Two.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200327231455_UsuarioCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200327231455_UsuarioCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329101106_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329101106_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329101649_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329101649_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329101941_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329101941_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329102319_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329102319_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329102934_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329102934_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329105856_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329105856_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329110246_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329110246_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329110538_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329110538_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329145637_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329145637_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329145846_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329145846_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329151925_UsuariosCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329151925_UsuariosCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329220815_RuletaCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329220815_RuletaCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200329222056_RuletaCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200329222056_RuletaCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200330021011_RuletaCreateTable-DominioCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200330021011_RuletaCreateTable-DominioCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200330033319_RuletaCreateTable-DominioCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200330033319_RuletaCreateTable-DominioCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200330033739_DominiosRuletaSeeder.cs" />
-    <Compile Remove="Data\Migrations\20200330033739_DominiosRuletaSeeder.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200330045100_DominiosRuletaSeeder.cs" />
-    <Compile Remove="Data\Migrations\20200330045100_DominiosRuletaSeeder.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200330045202_RuletaCreateTable-DominioCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200330045202_RuletaCreateTable-DominioCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200330045210_DominiosRuletaSeeder.cs" />
-    <Compile Remove="Data\Migrations\20200330045210_DominiosRuletaSeeder.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200330055311_FixRuleta.cs" />
-    <Compile Remove="Data\Migrations\20200330055311_FixRuleta.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200330061056_RuletaCreateTable-DominioCreateTable.cs" />
-    <Compile Remove="Data\Migrations\20200330061056_RuletaCreateTable-DominioCreateTable.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200331174733_Domains-Create-Table.cs" />
-    <Compile Remove="Data\Migrations\20200331174733_Domains-Create-Table.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="appsettings.Development.json~RF49b492ac.TMP" />
     <None Remove="Components\Authentication\IAuthenticationSignIn.cs~RF44fd71e5.TMP" />
   </ItemGroup>
@@ -83,8 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Queries\" />
     <Folder Include="Runtime\Logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Casino.Data\Casino.Data.csproj" />
+    <ProjectReference Include="..\Casino.Services\Casino.Services.csproj" />
   </ItemGroup>
 
 

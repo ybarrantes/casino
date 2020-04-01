@@ -1,11 +1,11 @@
 ﻿using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
-using Casino.API.Data.Models.User;
 using System.Threading.Tasks;
 using System;
-using Casino.API.Exceptions;
+using Casino.Services.WebApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Casino.Data.Models.DTO;
 
 namespace Casino.API.Components.Authentication.AwsCognito
 {
@@ -35,15 +35,15 @@ namespace Casino.API.Components.Authentication.AwsCognito
             }
             catch (NotAuthorizedException e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.Unauthorized, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.Unauthorized, e.Message);
             }
             catch (UserNotConfirmedException e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.Forbidden, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.Forbidden, e.Message);
             }
             catch (Exception e)
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.InternalServerError, e.Message);
+                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
