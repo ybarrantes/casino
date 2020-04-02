@@ -15,14 +15,11 @@ namespace Casino.Services.DB.SQL
     public sealed class ContextSqlCRUD<T> : IContextCRUD<T> where T : class
     {
         private DbContext _appDbContext = null;
-
         public ContextSqlCRUD()
         {
             CustomFilter = new QueryableDefaultFilter<T>();
             QueryablePagedRecords = new QueryableDefaultPagedRecords<T>();
         }
-
-        #region Implemented Members
 
         public IQueryableFilter<T> CustomFilter { get; set; }
 
@@ -143,9 +140,6 @@ namespace Casino.Services.DB.SQL
 
             return QueryableFindById(queryable, id);
         }
-
-
-        #endregion
 
         private string EntityClassName => typeof(T).Name;
 
