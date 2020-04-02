@@ -15,12 +15,6 @@ namespace Casino.Services.DB.SQL
     public class ContextCRUD<T> : IContextCRUD<T> where T : class
     {
         private DbContext _appDbContext = null;
-        private readonly ILogger<ContextCRUD<T>> _logger;
-
-        public ContextCRUD(ILogger<ContextCRUD<T>> logger)
-        {
-            _logger = logger;
-        }
 
         #region Implemented Members
 
@@ -34,13 +28,6 @@ namespace Casino.Services.DB.SQL
                 return _appDbContext;
             }
             set => _appDbContext = value;
-        }
-
-        public async Task<T> CreateFromDTOAsync(IModelDTO<T> modelDTO)
-        {
-            T entity = modelDTO.FillEntityFromDTO();
-
-            return await CreateFromEntityAsync(entity);
         }
 
         public async Task<T> CreateFromEntityAsync(T entity)
@@ -117,17 +104,10 @@ namespace Casino.Services.DB.SQL
             return await GetPagedRecords(queryable, page, recodsPerPage);
         }
 
-        public async Task<T> UpdateFromDTOAsync(long id, IModelDTO<T> modelDTO)
-        {
-            T entity = await FindByIdAsync(id);
-
-            entity = modelDTO.FillEntityFromDTO();
-
-            return await UpdateFromEntityAsync(entity);
-        }
-
         public async Task<T> UpdateFromEntityAsync(T entity)
         {
+            await FindByIdAsync(((IEntityModelBase)entity).Id);
+
             AppDbContext.Entry(entity).State = EntityState.Modified;
 
             await TrySaveChangesAsync();
@@ -210,9 +190,7 @@ namespace Casino.Services.DB.SQL
             }
             catch (Exception e)
             {
-                string message = "Fails when trying to save changes to database";
-                _logger.LogError(e, message);
-                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, message);
+                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, $"Fails when trying to save changes to database: {e.Message}");
             }
         }
     }

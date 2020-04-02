@@ -1,14 +1,13 @@
-﻿using Casino.API.Components.Authentication;
-using Casino.API.Components.Authentication.AwsCognito;
-using Casino.Services.WebApi;
+﻿using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using Casino.Data.Context;
 using Casino.Data.Models.DTO;
 using Casino.Data.Models.Entities;
+using Casino.Services.Authentication.Contracts;
+using Casino.Services.Authentication.Model;
 
 namespace Casino.API.Controllers
 {
@@ -17,21 +16,30 @@ namespace Casino.API.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthenticationController> _logger;
+        private readonly ILogger<UsersController> _logger;
+        private readonly IAuthentication _authentication;
 
-        public AuthenticationController(ApplicationDbContext dbContext, IConfiguration configuration, ILogger<AuthenticationController> logger)
+        public AuthenticationController(IAuthentication authentication, ApplicationDbContext dbContext, ILogger<UsersController> logger)
         {
-            this._dbContext = dbContext;
-            this._configuration = configuration;
-            this._logger = logger;
+            _dbContext = dbContext;
+            _authentication = authentication;
+            _logger = logger;
         }
 
         [HttpPost("signup")]
         public async Task<ActionResult<WebApiResponse>> SignUp([FromBody] UserSignUpDTO userDTO)
         {
-            ISignUpRequest request = new AwsCognitoSignUpAuthentication(_configuration, _logger);
-            string cloudIdentityId = await request.SignUpUser(userDTO);
+            ISignupModelUser signupModelUser = new SignupModelUser()
+            {
+                Username = userDTO.Username,
+                Password = userDTO.Password,
+                Email = userDTO.Email,
+                Name = userDTO.Name,
+                MiddleName = userDTO.MiddleName,
+                BirthDate = userDTO.BirthDate
+            };
+
+            string cloudIdentityId = await _authentication.SignUpUser(signupModelUser);
 
             await TrySaveUserInLocalDB(userDTO, cloudIdentityId);
 
@@ -63,17 +71,21 @@ namespace Casino.API.Controllers
         [HttpPost("signup/confirmation")]
         public async Task<ActionResult<WebApiResponse>> SignIn([FromBody] UserConfirmationSignUpDTO confirmation)
         {
-            ISignUpRequest confirmRequest = new AwsCognitoSignUpAuthentication(_configuration, _logger);
-            await confirmRequest.SignUpUserConfirmation(confirmation);
+            ISignupConfirmModelUser signupConfirm = new SignupConfirmModelUser(confirmation.Username, confirmation.ConfirmationCode);
+
+            await _authentication.SignUpUserConfirmation(signupConfirm);
+
             return new WebApiResponse().Success();
         }
 
         [HttpPost("signin")]
         public async Task<ActionResult<WebApiResponse>> SignIn([FromBody] UserSignInDTO userDTO)
         {
-            ISignInRequest authRequest = new AwsCognitoSignInAuthentication(_configuration, _logger);
-            ISignInResponse authResponse = await authRequest.SignInUser(userDTO);
-            return new WebApiResponse().Success().SetData(authResponse);
+            ISigninModelUser signinModelUser = new SigninModelUser(userDTO.Username, userDTO.Password);
+            
+            ISigninModelResponse signinModelResponse = await _authentication.SignInUser(signinModelUser);
+            
+            return new WebApiResponse().Success().SetData(signinModelResponse);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Casino.Data.Context
 
                     builder.UseSqlServer(ConnectionString);
 
-                    _dbContext = new ApplicationDbContext(builder.Options, _logger);
+                    _dbContext = new ApplicationDbContext(builder.Options);
                 }
 
                 return _dbContext;

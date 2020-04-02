@@ -13,6 +13,10 @@ using Casino.Data.Extension;
 using Casino.Services.WebApi;
 using Casino.Services.DB.SQL;
 using Casino.Services.DB.SQL.Contracts.CRUD;
+using Casino.Services.Authentication.Contracts;
+using Casino.Services.Authentication;
+using Casino.Data.Models.Entities;
+using Casino.API.Components;
 
 namespace Casino.API.Config
 {
@@ -38,13 +42,11 @@ namespace Casino.API.Config
             AddDbContextToServicesContainer();
             AddAuthenticationToServicesContainer();
             AddAuthorizationToServicesContainer();
-            AddIdentityToServicesContainer();
-            //_services.AddMvc();
 
             // custom services
+            _services.AddScoped(typeof(IAuthentication), typeof(AwsCognitoAuthentication));
             _services.AddScoped(typeof(IIdentityApp<>), typeof(IdentityApp<>));
             _services.AddScoped(typeof(IContextCRUD<>), typeof(ContextCRUD<>));
-            _services.AddScoped(typeof(ICRUDController<>), typeof(CRUDController<>));
         }
 
         private static void AddControllersToServicesContainer()
@@ -101,11 +103,6 @@ namespace Casino.API.Config
                             policy.RequireClaim("cognito:groups", new List<string> { group }));
                     }
                 });
-        }
-
-        private static void AddIdentityToServicesContainer()
-        {
-
         }
     }
 }

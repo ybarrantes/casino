@@ -28,8 +28,6 @@ namespace Casino.Services.DB.SQL.Contracts.CRUD
 
 
         Task<T> FindByIdAsync(long id);
-        Task<T> CreateFromDTOAsync(IModelDTO<T> modelDTO);
-        Task<T> UpdateFromDTOAsync(long id, IModelDTO<T> modelDTO);
         Task<T> DeleteByIdAsync(long id);
 
 

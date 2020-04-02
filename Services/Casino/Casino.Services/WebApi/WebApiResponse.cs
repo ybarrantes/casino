@@ -11,8 +11,8 @@ namespace Casino.Services.WebApi
         protected List<KeyValuePair<string, object>> _errors = new List<KeyValuePair<string, object>>();
 
         public int Status => _status;
-        public object Data { get => _data; }
         public string Title { get => _title; }
+        public object Data { get => _data; }
         public List<KeyValuePair<string, object>> Errors { get => _errors; }
 
         public WebApiResponse Success()

@@ -17,11 +17,19 @@ namespace Casino.Services.WebApi
 
         Task<ActionResult<WebApiResponse>> FindAndResponseAsync(long id);
 
-        Task<ActionResult<WebApiResponse>> CreateAndResponseAsync(IModelDTO<T> modelDTO);
+        Task<ActionResult<WebApiResponse>> CreateAndResponseAsync(T entity);
 
-        Task<ActionResult<WebApiResponse>> UpdateAndResponseAsync(long id, IModelDTO<T> modelDTO);
+        Task<ActionResult<WebApiResponse>> UpdateAndResponseAsync(T entity);
 
         Task<ActionResult<WebApiResponse>> DeleteAndResponseAsync(long id);
+
+        public virtual ActionResult<WebApiResponse> MakeSuccessResponse(object data, string message)
+        {
+            return new WebApiResponse()
+                .Success()
+                .SetData(data)
+                .SetMessage(message);
+        }
 
         public enum Order
         {

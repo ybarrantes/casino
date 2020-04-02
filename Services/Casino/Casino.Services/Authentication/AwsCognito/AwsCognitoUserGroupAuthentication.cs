@@ -4,12 +4,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace Casino.API.Components.Authentication.AwsCognito
+namespace Casino.Services.Authentication.AwsCognito
 {
-    public class AwsCognitoUserGroupAuthentication : AwsCognitoAuthenticationBase
+    public class AwsCognitoUserGroupAuthentication : AuthenticationBase
     {
-        public AwsCognitoUserGroupAuthentication(IConfiguration configuration, ILogger logger)
-            : base(configuration, logger)
+        public AwsCognitoUserGroupAuthentication(IConfiguration configuration)
+            : base(configuration)
         {
         }
 
@@ -24,8 +24,6 @@ namespace Casino.API.Components.Authentication.AwsCognito
 
             AmazonCognitoIdentityProviderClient identityProvider = GetAmazonCognitoIdentity();
             AdminAddUserToGroupResponse response = await identityProvider.AdminAddUserToGroupAsync(request);
-
-            _logger.LogInformation($"Add user '{Username}' to group '{GroupName}' successful. [{response.HttpStatusCode}]");
 
             return response;
         }

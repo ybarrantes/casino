@@ -12,18 +12,19 @@ namespace Casino.Data.Context
 {
     public class ApplicationDbContext : DbContext, ISQLTransaction
     {
-        private readonly ILogger<ApplicationDbContext> _logger;
+        //private readonly ILogger<ApplicationDbContext> _logger = null;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ILogger<ApplicationDbContext> logger)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             :base(options)
         {
-            _logger = logger;
+            //_logger = logger;
         }
 
         #region Datasets
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Domain> Domains { get; set; }
+        public DbSet<RouletteType> RouletteTypes { get; set; }
+        public DbSet<RouletteState> RouletteStates { get; set; }
         public DbSet<Roulette> Roulettes { get; set; }
 
         #endregion
@@ -108,7 +109,7 @@ namespace Casino.Data.Context
 
             try
             {
-                _logger.LogInformation($"Trying to {action.ToString()} transaction [{TransactionId}]");
+                //_logger.LogInformation($"Trying to {action.ToString()} transaction [{TransactionId}]");
 
                 if(action.Equals(ActionTransaction.Commit))
                     await Transaction.CommitAsync();
@@ -119,7 +120,7 @@ namespace Casino.Data.Context
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{action.ToString()} failed, transaction id: {TransactionId}");
+                //_logger.LogError(e, $"{action.ToString()} failed, transaction id: {TransactionId}");
                 throw e;
             }
         }

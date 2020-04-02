@@ -17,10 +17,10 @@ namespace Casino.Data.Models.Entities
         public User UserRegister { get; set; }
 
         [Required]
-        public Domain State { get; set; }
+        public RouletteState State { get; set; }
 
         [Required]
-        public Domain Type { get; set; }
+        public RouletteType Type { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreatedAt { get; set; }

@@ -15,8 +15,11 @@ namespace Casino.Data.Extension
             config.CreateMap<RouletteCreateDTO, Roulette>();
             config.CreateMap<Roulette, RouletteShowDTO>();
 
-            config.CreateMap<Domain, DomainShowDTO>();
-            config.CreateMap<DomainShowDTO, Domain>();
+            config.CreateMap<RouletteState, RouletteStateDTO>();
+            config.CreateMap<RouletteStateDTO, RouletteState>();
+
+            config.CreateMap<RouletteType, RouletteTypeDTO>();
+            config.CreateMap<RouletteTypeDTO, RouletteType>();
 
             return config;
         }

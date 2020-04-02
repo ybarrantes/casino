@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Casino.Services.DB.SQL.Contracts.Model;
+using System.Threading.Tasks;
 
 namespace Casino.API.Services
 {
@@ -50,7 +51,7 @@ namespace Casino.API.Services
             return _claims;
         }
 
-        public T GetUser(DbContext dbContext)
+        public async Task<T> GetUser(DbContext dbContext)
         {
             if (_initialized)
                 return _user;
@@ -58,8 +59,8 @@ namespace Casino.API.Services
             if (!String.IsNullOrEmpty(_username) && !String.IsNullOrEmpty(_cloudIdentityId))
             {
 
-                _user = dbContext.Set<T>()
-                    .FirstOrDefault<T>(u => 
+                _user = await dbContext.Set<T>()
+                    .FirstOrDefaultAsync<T>(u => 
                         ((IEntityModelUser)u).Username.Equals(_username) &&
                         ((IEntityModelUser)u).CloudIdentityId.Equals(_cloudIdentityId));             
 

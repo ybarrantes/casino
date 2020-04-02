@@ -5,25 +5,25 @@ using System;
 using Casino.Services.WebApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Casino.Data.Models.DTO;
+using Casino.Services.Authentication.Contracts;
 
-namespace Casino.API.Components.Authentication.AwsCognito
+namespace Casino.Services.Authentication.AwsCognito
 {
-    public class AwsCognitoSignInAuthentication : AwsCognitoAuthenticationBase, ISignInRequest
+    public class Signin : AuthenticationBase, ISignin
     {
-        public AwsCognitoSignInAuthentication(IConfiguration configuration, ILogger logger)
-            : base(configuration, logger)
+        public Signin(IConfiguration configuration)
+            : base(configuration)
         {
         }
 
-        async Task<ISignInResponse> ISignInRequest.SignInUser(UserSignInDTO user)
+        public async Task<ISigninModelResponse> SignInUser(ISigninModelUser user)
         {
             AdminInitiateAuthResponse authResponse = await TrySignInUser(user);
 
-            return new AwsCognitoSignInAuthenticationResponse(authResponse);            
+            return new SigninResponse(authResponse);            
         }
 
-        private async Task<AdminInitiateAuthResponse> TrySignInUser(UserSignInDTO user)
+        private async Task<AdminInitiateAuthResponse> TrySignInUser(ISigninModelUser user)
         {
             try
             {
@@ -56,8 +56,8 @@ namespace Casino.API.Components.Authentication.AwsCognito
                 AuthFlow = AuthFlowType.ADMIN_NO_SRP_AUTH
             };
 
-            request.AuthParameters.Add(AwsCognitoAuthenticationParameters.USERNAME, username);
-            request.AuthParameters.Add(AwsCognitoAuthenticationParameters.PASSWORD, password);
+            request.AuthParameters.Add(AuthenticationParameters.USERNAME, username);
+            request.AuthParameters.Add(AuthenticationParameters.PASSWORD, password);
 
             return request;
         }
