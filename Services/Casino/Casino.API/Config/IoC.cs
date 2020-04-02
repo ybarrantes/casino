@@ -9,10 +9,14 @@ using System;
 using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
 using Casino.Data.Context;
-using Casino.Data.Extension;
-using Casino.Services.WebApi;
 using Casino.Services.DB.SQL;
 using Casino.Services.DB.SQL.Contracts.CRUD;
+using Casino.Services.Authentication.Contracts;
+using Casino.Services.Authentication;
+using Casino.Data.Models.Entities;
+using Casino.Data.Models.DTO;
+using Casino.API.Components;
+using Casino.API.Components.Roulettes;
 
 namespace Casino.API.Config
 {
@@ -34,17 +38,16 @@ namespace Casino.API.Config
             // app services
             _services.AddHttpContextAccessor();
             AddControllersToServicesContainer();
-            _services.AddAutoMapper(config => MapModels.GetMapper(config), typeof(Startup));
+            AddMapperToServicesContainer();
             AddDbContextToServicesContainer();
             AddAuthenticationToServicesContainer();
             AddAuthorizationToServicesContainer();
-            AddIdentityToServicesContainer();
-            //_services.AddMvc();
 
             // custom services
+            _services.AddScoped(typeof(IAuthentication), typeof(AwsCognitoAuthentication));
             _services.AddScoped(typeof(IIdentityApp<>), typeof(IdentityApp<>));
-            _services.AddScoped(typeof(IContextCRUD<>), typeof(ContextCRUD<>));
-            _services.AddScoped(typeof(ICRUDController<>), typeof(CRUDController<>));
+            _services.AddScoped(typeof(IContextCRUD<>), typeof(ContextSqlCRUD<>));
+            _services.AddScoped<ICRUDComponent<Roulette>, RoulettesCRUDComponent>();
         }
 
         private static void AddControllersToServicesContainer()
@@ -55,6 +58,22 @@ namespace Casino.API.Config
                 .AddNewtonsoftJson(
                     options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                 );
+        }
+
+        private static void AddMapperToServicesContainer()
+        {
+            _services.AddAutoMapper(config =>
+                {
+                    config.CreateMap<Roulette, RouletteCreateDTO>();
+                    config.CreateMap<RouletteCreateDTO, Roulette>();
+                    config.CreateMap<Roulette, RouletteShowDTO>();
+
+                    config.CreateMap<RouletteState, RouletteStateDTO>();
+                    config.CreateMap<RouletteStateDTO, RouletteState>();
+
+                    config.CreateMap<RouletteType, RouletteTypeDTO>();
+                    config.CreateMap<RouletteTypeDTO, RouletteType>();
+                }, typeof(Startup));           
         }
 
         private static void AddDbContextToServicesContainer()
@@ -101,11 +120,6 @@ namespace Casino.API.Config
                             policy.RequireClaim("cognito:groups", new List<string> { group }));
                     }
                 });
-        }
-
-        private static void AddIdentityToServicesContainer()
-        {
-
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Casino.Services.DB.SQL.Contracts.Model;
 using Casino.Services.DB.SQL.Contracts.CRUD;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +8,25 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Casino.Services.Util.Collections;
 using Casino.Services.WebApi;
+using Casino.Services.DB.SQL.Queryable;
 
 namespace Casino.Services.DB.SQL
 {
-    public class ContextCRUD<T> : IContextCRUD<T> where T : class
+    public sealed class ContextSqlCRUD<T> : IContextCRUD<T> where T : class
     {
         private DbContext _appDbContext = null;
-        private readonly ILogger<ContextCRUD<T>> _logger;
 
-        public ContextCRUD(ILogger<ContextCRUD<T>> logger)
+        public ContextSqlCRUD()
         {
-            _logger = logger;
+            CustomFilter = new QueryableDefaultFilter<T>();
+            QueryablePagedRecords = new QueryableDefaultPagedRecords<T>();
         }
 
         #region Implemented Members
+
+        public IQueryableFilter<T> CustomFilter { get; set; }
+
+        public IQueryablePagedRecords<T> QueryablePagedRecords { get; set; }
 
         public DbContext AppDbContext
         {
@@ -34,13 +38,6 @@ namespace Casino.Services.DB.SQL
                 return _appDbContext;
             }
             set => _appDbContext = value;
-        }
-
-        public async Task<T> CreateFromDTOAsync(IModelDTO<T> modelDTO)
-        {
-            T entity = modelDTO.FillEntityFromDTO();
-
-            return await CreateFromEntityAsync(entity);
         }
 
         public async Task<T> CreateFromEntityAsync(T entity)
@@ -79,16 +76,7 @@ namespace Casino.Services.DB.SQL
         {
             IQueryable<T> queryable = QueryableFindAll();
 
-            return await GetPagedRecords(queryable, page, recodsPerPage);
-        }
-
-        public async Task<IPagedRecords> GetPagedRecords(IQueryable<T> queryable, int page, int recodsPerPage)
-        {
-            IPagedRecords pagedRecords = new PagedRecords<T>(queryable, page, recodsPerPage);
-
-            await pagedRecords.Build();
-
-            return pagedRecords;
+            return await QueryablePagedRecords.GetPagedRecords(queryable, page, recodsPerPage);
         }
 
         public async Task<T> FindByIdAsync(long id)
@@ -114,20 +102,13 @@ namespace Casino.Services.DB.SQL
         {
             IQueryable<T> queryable = GetCustomQueryable();
 
-            return await GetPagedRecords(queryable, page, recodsPerPage);
-        }
-
-        public async Task<T> UpdateFromDTOAsync(long id, IModelDTO<T> modelDTO)
-        {
-            T entity = await FindByIdAsync(id);
-
-            entity = modelDTO.FillEntityFromDTO();
-
-            return await UpdateFromEntityAsync(entity);
+            return await QueryablePagedRecords.GetPagedRecords(queryable, page, recodsPerPage);
         }
 
         public async Task<T> UpdateFromEntityAsync(T entity)
         {
+            await FindByIdAsync(((IEntityModelBase)entity).Id);
+
             AppDbContext.Entry(entity).State = EntityState.Modified;
 
             await TrySaveChangesAsync();
@@ -139,7 +120,7 @@ namespace Casino.Services.DB.SQL
         {
             IQueryable<T> queryable = QueryableFindAllWithoutFilters();
 
-            return QueryableAddQueryFilters(queryable);
+            return CustomFilter.SetFilter(queryable);
         }
 
         public IQueryable<T> QueryableFindAllWithoutFilters()
@@ -153,7 +134,7 @@ namespace Casino.Services.DB.SQL
 
             queryable = QueryableFindById(queryable, id);
 
-            return QueryableAddQueryFilters(queryable);
+            return CustomFilter.SetFilter(queryable);
         }
 
         public IQueryable<T> QueryableFindByIdWithoutFilters(long id)
@@ -162,8 +143,6 @@ namespace Casino.Services.DB.SQL
 
             return QueryableFindById(queryable, id);
         }
-
-        public IQueryable<T> QueryableAddQueryFilters(IQueryable<T> query) => AddCustomFilters(query);
 
 
         #endregion
@@ -200,9 +179,7 @@ namespace Casino.Services.DB.SQL
             }
         }
 
-        protected virtual IQueryable<T> AddCustomFilters(IQueryable<T> query) => query;
-
-        protected async Task TrySaveChangesAsync()
+        private async Task TrySaveChangesAsync()
         {
             try
             {
@@ -210,9 +187,7 @@ namespace Casino.Services.DB.SQL
             }
             catch (Exception e)
             {
-                string message = "Fails when trying to save changes to database";
-                _logger.LogError(e, message);
-                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, message);
+                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, $"Fails when trying to save changes to database: {e.Message}");
             }
         }
     }

@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Casino.Services.DB.SQL.Contracts.Model;
 using Casino.Services.Util.Collections;
+using Casino.Services.DB.SQL.Queryable;
 
 namespace Casino.Services.DB.SQL.Contracts.CRUD
 {
-    public interface IContextCRUD<T> : IQueryableCRUD<T>, IPagedCRUD<T> where T : class
+    public interface IContextCRUD<T> : IQueryableCRUD<T> where T : class
     {
         DbContext AppDbContext { get; set; }
+
+        IQueryablePagedRecords<T> QueryablePagedRecords { get; set; }
 
         Task<IEnumerable<T>> FindAllAsync();
         
@@ -28,8 +30,6 @@ namespace Casino.Services.DB.SQL.Contracts.CRUD
 
 
         Task<T> FindByIdAsync(long id);
-        Task<T> CreateFromDTOAsync(IModelDTO<T> modelDTO);
-        Task<T> UpdateFromDTOAsync(long id, IModelDTO<T> modelDTO);
         Task<T> DeleteByIdAsync(long id);
 
 

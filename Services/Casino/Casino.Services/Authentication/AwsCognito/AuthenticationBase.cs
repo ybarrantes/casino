@@ -4,19 +4,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
-namespace Casino.API.Components.Authentication.AwsCognito
+namespace Casino.Services.Authentication.AwsCognito
 {
-    public abstract class AwsCognitoAuthenticationBase
+    public abstract class AuthenticationBase
     {
         public string _defaultCognitoGroup;
 
         protected readonly IConfiguration _configuration;
-        protected readonly ILogger _logger;
 
-        public AwsCognitoAuthenticationBase(IConfiguration configuration, ILogger logger)
+        public AuthenticationBase(IConfiguration configuration)
         {
             _configuration = configuration;
-            _logger = logger;
             _defaultCognitoGroup = configuration.GetSection("AWS:Cognito:DefaultGroup").Value;
         }
 

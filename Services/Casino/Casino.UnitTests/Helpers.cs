@@ -1,10 +1,7 @@
-﻿using Casino.API.Data.Context;
+﻿using Casino.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Protocols;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace Casino.UnitTests
 {
@@ -53,6 +50,8 @@ namespace Casino.UnitTests
 
         public static ApplicationDbContext GetNewDbContext()
         {
+            ILogger<ApplicationDbContext> logger = Moq.Mock.Of<ILogger<ApplicationDbContext>>();
+
             return new ApplicationDbContext(OptionsDBContext());
         }
     }

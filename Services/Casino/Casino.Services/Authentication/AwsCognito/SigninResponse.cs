@@ -1,10 +1,11 @@
 ﻿using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
+using Casino.Services.Authentication.Contracts;
 using Casino.Services.WebApi;
 
-namespace Casino.API.Components.Authentication.AwsCognito
+namespace Casino.Services.Authentication.AwsCognito
 {
-    public class AwsCognitoSignInAuthenticationResponse : ISignInResponse
+    public class SigninResponse : ISigninModelResponse
     {
         protected string _accessToken;
         protected string _idToken;
@@ -19,7 +20,7 @@ namespace Casino.API.Components.Authentication.AwsCognito
         public string RefreshToken { get => _refreshToken; }
         public int ExpiresIn { get => _expiresIn; }
 
-        public AwsCognitoSignInAuthenticationResponse(AdminInitiateAuthResponse authResponse)
+        public SigninResponse(AdminInitiateAuthResponse authResponse)
         {
             _adminInitiateAuthResponse = authResponse;
             ValidateAdminInitiateAuthResponse();

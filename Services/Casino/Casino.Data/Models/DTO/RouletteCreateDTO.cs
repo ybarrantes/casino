@@ -1,32 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using Casino.Data.Models.Entities;
+using Casino.Services.DB.SQL;
 using Casino.Services.DB.SQL.Contracts.Model;
+using Casino.Services.WebApi;
+using Microsoft.EntityFrameworkCore;
 
 namespace Casino.Data.Models.DTO
 {
-    public class RouletteCreateDTO : IModelDTO<Entities.Roulette>
+    public class RouletteCreateDTO : IModelDTO
     {
         [StringLength(200)]
         public string Description { get; set; }
 
         [Required]
-        public int State { get; set; }
+        public long State { get; set; }
 
         [Required]
-        public int Type { get; set; }
-
-
-        #region IModelDTO<Roulette> Members
-
-        public void FillDTOFromEntity(Entities.Roulette entity)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Entities.Roulette FillEntityFromDTO()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        #endregion
+        public long Type { get; set; }
     }
 }

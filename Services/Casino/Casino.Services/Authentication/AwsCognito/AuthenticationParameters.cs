@@ -1,7 +1,7 @@
 ﻿
-namespace Casino.API.Components.Authentication.AwsCognito
+namespace Casino.Services.Authentication.AwsCognito
 {
-    public class AwsCognitoAuthenticationParameters
+    public class AuthenticationParameters
     {
         public const string USERNAME = "USERNAME";
         public const string PASSWORD = "PASSWORD";

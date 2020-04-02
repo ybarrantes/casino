@@ -11,12 +11,7 @@ namespace Casino.Data.Extension
     {
         public static IMapperConfigurationExpression GetMapper(IMapperConfigurationExpression config)
         {
-            config.CreateMap<Roulette, RouletteCreateDTO>();
-            config.CreateMap<RouletteCreateDTO, Roulette>();
-            config.CreateMap<Roulette, RouletteShowDTO>();
-
-            config.CreateMap<Domain, DomainShowDTO>();
-            config.CreateMap<DomainShowDTO, Domain>();
+            
 
             return config;
         }
