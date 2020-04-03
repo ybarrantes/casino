@@ -12,7 +12,7 @@ using Casino.Services.DB.SQL.Queryable;
 
 namespace Casino.Services.DB.SQL
 {
-    public sealed class ContextSqlCRUD<T> : IContextCRUD<T> where T : class
+    public sealed class ContextSqlCRUD<T> : ContextCRUD<T> where T : class
     {
         private DbContext _appDbContext = null;
         public ContextSqlCRUD()

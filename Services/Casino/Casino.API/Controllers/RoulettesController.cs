@@ -20,51 +20,50 @@ namespace Casino.API.Controllers
     [ApiController]
     public class RoulettesController : ControllerBase
     {
-        private readonly ICRUDComponent<Roulette> _CRUD;
+        private readonly CRUDComponent<Roulette> _CRUD;
 
-        public RoulettesController(
-            ICRUDComponent<Roulette> contextCRUD)
+        public RoulettesController(CRUDComponent<Roulette> contextCRUD)
         {
             _CRUD = contextCRUD;
         }
 
 
         [HttpGet]
-        public async Task<ActionResult<WebApiResponse>> GetRoulettes(int page = 1)
+        public async Task<ActionResult<WebApiResponse>> GetAll(int page = 1)
         {
             return await _CRUD.FindAllAndResponseAsync(page, 10);
         }
 
 
         [HttpGet("{id}", Name = "GetRoulette")]
-        public async Task<ActionResult<WebApiResponse>> GetRoulette(long id)
+        public async Task<ActionResult<WebApiResponse>> GetOne(long id)
         {
             return await _CRUD.FindFromIdAndResponseAsync(id);
         }
 
 
         [HttpPost]
-        [Authorize(Policy = "SuperAdmin")]
         [Authorize(Policy = "Admin")]
-        public async Task<ActionResult<WebApiResponse>> CreateRoulette([FromBody] RouletteCreateDTO rouletteDTO)
+        [Authorize(Policy = "SuperAdmin")]
+        public async Task<ActionResult<WebApiResponse>> Create([FromBody] RouletteCreateDTO modelDTO)
         {
-            return await _CRUD.CreateFromModelDTOAndResponseAsync(rouletteDTO);
+            return await _CRUD.CreateFromModelDTOAndResponseAsync(modelDTO);
         }
 
 
         [HttpPut("{id}")]
         [Authorize(Policy = "Admin")]
         [Authorize(Policy = "SuperAdmin")]
-        public async Task<ActionResult<WebApiResponse>> UpdateRoulette(long id, [FromBody] RouletteCreateDTO rouletteDTO)
+        public async Task<ActionResult<WebApiResponse>> Update(long id, [FromBody] RouletteCreateDTO modelDTO)
         {
-            return await _CRUD.UpdateFromModelDTOAndResponseAsync(id, rouletteDTO);
+            return await _CRUD.UpdateFromModelDTOAndResponseAsync(id, modelDTO);
         }        
         
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "Admin")]
         [Authorize(Policy = "SuperAdmin")]
-        public async Task<ActionResult<WebApiResponse>> DeleteRoulette(long id)
+        public async Task<ActionResult<WebApiResponse>> Delete(long id)
         {
             return await _CRUD.DeleteFromIdAndResponseAsync(id);
         }

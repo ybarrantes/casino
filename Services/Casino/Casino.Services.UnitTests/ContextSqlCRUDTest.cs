@@ -1,9 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Casino.IntegrationTests
+namespace Casino.Services.UnitTests
 {
     [TestClass]
-    public class UnitTest1
+    public class ContextSqlCRUDTest
     {
         [TestMethod]
         public void TestMethod1()

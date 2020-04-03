@@ -17,6 +17,7 @@ using Casino.Data.Models.Entities;
 using Casino.Data.Models.DTO;
 using Casino.API.Components;
 using Casino.API.Components.Roulettes;
+using Casino.Services.Authentication.AwsCognito;
 
 namespace Casino.API.Config
 {
@@ -45,9 +46,11 @@ namespace Casino.API.Config
 
             // custom services
             _services.AddScoped(typeof(IAuthentication), typeof(AwsCognitoAuthentication));
+            _services.AddScoped(typeof(IAwsCognitoUserGroups), typeof(AwsCognitoUserGroups));
             _services.AddScoped(typeof(IIdentityApp<>), typeof(IdentityApp<>));
-            _services.AddScoped(typeof(IContextCRUD<>), typeof(ContextSqlCRUD<>));
-            _services.AddScoped<ICRUDComponent<Roulette>, RoulettesCRUDComponent>();
+            _services.AddScoped(typeof(ContextCRUD<>), typeof(ContextSqlCRUD<>));
+            _services.AddScoped<CRUDComponent<Roulette>, RoulettesCRUDComponent>();
+            _services.AddScoped<CRUDComponent<RouletteState>, RoulettesStatesCRUDComponent>();
         }
 
         private static void AddControllersToServicesContainer()

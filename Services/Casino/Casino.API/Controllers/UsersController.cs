@@ -10,6 +10,7 @@ using Casino.Data.Context;
 using Casino.Data.Models.DTO;
 using Casino.Data.Models.Entities;
 using Casino.Services.Authentication.AwsCognito;
+using Casino.Services.Authentication.Contracts;
 
 namespace Casino.API.Controllers
 {
@@ -19,13 +20,16 @@ namespace Casino.API.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<UsersController> _logger;
+        private readonly IAwsCognitoUserGroups _cognitoUserGroups;
 
-        public UsersController(ApplicationDbContext dbContext, IConfiguration configuration, ILogger<UsersController> logger)
+        public UsersController(
+            ApplicationDbContext dbContext,
+            IConfiguration configuration,
+            IAwsCognitoUserGroups cognitoUserGroups)
         {
             _dbContext = dbContext;
             _configuration = configuration;
-            _logger = logger;
+            _cognitoUserGroups = cognitoUserGroups;
         }
 
         [Authorize]
@@ -40,7 +44,8 @@ namespace Casino.API.Controllers
         {
             User user = await _dbContext.Users.FirstOrDefaultAsync(user => user.Id.Equals(id));
 
-            if(user == null) throw new WebApiException(System.Net.HttpStatusCode.NotFound, $"User '{id}' not found");
+            if(user == null)
+                throw new WebApiException(System.Net.HttpStatusCode.NotFound, $"User '{id}' not found");
 
             return user;
         }
@@ -49,16 +54,21 @@ namespace Casino.API.Controllers
         [HttpPost("{id}/roles")]
         public async Task<ActionResult<WebApiResponse>> AddRole(long id, [FromBody] UserRoleDTO role)
         {
-            User user = await FindUsuarioById(id);
-
-            List<string> roles = _configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
-            if (!roles.Contains(role.Role))
+            if (!CheckRoleIsAuthorized(role.Role))
                 throw new WebApiException(System.Net.HttpStatusCode.BadRequest, $"The role '{role.Role}' is not authorized in aws cognito groups, see configuration");
 
-            AwsCognitoUserGroupAuthentication userGroupAuthentication = new AwsCognitoUserGroupAuthentication(_configuration);
-            await userGroupAuthentication.AddUserToGroup(user.Username, role.Role);
+            User user = await FindUsuarioById(id);  
+
+            await _cognitoUserGroups.AddUserToGroup(user.Username, role.Role);
 
             return new WebApiResponse().Success();
+        }
+
+        public bool CheckRoleIsAuthorized(string role)
+        {
+            List<string> roles = _configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
+
+            return roles.Contains(role);
         }
     }
 }

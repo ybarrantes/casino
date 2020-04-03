@@ -9,19 +9,22 @@ using Casino.Services.Util.Collections;
 using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Casino.API.Components
 {
-    public abstract class ICRUDComponent<T> where T : class
+    public abstract class CRUDComponent<T> where T : class
     {
         public IIdentityApp<User> IdentityApp { get; }
         public IMapper Mapper { get; }
-        public IContextCRUD<T> ContextCRUD { get; }
+        public ContextCRUD<T> ContextCRUD { get; }
 
-        public ICRUDComponent(
+        public abstract Type ShowModelDTOType { get; internal set; }
+
+        public CRUDComponent(
             ApplicationDbContext dbContext,
-            IContextCRUD<T> contextCRUD,
+            ContextCRUD<T> contextCRUD,
             IIdentityApp<User> identityApp,
             IMapper mapper)
         {
@@ -126,11 +129,17 @@ namespace Casino.API.Components
 
         public abstract Task<T> FillEntityFromDTO(T entity, IModelDTO modelDTO);
 
-        public abstract IModelDTO MapEntityToModelDTO(T entity);
+        public virtual IModelDTO MapEntityToModelDTO(T entity)
+        {
+            return (IModelDTO)Mapper.Map(entity, typeof(T), ShowModelDTOType);
+        }
 
         public abstract IPagedRecords MapPagedRecordsToModelDTO(IPagedRecords pagedRecords);
 
-        public abstract Task<T> SetIdentityUserToEntity(T entity);
+        public virtual async Task<T> SetIdentityUserToEntity(T entity)
+        {
+            return await Task.Run(() => entity);
+        }
     
 
         public virtual ActionResult<WebApiResponse> MapEntityAndMakeSuccessResponse(T entity, string message = "success!")

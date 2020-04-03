@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Casino.API.Components.Roulettes
 {
-    public class RouletteQueryableFilter : IQueryableFilter<Roulette>
+    public class RoulettesQueryableFilter : IQueryableFilter<Roulette>
     {
         public IQueryable<Roulette> SetFilter(IQueryable<Roulette> query)
         {

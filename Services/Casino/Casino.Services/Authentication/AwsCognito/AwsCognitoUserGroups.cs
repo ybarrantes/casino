@@ -1,19 +1,22 @@
 ﻿using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
+using Casino.Services.Authentication.Contracts;
+using Casino.Services.WebApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Casino.Services.Authentication.AwsCognito
 {
-    public class AwsCognitoUserGroupAuthentication : AuthenticationBase
+    public class AwsCognitoUserGroups : AuthenticationBase, IAwsCognitoUserGroups
     {
-        public AwsCognitoUserGroupAuthentication(IConfiguration configuration)
+        public AwsCognitoUserGroups(IConfiguration configuration)
             : base(configuration)
         {
         }
 
-        public async Task<AdminAddUserToGroupResponse> AddUserToGroup(string Username, string GroupName)
+        public async Task AddUserToGroup(string Username, string GroupName)
         {
             AdminAddUserToGroupRequest request = new AdminAddUserToGroupRequest()
             {
@@ -25,7 +28,8 @@ namespace Casino.Services.Authentication.AwsCognito
             AmazonCognitoIdentityProviderClient identityProvider = GetAmazonCognitoIdentity();
             AdminAddUserToGroupResponse response = await identityProvider.AdminAddUserToGroupAsync(request);
 
-            return response;
+            if (!response.HttpStatusCode.Equals(HttpStatusCode.OK))
+                throw new WebApiException(response.HttpStatusCode, "add user to group failed");
         }
     }
 }

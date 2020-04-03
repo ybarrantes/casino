@@ -60,8 +60,8 @@ namespace Casino.Services.Authentication.AwsCognito
         {
             try
             {
-                AwsCognitoUserGroupAuthentication awsCognitoUserGroup = new AwsCognitoUserGroupAuthentication(base._configuration);
-                AdminAddUserToGroupResponse responseAddUserToGroup = await awsCognitoUserGroup.AddUserToGroup(Username, awsCognitoUserGroup.DefaultCognitoGroup);
+                AwsCognitoUserGroups awsCognitoUserGroup = new AwsCognitoUserGroups(base._configuration);
+                await awsCognitoUserGroup.AddUserToGroup(Username, awsCognitoUserGroup.DefaultCognitoGroup);
             }
             catch (Exception)
             {

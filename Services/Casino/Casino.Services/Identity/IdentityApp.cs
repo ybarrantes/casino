@@ -58,7 +58,6 @@ namespace Casino.API.Services
 
             if (!String.IsNullOrEmpty(_username) && !String.IsNullOrEmpty(_cloudIdentityId))
             {
-
                 _user = await dbContext.Set<T>()
                     .FirstOrDefaultAsync<T>(u => 
                         ((IEntityModelUser)u).Username.Equals(_username) &&

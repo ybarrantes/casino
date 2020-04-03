@@ -8,6 +8,7 @@ using Casino.Data.Models.DTO;
 using Casino.Data.Models.Entities;
 using Casino.Services.Authentication.Contracts;
 using Casino.Services.Authentication.Model;
+using Casino.Services.DB.SQL.Contracts.CRUD;
 
 namespace Casino.API.Controllers
 {
@@ -15,15 +16,21 @@ namespace Casino.API.Controllers
     [Route("api/auth")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<UsersController> _logger;
         private readonly IAuthentication _authentication;
+        private readonly ContextCRUD<User> _contextCRUD;
 
-        public AuthenticationController(IAuthentication authentication, ApplicationDbContext dbContext, ILogger<UsersController> logger)
+        public AuthenticationController(
+            IAuthentication authentication,
+            ApplicationDbContext dbContext,
+            ILogger<UsersController> logger,
+            ContextCRUD<User> contextCRUD)
         {
-            _dbContext = dbContext;
             _authentication = authentication;
             _logger = logger;
+            _contextCRUD = contextCRUD;
+
+            _contextCRUD.AppDbContext = dbContext;
         }
 
         [HttpPost("signup")]
@@ -57,8 +64,7 @@ namespace Casino.API.Controllers
                     CloudIdentityId = cloudIdentityId,
                 };
 
-                _dbContext.Users.Add(userEntity);
-                await _dbContext.SaveChangesAsync();
+                await _contextCRUD.CreateFromEntityAsync(userEntity);
 
                 _logger.LogInformation($"user '{userDTO.Username}' has been saved in local db");
             }

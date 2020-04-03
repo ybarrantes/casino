@@ -9,7 +9,7 @@ using Casino.Services.DB.SQL.Queryable;
 
 namespace Casino.Services.DB.SQL.Contracts.CRUD
 {
-    public interface IContextCRUD<T> : IQueryableCRUD<T> where T : class
+    public interface ContextCRUD<T> : IQueryableCRUD<T> where T : class
     {
         DbContext AppDbContext { get; set; }
 

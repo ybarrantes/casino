@@ -7,6 +7,7 @@ using System;
 using Microsoft.Extensions.Logging;
 using Casino.Services.DB.SQL.Contracts;
 using Casino.Services.DB.SQL.Contracts.Model;
+using Casino.Data.Migrations.Configuration;
 
 namespace Casino.Data.Context
 {
@@ -61,6 +62,9 @@ namespace Casino.Data.Context
             //modelBuilder.Ignore<Roulette>();
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new RouletteStateConfiguration());
+            modelBuilder.ApplyConfiguration(new RouletteTypeConfiguration());
         }
 
 

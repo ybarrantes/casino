@@ -8,7 +8,6 @@ namespace Casino.UnitTests
     class Helpers
     {
         private static IConfigurationRoot config = null;
-        private static DbContextOptions<ApplicationDbContext> optionsDbContext = null;
         private static ApplicationDbContext dbContext = null;
 
         public static IConfigurationRoot GetConfiguration()
@@ -26,16 +25,11 @@ namespace Casino.UnitTests
             return config;
         }
 
-        public static DbContextOptions<ApplicationDbContext> OptionsDBContext()
+        public static DbContextOptions<ApplicationDbContext> OptionsDBContext(string dbName)
         {
-            if(optionsDbContext == null)
-            {
-                optionsDbContext = new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseInMemoryDatabase(databaseName: "CasinoUnitTestDb")
-                    .Options;
-            }
-
-            return optionsDbContext;
+            return new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: dbName)
+                .Options;
         }
 
         public static ApplicationDbContext GetDbContext()
@@ -48,11 +42,9 @@ namespace Casino.UnitTests
             return dbContext;
         }
 
-        public static ApplicationDbContext GetNewDbContext()
+        public static ApplicationDbContext GetNewDbContext(string dbName = "CasinoUnitTestDb")
         {
-            ILogger<ApplicationDbContext> logger = Moq.Mock.Of<ILogger<ApplicationDbContext>>();
-
-            return new ApplicationDbContext(OptionsDBContext());
+            return new ApplicationDbContext(OptionsDBContext(dbName));
         }
     }
 }
