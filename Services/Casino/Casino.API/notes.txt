@@ -1,0 +1,8 @@
+﻿-- add migration
+dotnet ef migrations add RoundTable-Create --project Casino.Data
+
+-- remove last migration
+dotnet ef migrations remove --project Casino.Data
+
+-- apply changes to database
+dotnet ef database update --project Casino.Data

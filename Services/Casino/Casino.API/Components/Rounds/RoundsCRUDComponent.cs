@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using Casino.API.Services;
 using Casino.Data.Context;
 using Casino.Data.Models.DTO;
@@ -10,32 +11,30 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Casino.API.Components.Roulettes
+namespace Casino.API.Components.Rounds
 {
-    public class RoulettesStatesCRUDComponent : CRUDComponent<RouletteState>
+    public class RoundsCRUDComponent : CRUDComponent<Round>
     {
         public override Type ShowModelDTOType { get; internal set; }
 
-        public RoulettesStatesCRUDComponent(
+        public RoundsCRUDComponent(
             ApplicationDbContext dbContext,
-            ContextCRUD<RouletteState> contextCRUD,
+            ContextCRUD<Round> contextCRUD,
             IIdentityApp<User> identityApp,
             IMapper mapper)
             : base(dbContext, contextCRUD, identityApp, mapper)
         {
-            ShowModelDTOType = typeof(RouletteStateDTO);
+            ShowModelDTOType = typeof(RoundShowDTO);
         }
 
-        public override async Task<RouletteState> FillEntityFromDTO(RouletteState entity, IModelDTO modelDTO)
+        public override Task<Round> FillEntityFromDTO(Round entity, IModelDTO modelDTO)
         {
-            entity.State = ((RouletteStateCreateDTO)modelDTO).State;
-
-            return await Task.Run(() => entity);
+            throw new NotImplementedException();
         }
 
         public override IPagedRecords MapPagedRecordsToModelDTO(IPagedRecords pagedRecords)
         {
-            pagedRecords.Result = Mapper.Map<List<RouletteStateDTO>>(pagedRecords.Result);
+            pagedRecords.Result = Mapper.Map<List<RoundShowDTO>>(pagedRecords.Result);
 
             return pagedRecords;
         }

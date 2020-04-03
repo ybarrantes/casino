@@ -4,7 +4,6 @@ using System.Threading;
 using Casino.Data.Models.Entities;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
-using Microsoft.Extensions.Logging;
 using Casino.Services.DB.SQL.Contracts;
 using Casino.Services.DB.SQL.Contracts.Model;
 using Casino.Data.Migrations.Configuration;
@@ -13,20 +12,21 @@ namespace Casino.Data.Context
 {
     public class ApplicationDbContext : DbContext, ISQLTransaction
     {
-        //private readonly ILogger<ApplicationDbContext> _logger = null;
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             :base(options)
         {
-            //_logger = logger;
         }
 
         #region Datasets
 
         public DbSet<User> Users { get; set; }
+
         public DbSet<RouletteType> RouletteTypes { get; set; }
         public DbSet<RouletteState> RouletteStates { get; set; }
         public DbSet<Roulette> Roulettes { get; set; }
+
+        public DbSet<RoundState> RoundStates { get; set; }
+        public DbSet<Round> Rounds { get; set; }
 
         #endregion
 
@@ -57,14 +57,11 @@ namespace Casino.Data.Context
         // TODO: add filter to skip records marked as soft-deleted
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // TODO: ignore models on creating migrations, delete lines
-            //modelBuilder.Ignore<User>();
-            //modelBuilder.Ignore<Roulette>();
-
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new RouletteStateConfiguration());
             modelBuilder.ApplyConfiguration(new RouletteTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoundStateConfiguration());
         }
 
 
@@ -113,8 +110,6 @@ namespace Casino.Data.Context
 
             try
             {
-                //_logger.LogInformation($"Trying to {action.ToString()} transaction [{TransactionId}]");
-
                 if(action.Equals(ActionTransaction.Commit))
                     await Transaction.CommitAsync();
                 else if(action.Equals(ActionTransaction.Rollback))
@@ -124,7 +119,6 @@ namespace Casino.Data.Context
             }
             catch (Exception e)
             {
-                //_logger.LogError(e, $"{action.ToString()} failed, transaction id: {TransactionId}");
                 throw e;
             }
         }

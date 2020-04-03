@@ -12,30 +12,30 @@ using System.Threading.Tasks;
 
 namespace Casino.API.Components.Roulettes
 {
-    public class RoulettesStatesCRUDComponent : CRUDComponent<RouletteState>
+    public class RoulettesTypesCRUDComponent : CRUDComponent<RouletteType>
     {
         public override Type ShowModelDTOType { get; internal set; }
 
-        public RoulettesStatesCRUDComponent(
+        public RoulettesTypesCRUDComponent(
             ApplicationDbContext dbContext,
-            ContextCRUD<RouletteState> contextCRUD,
+            ContextCRUD<RouletteType> contextCRUD,
             IIdentityApp<User> identityApp,
             IMapper mapper)
             : base(dbContext, contextCRUD, identityApp, mapper)
         {
-            ShowModelDTOType = typeof(RouletteStateDTO);
+            ShowModelDTOType = typeof(RouletteTypeDTO);
         }
 
-        public override async Task<RouletteState> FillEntityFromDTO(RouletteState entity, IModelDTO modelDTO)
+        public override async Task<RouletteType> FillEntityFromDTO(RouletteType entity, IModelDTO modelDTO)
         {
-            entity.State = ((RouletteStateCreateDTO)modelDTO).State;
+            entity.Type = ((RouletteStateCreateDTO)modelDTO).State;
 
             return await Task.Run(() => entity);
         }
 
         public override IPagedRecords MapPagedRecordsToModelDTO(IPagedRecords pagedRecords)
         {
-            pagedRecords.Result = Mapper.Map<List<RouletteStateDTO>>(pagedRecords.Result);
+            pagedRecords.Result = Mapper.Map<List<RouletteTypeDTO>>(pagedRecords.Result);
 
             return pagedRecords;
         }
