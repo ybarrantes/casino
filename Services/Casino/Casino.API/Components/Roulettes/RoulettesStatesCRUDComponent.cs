@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Casino.API.Services;
 using Casino.Data.Context;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Contracts.CRUD;
 using Casino.Services.DB.SQL.Contracts.Model;

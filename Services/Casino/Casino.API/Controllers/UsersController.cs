@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Casino.Data.Context;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.Entities;
-using Casino.Services.Authentication.AwsCognito;
 using Casino.Services.Authentication.Contracts;
 
 namespace Casino.API.Controllers

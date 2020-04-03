@@ -1,11 +1,12 @@
 ﻿using Casino.Services.DB.SQL.Contracts.Model;
 using System.ComponentModel.DataAnnotations;
 
-namespace Casino.Data.Models.DTO
+namespace Casino.Data.Models.DTO.Roulettes
 {
-    public class RouletteTypeCreateDTO : IModelDTO
+    public class RouletteTypeDTO : IModelDTO
     {
-        [Required]
+        public long Id { get; set; }
+
         [StringLength(100)]
         public string Type { get; set; }
     }

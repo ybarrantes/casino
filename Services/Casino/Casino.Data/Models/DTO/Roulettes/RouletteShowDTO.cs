@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Casino.Services.DB.SQL.Contracts.Model;
 
-namespace Casino.Data.Models.DTO
+namespace Casino.Data.Models.DTO.Roulettes
 {
     public class RouletteShowDTO : IModelDTO
     {

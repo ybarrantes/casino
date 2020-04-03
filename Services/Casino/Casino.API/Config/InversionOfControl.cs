@@ -1,11 +1,8 @@
 ﻿using Casino.API.Filters;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using Microsoft.IdentityModel.Tokens;
 using Casino.Data.Context;
 
 namespace Casino.API.Config
@@ -25,7 +22,6 @@ namespace Casino.API.Config
             _services = services;
             _configuration = configuration;
 
-            // app services
             _services.AddHttpContextAccessor();
 
             AddControllersToServicesContainer();

@@ -1,5 +1,5 @@
 ﻿using Casino.API.Components;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
 using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Authorization;

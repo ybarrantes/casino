@@ -1,18 +1,14 @@
-﻿using Casino.API.Components;
-using Casino.API.Components.Roulettes;
+﻿using Casino.API.Components.Roulettes;
 using Casino.API.Services;
 using Casino.Data.Context;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL;
 using Casino.Services.DB.SQL.Contracts.CRUD;
 using Casino.UnitTests.WebApi.Mocks;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Casino.UnitTests.WebApi.Components.Roulettes

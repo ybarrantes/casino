@@ -1,12 +1,11 @@
 ﻿using Casino.Services.DB.SQL.Contracts.Model;
 using System.ComponentModel.DataAnnotations;
 
-namespace Casino.Data.Models.DTO
+namespace Casino.Data.Models.DTO.Roulettes
 {
-    public class RoundStateDTO : IModelDTO
+    public class RouletteStateCreateDTO : IModelDTO
     {
-        public long Id { get; set; }
-
+        [Required]
         [StringLength(100)]
         public string State { get; set; }
     }

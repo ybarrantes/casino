@@ -1,12 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Casino.Data.Models.Entities;
-using Casino.Services.DB.SQL;
 using Casino.Services.DB.SQL.Contracts.Model;
-using Casino.Services.WebApi;
-using Microsoft.EntityFrameworkCore;
 
-namespace Casino.Data.Models.DTO
+namespace Casino.Data.Models.DTO.Roulettes
 {
     public class RouletteCreateDTO : IModelDTO
     {

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using Casino.Data.Context;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.Entities;
 using Casino.Services.Authentication.Contracts;
 using Casino.Services.Authentication.Model;

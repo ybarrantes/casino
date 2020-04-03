@@ -4,7 +4,7 @@ using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Contracts.Model;
 using System;
 
-namespace Casino.Data.Models.DTO
+namespace Casino.Data.Models.DTO.Rounds
 {
     public class RoundShowDTO : IModelDTO
     {

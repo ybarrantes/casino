@@ -1,7 +1,5 @@
 using Casino.API.Controllers;
 using NUnit.Framework;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +10,7 @@ using Casino.Data.Models.Entities;
 using Microsoft.Extensions.Configuration;
 using Casino.Services.Authentication.Contracts;
 using Casino.UnitTests.WebApi.Mocks;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Users;
 
 namespace Casino.UnitTests
 {
@@ -51,7 +49,7 @@ namespace Casino.UnitTests
         }
 
         [Test]
-        public async Task Where_UsersFindById_OK()
+        public async Task When_UsersFindById_OK()
         {
             try
             {
@@ -71,7 +69,7 @@ namespace Casino.UnitTests
         }
 
         [Test]
-        public async Task Where_UsersFindById_NotFound()
+        public async Task When_UsersFindById_NotFound()
         {
             try
             {
@@ -86,13 +84,13 @@ namespace Casino.UnitTests
         }
 
         [Test]
-        public void Where_CheckIfRoleAuthorized_OK()
+        public void When_CheckIfRoleAuthorized_OK()
         {
             CheckIfRoleIsAuthorized(_authorizedRoles, true);
         }
 
         [Test]
-        public void Where_CheckIfRoleAuthorized_Fail()
+        public void When_CheckIfRoleAuthorized_Fail()
         {
             List<string> roles = new List<string> { "Avenger", "SuperHero", "Adventure" };
 
@@ -111,7 +109,7 @@ namespace Casino.UnitTests
 
 
         [Test]
-        public async Task Where_AddRole_OK()
+        public async Task When_AddRole_OK()
         {
             foreach(string role in _authorizedRoles)
             {
@@ -132,13 +130,13 @@ namespace Casino.UnitTests
         }
 
         [Test]
-        public async Task Where_AddRole_RoleNotAuthorized()
+        public async Task When_AddRole_RoleNotAuthorized()
         {
             await AddRole_Fail("Avenger", 1);
         }
 
         [Test]
-        public async Task Where_AddRole_UserNotFound()
+        public async Task When_AddRole_UserNotFound()
         {
             await AddRole_Fail("Player", 99);
         }

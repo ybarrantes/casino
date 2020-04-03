@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Casino.Data.Models.DTO
+namespace Casino.Data.Models.DTO.Users
 {
     public class UserSignInDTO
     {

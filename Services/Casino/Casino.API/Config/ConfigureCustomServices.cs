@@ -18,12 +18,19 @@ namespace Casino.API.Config
         public static void AddDependencies(IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IAuthentication), typeof(AwsCognitoAuthentication));
+
             services.AddScoped(typeof(IAwsCognitoUserGroups), typeof(AwsCognitoUserGroups));
+
             services.AddScoped(typeof(IIdentityApp<>), typeof(IdentityApp<>));
+
             services.AddScoped(typeof(ContextCRUD<>), typeof(ContextSqlCRUD<>));
+
             services.AddScoped<CRUDComponent<Roulette>, RoulettesCRUDComponent>();
+
             services.AddScoped<CRUDComponent<RouletteState>, RoulettesStatesCRUDComponent>();
+
             services.AddScoped<CRUDComponent<RouletteType>, RoulettesTypesCRUDComponent>();
+
             services.AddScoped<CRUDComponent<Round>, RoundsCRUDComponent>();
         }
     }

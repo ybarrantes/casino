@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Rounds;
+using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

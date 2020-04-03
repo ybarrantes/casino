@@ -2,7 +2,7 @@
 using AutoMapper;
 using Casino.API.Services;
 using Casino.Data.Context;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Rounds;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Contracts.CRUD;
 using Casino.Services.DB.SQL.Contracts.Model;
@@ -27,9 +27,11 @@ namespace Casino.API.Components.Rounds
             ShowModelDTOType = typeof(RoundShowDTO);
         }
 
-        public override Task<Round> FillEntityFromDTO(Round entity, IModelDTO modelDTO)
+        public async override Task<Round> FillEntityFromDTO(Round entity, IModelDTO modelDTO)
         {
-            throw new NotImplementedException();
+            entity.State = ((RoundShowDTO)modelDTO).State;
+
+            return await Task.Run(() => entity);
         }
 
         public override IPagedRecords MapPagedRecordsToModelDTO(IPagedRecords pagedRecords)
