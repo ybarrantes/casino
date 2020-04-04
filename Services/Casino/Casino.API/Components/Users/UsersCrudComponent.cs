@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
-using Casino.Data.Context;
 using Casino.Data.Models.Entities;
-using Casino.Services.DB.SQL.Contracts.Model;
-using System;
 using Casino.Data.Models.DTO.Users;
-using System.Threading.Tasks;
 using Casino.Services.DB.SQL.Crud;
 using Casino.Services.Util.Collections;
 
@@ -17,5 +13,7 @@ namespace Casino.API.Components.Users
         {
             ShowModelDTOType = typeof(UserShowDTO);
         }
+
+
     }
 }

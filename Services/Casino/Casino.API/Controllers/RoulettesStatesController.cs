@@ -25,14 +25,14 @@ namespace Casino.API.Controllers
         [HttpGet]
         public async Task<ActionResult<WebApiResponse>> GetAll(int page = 1)
         {
-            return await _rouletteStateCrud.GetAllPagedRecordsAndResponseAsync(page, 10);
+            return await _rouletteStateCrud.GetAllPagedRecordsAndMakeResponseAsync(page, 10);
         }
 
 
         [HttpGet("{id}")]
         public async Task<ActionResult<WebApiResponse>> GetOne(long id)
         {
-            return await _rouletteStateCrud.FirstByIdAndResponseAsync(id);
+            return await _rouletteStateCrud.FirstByIdAndMakeResponseAsync(id);
         }
 
 
@@ -40,7 +40,7 @@ namespace Casino.API.Controllers
         [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> Create([FromBody] RouletteStateCreateDTO modelDTO)
         {
-            return await _rouletteStateCrud.CreateFromModelDTOAndResponseAsync(modelDTO);
+            return await _rouletteStateCrud.CreateFromModelDTOAndMakeResponseAsync(modelDTO);
         }
 
 
@@ -48,7 +48,7 @@ namespace Casino.API.Controllers
         [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> Update(long id, [FromBody] RouletteStateCreateDTO modelDTO)
         {
-            return await _rouletteStateCrud.UpdateFromModelDTOAndResponseAsync(id, modelDTO);
+            return await _rouletteStateCrud.UpdateFromModelDTOAndMakeResponseAsync(id, modelDTO);
         }
     }
 }

@@ -13,13 +13,11 @@ namespace Casino.API.Config
     {
         public static void AddDependencies(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAutoMapper(config => MapperConfigOptions(), typeof(Startup));
+            services.AddAutoMapper(config => MapperConfigOptions(config), typeof(Startup));
         }
 
-        public static IMapperConfigurationExpression MapperConfigOptions()
+        public static IMapperConfigurationExpression MapperConfigOptions(IMapperConfigurationExpression config)
         {
-            IMapperConfigurationExpression config = new MapperConfigurationExpression();
-
             config.CreateMap<Roulette, RouletteCreateDTO>();
             config.CreateMap<RouletteCreateDTO, Roulette>();
             config.CreateMap<Roulette, RouletteShowDTO>();

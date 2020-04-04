@@ -23,7 +23,7 @@ namespace Casino.Services.DB.SQL.Crud
 
         public DbContext AppDbContext { get; set; }
         public IMapper Mapper => _mapper;
-        public IQueryableFilter<T> QueryableFilter { get; set; }
+        public IQueryableFilter<T> QueryFilter { get; set; }
         protected Type ShowModelDTOType { get; set; }
 
         public SqlContextCrud(IMapper mapper, IPagedRecords<T> pagedRecords)
@@ -31,12 +31,14 @@ namespace Casino.Services.DB.SQL.Crud
             _mapper = mapper;
             _pagedRecords = pagedRecords;
 
-            QueryableFilter = new QueryableDefaultFilter<T>();
+            QueryFilter = new QueryableDefaultFilter<T>();
         }
 
-        public virtual IQueryable<T> GetQueryable()
+        #region Queryables section
+
+        public virtual IQueryable<T> GetQueryableWithFilter()
         {
-            return QueryableFilter.SetFilter(GetQueryableWithoutFilter());
+            return QueryFilter.SetFilter(GetQueryableWithoutFilter());
         }
 
         public virtual IQueryable<T> GetQueryableWithoutFilter()
@@ -44,38 +46,42 @@ namespace Casino.Services.DB.SQL.Crud
             return AppDbContext.Set<T>();
         }
 
+        #endregion
 
-        public virtual async Task<IEnumerable<T>> GetAll()
+
+        #region find, search and paging records
+
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await GetQueryable().ToListAsync();
+            return await GetQueryableWithFilter().ToListAsync();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllFromQuery(IQueryable<T> query)
+        public virtual async Task<IEnumerable<T>> GetAllFromQueryAsync(IQueryable<T> query)
         {
             return await query.ToListAsync();
         }
 
-        public virtual async Task<IPagedRecords<T>> GetPagedRecords(IQueryable<T> query, int page, int recordsPerPage)
+        public virtual async Task<IPagedRecords<T>> GetPagedRecordsAsync(IQueryable<T> query, int page, int recordsPerPage)
         {
             return await PagedRecords.Build(query, page, recordsPerPage);
         }
 
-        public virtual async Task<IPagedRecords<T>> GetPagedRecordsMapped(IQueryable<T> query, int page, int recordsPerPage)
+        public virtual async Task<IPagedRecords<T>> GetPagedRecordsMappedAsync(IQueryable<T> query, int page, int recordsPerPage)
         {
-            IPagedRecords<T> pagedRecords = await GetPagedRecords(query, page, recordsPerPage);
+            IPagedRecords<T> pagedRecords = await GetPagedRecordsAsync(query, page, recordsPerPage);
 
             return MapPagedRecordsToModelDTO(pagedRecords);
         }
 
-        public virtual async Task<T> FirstById(long id)
+        public virtual async Task<T> FirstByIdAsync(long id)
         {
-            IQueryable<T> query = GetQueryable()
+            IQueryable<T> query = GetQueryableWithFilter()
                 .Where(x => ((IEntityModelBase)x).Id == id);
 
-            return await FirstFromQuery(query);
+            return await FirstFromQueryAsync(query);
         }
 
-        public virtual async Task<T> FirstFromQuery(IQueryable<T> query)
+        public virtual async Task<T> FirstFromQueryAsync(IQueryable<T> query)
         {
             T entity = await query.FirstOrDefaultAsync();
 
@@ -85,7 +91,10 @@ namespace Casino.Services.DB.SQL.Crud
             return entity;
         }
 
+        #endregion
 
+
+        #region modify records and save
 
         public async Task<T> CreateFromModelDTOAsync(IModelDTO modelDTO)
         {
@@ -95,6 +104,8 @@ namespace Casino.Services.DB.SQL.Crud
 
             return await CreateFromEntityAsync(entity);
         }
+
+        public virtual async Task<T> FillEntityFromModelDTO(T entity, IModelDTO modelDTO) => await Task.Run(() => entity);
 
         public async Task<T> CreateFromEntityAsync(T entity)
         {
@@ -108,7 +119,15 @@ namespace Casino.Services.DB.SQL.Crud
         }
 
         protected virtual Task OnBeforeCreate(T entity) => Task.CompletedTask;
+        
+        public async Task<T> UpdateFromModelDTOAsync(long id, IModelDTO modelDTO)
+        {
+            T entity = await FirstByIdAsync(id);
 
+            entity = await FillEntityFromModelDTO(entity, modelDTO);
+
+            return await UpdateFromEntityAsync(entity);
+        }
 
         public async Task<T> UpdateFromEntityAsync(T entity)
         {
@@ -121,21 +140,11 @@ namespace Casino.Services.DB.SQL.Crud
             return entity;
         }
 
-        public async Task<T> UpdateFromModelDTOAsync(long id, IModelDTO modelDTO)
-        {
-            T entity = await FirstById(id);
-
-            entity = await FillEntityFromModelDTO(entity, modelDTO);
-
-            return await CreateFromEntityAsync(entity);
-        }
-
         protected virtual Task OnBeforeUpdate(T entity) => Task.CompletedTask;
-
 
         public async Task<T> DeleteByIdAsync(long id)
         {
-            T entity = await FirstById(id);
+            T entity = await FirstByIdAsync(id);
 
             return await DeleteFromEntityAsync(entity);
         }
@@ -151,11 +160,7 @@ namespace Casino.Services.DB.SQL.Crud
             return entity;
         }
 
-        protected virtual Task OnBeforeDelete(T entity)
-        {
-            return Task.CompletedTask;
-        }
-
+        protected virtual Task OnBeforeDelete(T entity) => Task.CompletedTask;
 
         private async Task TrySaveChangesAsync()
         {
@@ -172,6 +177,10 @@ namespace Casino.Services.DB.SQL.Crud
 
         protected virtual Task OnBeforeSave() => Task.CompletedTask;
 
+        #endregion
+
+
+        #region mapping entities to DTO and responses
 
         public virtual IPagedRecords<T> MapPagedRecordsToModelDTO(IPagedRecords<T> pagedRecords) => pagedRecords;
 
@@ -188,54 +197,57 @@ namespace Casino.Services.DB.SQL.Crud
                 .SetMessage(message);
         }
 
-        public virtual ActionResult<WebApiResponse> MapEntityAndResponse(T entity, string message = "success!")
+        public virtual ActionResult<WebApiResponse> MapEntityAndMakeResponse(T entity, string message = "success!")
         {
             var map = MapEntityToModelDTO(entity);
 
             return MakeSuccessResponse(map, message);
         }
 
-        public virtual async Task<T> FillEntityFromModelDTO(T entity, IModelDTO modelDTO) => await Task.Run(() => entity);
+        #endregion
 
 
+        #region quick access functions for controllers
 
-        public virtual async Task<ActionResult<WebApiResponse>> GetAllPagedRecordsAndResponseAsync(int page, int recordsPerPage)
+        public virtual async Task<ActionResult<WebApiResponse>> GetAllPagedRecordsAndMakeResponseAsync(int page, int recordsPerPage)
         {
-            return await GetPagedRecordsAndResponseAsync(GetQueryable(), page, recordsPerPage);
+            return await GetPagedRecordsFromQueryAndMakeResponseAsync(GetQueryableWithFilter(), page, recordsPerPage);
         }
 
-        public virtual async Task<ActionResult<WebApiResponse>> GetPagedRecordsAndResponseAsync(IQueryable<T> query, int page, int recordsPerPage)
+        public virtual async Task<ActionResult<WebApiResponse>> GetPagedRecordsFromQueryAndMakeResponseAsync(IQueryable<T> query, int page, int recordsPerPage)
         {
-            IPagedRecords<T> paged = await GetPagedRecordsMapped(query, page, recordsPerPage);
+            IPagedRecords<T> paged = await GetPagedRecordsMappedAsync(query, page, recordsPerPage);
 
             paged = MapPagedRecordsToModelDTO(paged);
 
             return MakeSuccessResponse(paged);
         }
 
-        public virtual async Task<ActionResult<WebApiResponse>> FirstByIdAndResponseAsync(long id)
+        public virtual async Task<ActionResult<WebApiResponse>> FirstByIdAndMakeResponseAsync(long id)
         {
-            return MapEntityAndResponse(await FirstById(id));
+            return MapEntityAndMakeResponse(await FirstByIdAsync(id));
         }
 
-        public virtual async Task<ActionResult<WebApiResponse>> FirstFromQueryAndResponseAsync(IQueryable<T> query)
+        public virtual async Task<ActionResult<WebApiResponse>> FirstFromQueryAndMakeResponseAsync(IQueryable<T> query)
         {
-            return MapEntityAndResponse(await FirstFromQuery(query));
+            return MapEntityAndMakeResponse(await FirstFromQueryAsync(query));
         }
 
-        public virtual async Task<ActionResult<WebApiResponse>> CreateFromModelDTOAndResponseAsync(IModelDTO modelDTO)
+        public virtual async Task<ActionResult<WebApiResponse>> CreateFromModelDTOAndMakeResponseAsync(IModelDTO modelDTO)
         {
-            return MapEntityAndResponse(await CreateFromModelDTOAsync(modelDTO));
+            return MapEntityAndMakeResponse(await CreateFromModelDTOAsync(modelDTO));
         }
 
-        public virtual async Task<ActionResult<WebApiResponse>> UpdateFromModelDTOAndResponseAsync(long id, IModelDTO modelDTO)
+        public virtual async Task<ActionResult<WebApiResponse>> UpdateFromModelDTOAndMakeResponseAsync(long id, IModelDTO modelDTO)
         {
-            return MapEntityAndResponse(await UpdateFromModelDTOAsync(id, modelDTO));
+            return MapEntityAndMakeResponse(await UpdateFromModelDTOAsync(id, modelDTO));
         }
 
-        public virtual async Task<ActionResult<WebApiResponse>> DeleteByIdAndResponseAsync(long id)
+        public virtual async Task<ActionResult<WebApiResponse>> DeleteByIdAndMakeResponseAsync(long id)
         {
-            return MapEntityAndResponse(await DeleteByIdAsync(id));
+            return MapEntityAndMakeResponse(await DeleteByIdAsync(id));
         }
+
+        #endregion
     }
 }

@@ -38,7 +38,7 @@ namespace Casino.API.Controllers
         [HttpGet("{id}", Name = "GetUsuario")]
         public async Task<ActionResult<WebApiResponse>> GetUser(long id)
         {
-            return await _crudComponent.FirstByIdAndResponseAsync(id);
+            return await _crudComponent.FirstByIdAndMakeResponseAsync(id);
         }
 
         [Authorize(Policy = "SuperAdmin")]
@@ -48,7 +48,7 @@ namespace Casino.API.Controllers
             if (!CheckRoleIsAuthorized(role.Role))
                 throw new WebApiException(System.Net.HttpStatusCode.BadRequest, $"The role '{role.Role}' is not authorized in aws cognito groups, see configuration");
 
-            User user = await _crudComponent.FirstById(id);
+            User user = await _crudComponent.FirstByIdAsync(id);
 
             await _cognitoUserGroups.AddUserToGroup(user.Username, role.Role);
 

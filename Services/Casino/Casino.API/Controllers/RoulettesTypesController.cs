@@ -1,13 +1,10 @@
-﻿using Casino.API.Components;
-using Casino.Data.Context;
+﻿using Casino.Data.Context;
 using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Crud;
-using Casino.Services.Util.Collections;
 using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Casino.API.Controllers
@@ -28,18 +25,14 @@ namespace Casino.API.Controllers
         [HttpGet]
         public async Task<ActionResult<WebApiResponse>> GetAll(int page = 1)
         {
-            IQueryable<RouletteType> queryable = _rouletteTypeCrud.GetQueryable();
-
-            IPagedRecords<RouletteType> paged = await _rouletteTypeCrud.GetPagedRecordsMapped(queryable, page, 10);
-
-            return _rouletteTypeCrud.MakeSuccessResponse(paged);
+            return await _rouletteTypeCrud.GetAllPagedRecordsAndMakeResponseAsync(page, 10);
         }
 
 
         [HttpGet("{id}")]
         public async Task<ActionResult<WebApiResponse>> GetOne(long id)
         {
-            return await _rouletteTypeCrud.FirstByIdAndResponseAsync(id);
+            return await _rouletteTypeCrud.FirstByIdAndMakeResponseAsync(id);
         }
 
 
@@ -47,7 +40,7 @@ namespace Casino.API.Controllers
         [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> Create([FromBody] RouletteTypeCreateDTO modelDTO)
         {
-            return await _rouletteTypeCrud.CreateFromModelDTOAndResponseAsync(modelDTO);
+            return await _rouletteTypeCrud.CreateFromModelDTOAndMakeResponseAsync(modelDTO);
         }
 
 
@@ -55,7 +48,7 @@ namespace Casino.API.Controllers
         [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> Update(long id, [FromBody] RouletteTypeCreateDTO modelDTO)
         {
-            return await _rouletteTypeCrud.UpdateFromModelDTOAndResponseAsync(id, modelDTO);
+            return await _rouletteTypeCrud.UpdateFromModelDTOAndMakeResponseAsync(id, modelDTO);
         }
     }
 }

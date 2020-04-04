@@ -31,7 +31,8 @@ namespace Casino.UnitTests
         {
             if(_mapper == null)
             {
-                MapperConfigurationExpression configExpression = (MapperConfigurationExpression)API.Config.ConfigureAutoMapperService.MapperConfigOptions();
+                MapperConfigurationExpression configExpression = new MapperConfigurationExpression();
+                configExpression = (MapperConfigurationExpression)API.Config.ConfigureAutoMapperService.MapperConfigOptions(configExpression);
 
                 var mapperConfig = new MapperConfiguration(configExpression);
 

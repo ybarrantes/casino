@@ -28,35 +28,35 @@ namespace Casino.API.Controllers
         [HttpGet]
         public async Task<ActionResult<WebApiResponse>> GetAll(int page = 1)
         {
-            return await _rouletteCrud.GetAllPagedRecordsAndResponseAsync(page, 10);
+            return await _rouletteCrud.GetAllPagedRecordsAndMakeResponseAsync(page, 10);
         }
 
 
         [HttpGet("{id}", Name = "GetRoulette")]
         public async Task<ActionResult<WebApiResponse>> GetOne(long id)
         {
-            return await _rouletteCrud.FirstByIdAndResponseAsync(id);
+            return await _rouletteCrud.FirstByIdAndMakeResponseAsync(id);
         }
 
 
         [HttpPost]
         public async Task<ActionResult<WebApiResponse>> Create([FromBody] RouletteCreateDTO modelDTO)
         {
-            return await _rouletteCrud.CreateFromModelDTOAndResponseAsync(modelDTO);
+            return await _rouletteCrud.CreateFromModelDTOAndMakeResponseAsync(modelDTO);
         }
 
 
         [HttpPut("{id}")]
         public async Task<ActionResult<WebApiResponse>> Update(long id, [FromBody] RouletteCreateDTO modelDTO)
         {
-            return await _rouletteCrud.UpdateFromModelDTOAndResponseAsync(id, modelDTO);
+            return await _rouletteCrud.UpdateFromModelDTOAndMakeResponseAsync(id, modelDTO);
         }        
         
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<WebApiResponse>> Delete(long id)
         {
-            return await _rouletteCrud.DeleteByIdAndResponseAsync(id);
+            return await _rouletteCrud.DeleteByIdAndMakeResponseAsync(id);
         }
 
     }
