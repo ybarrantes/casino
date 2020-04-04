@@ -11,6 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Casino.Services.Authentication.Contracts;
 using Casino.UnitTests.WebApi.Mocks;
 using Casino.Data.Models.DTO.Users;
+using Casino.Services.DB.SQL.Crud;
+using Casino.API.Components.Users;
+using Casino.Services.Util.Collections;
 
 namespace Casino.UnitTests
 {
@@ -22,6 +25,7 @@ namespace Casino.UnitTests
         private UsersController _controller = null;
         private IAwsCognitoUserGroups _cognitoUserGroups = null;
         private List<string> _authorizedRoles = new List<string> { };
+        private ISqlContextCrud<User> _userCrudComponent = null;
 
         private bool initialized = false;
 
@@ -34,8 +38,9 @@ namespace Casino.UnitTests
             _dbContext = Helpers.GetNewDbContext("CasinoDbUsersControllerTest");
             _configuration = Helpers.GetConfiguration();
             _cognitoUserGroups = new AwsCognitoUserGroupsMock();
+            _userCrudComponent = new UsersCrudComponent(null, new PagedRecords<User>());
 
-            _controller = new UsersController(_dbContext, _configuration, _cognitoUserGroups);
+            _controller = new UsersController(_dbContext, _configuration, _cognitoUserGroups, _userCrudComponent);
 
             _authorizedRoles = _configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
 
