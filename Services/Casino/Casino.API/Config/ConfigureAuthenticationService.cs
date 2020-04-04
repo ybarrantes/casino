@@ -6,7 +6,7 @@ using System;
 
 namespace Casino.API.Config
 {
-    static class ConfigureAuthenticationService
+    public static class ConfigureAuthenticationService
     {
         public static void AddDependencies(IServiceCollection services, IConfiguration configuration)
         {

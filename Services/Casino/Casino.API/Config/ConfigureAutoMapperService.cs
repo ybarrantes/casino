@@ -2,34 +2,43 @@
 using Casino.Data.Models.DTO.Rounds;
 using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper.Configuration;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using Casino.Data.Models.DTO.Users;
 
 namespace Casino.API.Config
 {
-    static class ConfigureAutoMapperService
+    public static class ConfigureAutoMapperService
     {
         public static void AddDependencies(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAutoMapper(config =>
-            {
-                config.CreateMap<Roulette, RouletteCreateDTO>();
-                config.CreateMap<RouletteCreateDTO, Roulette>();
-                config.CreateMap<Roulette, RouletteShowDTO>();
+            services.AddAutoMapper(config => MapperConfigOptions(), typeof(Startup));
+        }
 
-                config.CreateMap<RouletteState, RouletteStateDTO>();
-                config.CreateMap<RouletteStateDTO, RouletteState>();
+        public static IMapperConfigurationExpression MapperConfigOptions()
+        {
+            IMapperConfigurationExpression config = new MapperConfigurationExpression();
 
-                config.CreateMap<RouletteType, RouletteTypeDTO>();
-                config.CreateMap<RouletteTypeDTO, RouletteType>();
+            config.CreateMap<Roulette, RouletteCreateDTO>();
+            config.CreateMap<RouletteCreateDTO, Roulette>();
+            config.CreateMap<Roulette, RouletteShowDTO>();
 
-                config.CreateMap<Round, RoundShowDTO>();
-                config.CreateMap<RoundShowDTO, Round>();
+            config.CreateMap<RouletteState, RouletteStateDTO>();
+            config.CreateMap<RouletteStateDTO, RouletteState>();
 
-                config.CreateMap<RoundState, RoundStateDTO>();
-                config.CreateMap<RoundStateDTO, RoundState>();
+            config.CreateMap<RouletteType, RouletteTypeDTO>();
+            config.CreateMap<RouletteTypeDTO, RouletteType>();
 
-            }, typeof(Startup));
+            config.CreateMap<Round, RoundShowDTO>();
+            config.CreateMap<RoundShowDTO, Round>();
+
+            config.CreateMap<RoundState, RoundStateDTO>();
+            config.CreateMap<RoundStateDTO, RoundState>();
+
+            config.CreateMap<User, UserShowDTO>();
+
+            return config;
         }
     }
 }

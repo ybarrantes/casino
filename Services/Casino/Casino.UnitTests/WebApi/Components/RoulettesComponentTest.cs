@@ -1,9 +1,11 @@
-﻿using Casino.API.Components.Roulettes;
+﻿using AutoMapper;
+using Casino.API.Components.Roulettes;
 using Casino.API.Services;
 using Casino.Data.Context;
 using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Crud;
+using Casino.Services.Util.Collections;
 using Casino.UnitTests.WebApi.Mocks;
 using NUnit.Framework;
 using System;
@@ -18,6 +20,8 @@ namespace Casino.UnitTests.WebApi.Components.Roulettes
         private RoulettesCrudComponent _component = null;
         SqlContextCrud<Roulette> _crud = null;
         IIdentityApp<User> _identity = null;
+        private IPagedRecords<Roulette> _pagedRecords = new PagedRecords<Roulette>();
+        private IMapper _mapper = Helpers.GetAutoMapperConfiguration();
 
         private bool initialized = false;
 
@@ -30,11 +34,12 @@ namespace Casino.UnitTests.WebApi.Components.Roulettes
             // create db context
             _dbContext = Helpers.GetNewDbContext("CasinoDbRoulettesComponentsTest");
 
-            _crud = new SqlContextCrud<Roulette>(null, null);
+            _crud = new SqlContextCrud<Roulette>(_mapper, _pagedRecords);
 
             _identity = new IdentityAppMock();
 
-            _component = new RoulettesCrudComponent(_identity, null, null);
+            _component = new RoulettesCrudComponent(_identity, _mapper, _pagedRecords);
+            _component.AppDbContext = _dbContext;
 
             // add roulettes db dependencies
             RouletteState rouletteState = new RouletteState{ State = "Active" };

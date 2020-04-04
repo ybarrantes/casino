@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Casino.API.Config
 {
-    static class ConfigureAuthorizationService
+    public static class ConfigureAuthorizationService
     {
         public static void AddDependencies(IServiceCollection services, IConfiguration configuration)
         {

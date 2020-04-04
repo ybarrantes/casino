@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Casino.API.Config
 {
-    static class ConfigureCustomServices
+    public static class ConfigureCustomServices
     {
         public static void AddDependencies(IServiceCollection services, IConfiguration configuration)
         {

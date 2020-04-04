@@ -14,18 +14,20 @@ using Casino.Data.Models.DTO.Users;
 using Casino.Services.DB.SQL.Crud;
 using Casino.API.Components.Users;
 using Casino.Services.Util.Collections;
+using AutoMapper;
 
 namespace Casino.UnitTests
 {
     public class UsersControllerTests
     {
-
         private ApplicationDbContext _dbContext = null;
         private IConfiguration _configuration;
         private UsersController _controller = null;
         private IAwsCognitoUserGroups _cognitoUserGroups = null;
         private List<string> _authorizedRoles = new List<string> { };
         private ISqlContextCrud<User> _userCrudComponent = null;
+        private IPagedRecords<User> _pagedRecords = new PagedRecords<User>();
+        private IMapper _mapper = Helpers.GetAutoMapperConfiguration();
 
         private bool initialized = false;
 
@@ -38,7 +40,7 @@ namespace Casino.UnitTests
             _dbContext = Helpers.GetNewDbContext("CasinoDbUsersControllerTest");
             _configuration = Helpers.GetConfiguration();
             _cognitoUserGroups = new AwsCognitoUserGroupsMock();
-            _userCrudComponent = new UsersCrudComponent(null, new PagedRecords<User>());
+            _userCrudComponent = new UsersCrudComponent(_mapper, _pagedRecords);
 
             _controller = new UsersController(_dbContext, _configuration, _cognitoUserGroups, _userCrudComponent);
 
@@ -64,7 +66,7 @@ namespace Casino.UnitTests
 
                     Assert.IsNotNull(response);
                     Assert.AreEqual(200, response.Value.Status);
-                    Assert.AreEqual(i, ((User)response.Value.Data).Id);
+                    Assert.AreEqual(i, ((UserShowDTO)response.Value.Data).Id);
                 }
             }
             catch (Exception e)

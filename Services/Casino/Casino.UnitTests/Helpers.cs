@@ -1,20 +1,22 @@
-﻿using Casino.Data.Context;
+﻿using AutoMapper;
+using AutoMapper.Configuration;
+using Casino.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Casino.UnitTests
 {
     class Helpers
     {
-        private static IConfigurationRoot config = null;
-        private static ApplicationDbContext dbContext = null;
+        private static IConfigurationRoot _configRoot = null;
+        private static ApplicationDbContext _dbContext = null;
+        private static IMapper _mapper = null;
 
         public static IConfigurationRoot GetConfiguration()
         {
-            if(config == null)
+            if (_configRoot == null)
             {
-                config = new ConfigurationBuilder()
+                _configRoot = new ConfigurationBuilder()
                     //.SetBasePath(outputPath)
                     .AddJsonFile("appsettings.json", optional: true)
                     .AddJsonFile("appsettings.Development.json", optional: true)
@@ -22,7 +24,21 @@ namespace Casino.UnitTests
                     .Build();
             }
 
-            return config;
+            return _configRoot;
+        }
+
+        public static IMapper GetAutoMapperConfiguration()
+        {
+            if(_mapper == null)
+            {
+                MapperConfigurationExpression configExpression = (MapperConfigurationExpression)API.Config.ConfigureAutoMapperService.MapperConfigOptions();
+
+                var mapperConfig = new MapperConfiguration(configExpression);
+
+                _mapper = new Mapper(mapperConfig);
+            }
+
+            return _mapper;
         }
 
         public static DbContextOptions<ApplicationDbContext> OptionsDBContext(string dbName)
@@ -34,12 +50,12 @@ namespace Casino.UnitTests
 
         public static ApplicationDbContext GetDbContext()
         {
-            if(dbContext == null)
+            if (_dbContext == null)
             {
-                dbContext = GetNewDbContext();
+                _dbContext = GetNewDbContext();
             }
 
-            return dbContext;
+            return _dbContext;
         }
 
         public static ApplicationDbContext GetNewDbContext(string dbName = "CasinoUnitTestDb")
