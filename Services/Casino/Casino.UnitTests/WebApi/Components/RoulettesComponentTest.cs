@@ -3,8 +3,7 @@ using Casino.API.Services;
 using Casino.Data.Context;
 using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
-using Casino.Services.DB.SQL;
-using Casino.Services.DB.SQL.Contracts.CRUD;
+using Casino.Services.DB.SQL.Crud;
 using Casino.UnitTests.WebApi.Mocks;
 using NUnit.Framework;
 using System;
@@ -16,8 +15,8 @@ namespace Casino.UnitTests.WebApi.Components.Roulettes
     class RoulettesComponentTest
     {
         private ApplicationDbContext _dbContext = null;
-        private RoulettesCRUDComponent _component = null;
-        ContextCRUD<Roulette> _crud = null;
+        private RoulettesCrudComponent _component = null;
+        SqlContextCrud<Roulette> _crud = null;
         IIdentityApp<User> _identity = null;
 
         private bool initialized = false;
@@ -31,11 +30,11 @@ namespace Casino.UnitTests.WebApi.Components.Roulettes
             // create db context
             _dbContext = Helpers.GetNewDbContext("CasinoDbRoulettesComponentsTest");
 
-            _crud = new ContextSqlCRUD<Roulette>();
+            _crud = new SqlContextCrud<Roulette>(null, null);
 
             _identity = new IdentityAppMock();
 
-            _component = new RoulettesCRUDComponent(_dbContext, _crud, _identity, null);
+            _component = new RoulettesCrudComponent(_identity, null, null);
 
             // add roulettes db dependencies
             RouletteState rouletteState = new RouletteState{ State = "Active" };
@@ -101,16 +100,6 @@ namespace Casino.UnitTests.WebApi.Components.Roulettes
         }
 
         [Test]
-        public async Task When_RoulettesCRUDComponent_SetIdentityUserToEntity_SetIdentity()
-        {
-            Roulette roulette = new Roulette();
-            roulette = await _component.SetIdentityUserToEntity(roulette);
-
-            Assert.IsNotNull(roulette.UserRegister);
-            Assert.AreEqual(99999, roulette.UserRegister.Id);
-        }
-
-        [Test]
         public async Task When_RoulettesCRUDComponent_FillEntityFromDTO_FillEntity()
         {
             try
@@ -149,7 +138,7 @@ namespace Casino.UnitTests.WebApi.Components.Roulettes
             Roulette roulette = new Roulette();
             RouletteCreateDTO dto = new RouletteCreateDTO { Description = String.Empty, State = stateId, Type = typeId };
 
-            return await _component.FillEntityFromDTO(roulette, dto);
+            return await _component.FillEntityFromModelDTO(roulette, dto);
         }
     }
 }

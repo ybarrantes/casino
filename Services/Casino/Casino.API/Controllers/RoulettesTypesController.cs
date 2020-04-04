@@ -1,39 +1,45 @@
 ﻿using Casino.API.Components;
+using Casino.Data.Context;
 using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
+using Casino.Services.DB.SQL.Crud;
+using Casino.Services.Util.Collections;
 using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Casino.API.Controllers
 {
     [Authorize]
-    [Route("api/roulettes/types")]
     [ApiController]
+    [Route("api/roulettes/types")]
     public class RoulettesTypesController : ControllerBase
     {
-        private readonly CRUDComponent<RouletteType> _CRUD;
+        private readonly ISqlContextCrud<RouletteType> _rouletteTypeCrud;
 
-        public RoulettesTypesController(CRUDComponent<RouletteType> contextCRUD)
+        public RoulettesTypesController(ApplicationDbContext dbContext, ISqlContextCrud<RouletteType> contextCRUD)
         {
-            _CRUD = contextCRUD;
+            _rouletteTypeCrud = contextCRUD;
+            _rouletteTypeCrud.AppDbContext = dbContext;
         }
 
         [HttpGet]
-        [Authorize(Policy = "Admin")]
-        [Authorize(Policy = "SuperAdmin")]
-        [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> GetAll(int page = 1)
         {
-            return await _CRUD.FindAllAndResponseAsync(page, 10);
+            IQueryable<RouletteType> queryable = _rouletteTypeCrud.GetQueryable();
+
+            IPagedRecords<RouletteType> paged = await _rouletteTypeCrud.GetPagedRecordsMapped(queryable, page, 10);
+
+            return _rouletteTypeCrud.MakeSuccessResponse(paged);
         }
 
 
         [HttpGet("{id}")]
         public async Task<ActionResult<WebApiResponse>> GetOne(long id)
         {
-            return await _CRUD.FindFromIdAndResponseAsync(id);
+            return await _rouletteTypeCrud.FirstByIdAndResponseAsync(id);
         }
 
 
@@ -41,7 +47,7 @@ namespace Casino.API.Controllers
         [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> Create([FromBody] RouletteTypeCreateDTO modelDTO)
         {
-            return await _CRUD.CreateFromModelDTOAndResponseAsync(modelDTO);
+            return await _rouletteTypeCrud.CreateFromModelDTOAndResponseAsync(modelDTO);
         }
 
 
@@ -49,7 +55,7 @@ namespace Casino.API.Controllers
         [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> Update(long id, [FromBody] RouletteTypeCreateDTO modelDTO)
         {
-            return await _CRUD.UpdateFromModelDTOAndResponseAsync(id, modelDTO);
+            return await _rouletteTypeCrud.UpdateFromModelDTOAndResponseAsync(id, modelDTO);
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Casino.Data.Context;
 using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.Entities;
 using Casino.Services.Authentication.Contracts;
+using Casino.API.Components;
+using Casino.Services.DB.SQL.Crud;
+using Casino.Data.Context;
 
 namespace Casino.API.Controllers
 {
@@ -16,36 +17,28 @@ namespace Casino.API.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly IConfiguration _configuration;
         private readonly IAwsCognitoUserGroups _cognitoUserGroups;
+        private readonly ISqlContextCrud<User> _crudComponent;
 
         public UsersController(
             ApplicationDbContext dbContext,
             IConfiguration configuration,
-            IAwsCognitoUserGroups cognitoUserGroups)
+            IAwsCognitoUserGroups cognitoUserGroups,
+            ISqlContextCrud<User> crudComponent)
         {
-            _dbContext = dbContext;
             _configuration = configuration;
             _cognitoUserGroups = cognitoUserGroups;
+
+            _crudComponent = crudComponent;
+            _crudComponent.AppDbContext = dbContext;
         }
 
         [Authorize]
         [HttpGet("{id}", Name = "GetUsuario")]
         public async Task<ActionResult<WebApiResponse>> GetUser(long id)
         {
-            User user = await FindUsuarioById(id);
-            return new WebApiResponse().Success().SetData(user);
-        }
-
-        private async Task<User> FindUsuarioById(long id)
-        {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(user => user.Id.Equals(id));
-
-            if(user == null)
-                throw new WebApiException(System.Net.HttpStatusCode.NotFound, $"User '{id}' not found");
-
-            return user;
+            return await _crudComponent.FirstByIdAndResponseAsync(id);
         }
 
         [Authorize(Policy = "SuperAdmin")]
@@ -55,7 +48,7 @@ namespace Casino.API.Controllers
             if (!CheckRoleIsAuthorized(role.Role))
                 throw new WebApiException(System.Net.HttpStatusCode.BadRequest, $"The role '{role.Role}' is not authorized in aws cognito groups, see configuration");
 
-            User user = await FindUsuarioById(id);  
+            User user = await _crudComponent.FirstById(id); 
 
             await _cognitoUserGroups.AddUserToGroup(user.Username, role.Role);
 

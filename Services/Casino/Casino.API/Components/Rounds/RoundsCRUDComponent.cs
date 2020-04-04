@@ -1,44 +1,24 @@
-﻿
-using AutoMapper;
-using Casino.API.Services;
+﻿using AutoMapper;
 using Casino.Data.Context;
 using Casino.Data.Models.DTO.Rounds;
 using Casino.Data.Models.Entities;
-using Casino.Services.DB.SQL.Contracts.CRUD;
-using Casino.Services.DB.SQL.Contracts.Model;
+using Casino.Services.DB.SQL.Crud;
 using Casino.Services.Util.Collections;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Casino.API.Components.Rounds
 {
-    public class RoundsCRUDComponent : CRUDComponent<Round>
+    public class RoundsCrudComponent : SqlContextCrud<Round>
     {
-        public override Type ShowModelDTOType { get; internal set; }
+        private readonly IHttpContextAccessor _httpContext;
 
-        public RoundsCRUDComponent(
-            ApplicationDbContext dbContext,
-            ContextCRUD<Round> contextCRUD,
-            IIdentityApp<User> identityApp,
-            IMapper mapper)
-            : base(dbContext, contextCRUD, identityApp, mapper)
+        public RoundsCrudComponent(
+            IMapper mapper,
+            IPagedRecords<Round> pagedRecords,
+            IHttpContextAccessor httpContext) : base(mapper, pagedRecords)
         {
+            _httpContext = httpContext;
             ShowModelDTOType = typeof(RoundShowDTO);
-        }
-
-        public async override Task<Round> FillEntityFromDTO(Round entity, IModelDTO modelDTO)
-        {
-            entity.State = ((RoundShowDTO)modelDTO).State;
-
-            return await Task.Run(() => entity);
-        }
-
-        public override IPagedRecords MapPagedRecordsToModelDTO(IPagedRecords pagedRecords)
-        {
-            pagedRecords.Result = Mapper.Map<List<RoundShowDTO>>(pagedRecords.Result);
-
-            return pagedRecords;
         }
     }
 }

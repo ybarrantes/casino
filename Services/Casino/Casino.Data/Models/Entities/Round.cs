@@ -19,7 +19,7 @@ namespace Casino.Data.Models.Entities
         [StringLength(2)]
         public string WinNumber { get; set; }
 
-        public DateTime? CloseAt { get; set; }
+        public DateTime? ClosedAt { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreatedAt { get; set; }

@@ -8,7 +8,7 @@ using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.Entities;
 using Casino.Services.Authentication.Contracts;
 using Casino.Services.Authentication.Model;
-using Casino.Services.DB.SQL.Contracts.CRUD;
+using Casino.Services.DB.SQL.Crud;
 
 namespace Casino.API.Controllers
 {
@@ -18,13 +18,13 @@ namespace Casino.API.Controllers
     {
         private readonly ILogger<UsersController> _logger;
         private readonly IAuthentication _authentication;
-        private readonly ContextCRUD<User> _contextCRUD;
+        private readonly ISqlContextCrud<User> _contextCRUD;
 
         public AuthenticationController(
-            IAuthentication authentication,
             ApplicationDbContext dbContext,
+            IAuthentication authentication,
             ILogger<UsersController> logger,
-            ContextCRUD<User> contextCRUD)
+            ISqlContextCrud<User> contextCRUD)
         {
             _authentication = authentication;
             _logger = logger;

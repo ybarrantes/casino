@@ -7,33 +7,22 @@ using System.Collections.Generic;
 
 namespace Casino.Services.Util.Collections
 {
-    public sealed class PagedRecords<T> : IPagedRecords, IDisposable
+    public sealed class PagedRecords<T> : IPagedRecords<T>, IDisposable where T : class
     {
         private int _recordsPerPage = 15;
         private int _page = 0;
         private int _totalPages = 0;
         private int _totalRecords = 0;
 
-        private IQueryable<T> _entityQueryBuilder;
-
-        public int RecordsPerPage
-        {
-            get => _recordsPerPage;
-            set => _recordsPerPage = CheckMinimumValue(value, 1);
-        }
+        public int RecordsPerPage => _recordsPerPage;
 
         public int TotalRecords => _totalRecords;
 
-        public int Page
-        {
-            get => _page;
-            set => _page = CheckMinimumValue(value, 1);
-        }
+        public int Page => _page;
 
         public int TotalPages => _totalPages;
 
         public IEnumerable Result { get; set; }
-
 
         private int CheckMinimumValue(int value, int min)
         {
@@ -43,40 +32,29 @@ namespace Casino.Services.Util.Collections
             return value;
         }
 
-        public PagedRecords(IQueryable<T> entityQueryBuilder, int page, int recodsPerPage)
+        public async Task<IPagedRecords<T>> Build(IQueryable<T> entityQueryBuilder, int page, int recodsPerPage)
         {
-            Initialize(entityQueryBuilder, page, recodsPerPage);
-        }
+            _page = CheckMinimumValue(page, 1);
+            _recordsPerPage = CheckMinimumValue(recodsPerPage, 1);
 
-        public PagedRecords(IEnumerable<T> entityCollection, int page, int recodsPerPage)
-        {
-            IQueryable<T> queryable = entityCollection.AsQueryable<T>();
-            Initialize(queryable, page, recodsPerPage);
-        }
+            _totalRecords = await entityQueryBuilder.CountAsync();
 
-        private void Initialize(IQueryable<T> entityQueryBuilder, int page, int recodsPerPage)
-        {
-            _entityQueryBuilder = entityQueryBuilder;
-            Page = page;
-            RecordsPerPage = recodsPerPage;
-        }
-
-        public async Task Build()
-        {
-            _totalRecords = await _entityQueryBuilder.CountAsync();
-
-            Result = await _entityQueryBuilder
+            Result = await entityQueryBuilder
                 .Skip(_recordsPerPage * (Page - 1))
                 .Take(_recordsPerPage)
                 .ToListAsync();
 
             _totalPages = ((int)Math.Ceiling((double)_totalRecords / _recordsPerPage));
+
+            if (_totalPages == 0)
+                _page = 0;
+
+            return this;
         }
 
         public void Dispose()
         {
             Result = null;
-            _entityQueryBuilder = null;
         }
     }
 }

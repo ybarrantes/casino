@@ -21,8 +21,8 @@ namespace Casino.Data.Migrations
                 columns: new[] { "Id", "Type" },
                 values: new object[,]
                 {
-                    { 1L, "American" },
-                    { 2L, "European" }
+                    { 1L, "European" },
+                    { 2L, "American" }
                 });
         }
 

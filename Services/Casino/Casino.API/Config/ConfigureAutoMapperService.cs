@@ -25,6 +25,10 @@ namespace Casino.API.Config
 
                 config.CreateMap<Round, RoundShowDTO>();
                 config.CreateMap<RoundShowDTO, Round>();
+
+                config.CreateMap<RoundState, RoundStateDTO>();
+                config.CreateMap<RoundStateDTO, RoundState>();
+
             }, typeof(Startup));
         }
     }

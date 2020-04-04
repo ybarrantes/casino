@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Casino.Services.DB.SQL.Contracts.Model;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Casino.Services.DB.SQL.Queryable
 {

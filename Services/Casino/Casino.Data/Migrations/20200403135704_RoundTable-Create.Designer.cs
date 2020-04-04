@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Casino.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200403065404_RoundTable-Create")]
+    [Migration("20200403135704_RoundTable-Create")]
     partial class RoundTableCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,23 +91,23 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 288, DateTimeKind.Local).AddTicks(6962),
+                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 453, DateTimeKind.Local).AddTicks(6885),
                             State = "Active",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 289, DateTimeKind.Local).AddTicks(5025)
+                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5088)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 289, DateTimeKind.Local).AddTicks(5570),
+                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5632),
                             State = "Inactive",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 289, DateTimeKind.Local).AddTicks(5580)
+                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5644)
                         },
                         new
                         {
                             Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 289, DateTimeKind.Local).AddTicks(5587),
+                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5651),
                             State = "Suspended",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 289, DateTimeKind.Local).AddTicks(5588)
+                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5652)
                         });
                 });
 
@@ -139,16 +139,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 290, DateTimeKind.Local).AddTicks(9183),
+                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 455, DateTimeKind.Local).AddTicks(9081),
                             Type = "American",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 290, DateTimeKind.Local).AddTicks(9988)
+                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 455, DateTimeKind.Local).AddTicks(9782)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 291, DateTimeKind.Local).AddTicks(458),
+                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(287),
                             Type = "European",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 291, DateTimeKind.Local).AddTicks(472)
+                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(304)
                         });
                 });
 
@@ -159,7 +159,7 @@ namespace Casino.Data.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CloseAt")
+                    b.Property<DateTime?>("ClosedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -220,16 +220,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 291, DateTimeKind.Local).AddTicks(4643),
+                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(4541),
                             State = "Opened",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 291, DateTimeKind.Local).AddTicks(5190)
+                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(5005)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 291, DateTimeKind.Local).AddTicks(5665),
+                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(5467),
                             State = "Closed",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 54, 4, 291, DateTimeKind.Local).AddTicks(5677)
+                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(5478)
                         });
                 });
 
@@ -292,7 +292,7 @@ namespace Casino.Data.Migrations
             modelBuilder.Entity("Casino.Data.Models.Entities.Round", b =>
                 {
                     b.HasOne("Casino.Data.Models.Entities.Roulette", "Roulette")
-                        .WithMany()
+                        .WithMany("Rounds")
                         .HasForeignKey("RouletteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

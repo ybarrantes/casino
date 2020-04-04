@@ -10,7 +10,7 @@ using Casino.Data.Migrations.Configuration;
 
 namespace Casino.Data.Context
 {
-    public class ApplicationDbContext : DbContext, ISQLTransaction
+    public class ApplicationDbContext : DbContext, ISqlTransaction
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             :base(options)
@@ -97,11 +97,14 @@ namespace Casino.Data.Context
             Transaction = null;
         }
 
-        public async Task RollbackTransactionAsync()
+        public async Task RollbackTransactionAsync(bool throwException = true)
         {
             await ApplyActionTransactionAsync(ActionTransaction.Rollback);
             await ApplyActionTransactionAsync(ActionTransaction.Dispose);
             Transaction = null;
+
+            if (throwException)
+                throw new DbUpdateException("rollback transaction");
         }
 
         private async Task ApplyActionTransactionAsync(ActionTransaction action)

@@ -3,31 +3,34 @@ using Casino.API.Services;
 using Casino.Data.Context;
 using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
-using Casino.Services.DB.SQL.Contracts.CRUD;
 using Casino.Services.DB.SQL.Contracts.Model;
+using Casino.Services.DB.SQL.Crud;
 using Casino.Services.Util.Collections;
 using Casino.Services.WebApi;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Casino.API.Components.Roulettes
 {
-    public class RoulettesCRUDComponent : CRUDComponent<Roulette>
+    public class RoulettesCrudComponent : SqlContextCrud<Roulette>
     {
-        public override Type ShowModelDTOType { get; internal set; }
+        private readonly IIdentityApp<User> _identityApp;
 
-        public RoulettesCRUDComponent(ApplicationDbContext dbContext, ContextCRUD<Roulette> contextCRUD, IIdentityApp<User> identityApp, IMapper mapper)
-            : base(dbContext, contextCRUD, identityApp, mapper)
+        public RoulettesCrudComponent(
+            IIdentityApp<User> identityApp,
+            IMapper mapper,
+            IPagedRecords<Roulette> pagedRecords)
+            : base(mapper, pagedRecords)
         {
-            RoulettesQueryableFilter filter = new RoulettesQueryableFilter();
-            ContextCRUD.CustomFilter = filter;
+            QueryableFilter = new RoulettesQueryableFilter();
+
+            _identityApp = identityApp;
 
             ShowModelDTOType = typeof(RouletteShowDTO);
         }
 
-        public override async Task<Roulette> FillEntityFromDTO(Roulette entity, IModelDTO dto)
+        public override async Task<Roulette> FillEntityFromModelDTO(Roulette entity, IModelDTO dto)
         {
             RouletteCreateDTO modelDto = (RouletteCreateDTO)dto;
 
@@ -40,7 +43,7 @@ namespace Casino.API.Components.Roulettes
 
         public async Task<T> GetAndValidateRouletteProperties<T>(long id) where T : class
         {
-            var entity = await ((ApplicationDbContext)ContextCRUD.AppDbContext)
+            var entity = await AppDbContext
                 .Set<T>()
                 .FirstOrDefaultAsync(x => ((IEntityModelBase)x).Id.Equals(id));
 
@@ -53,14 +56,12 @@ namespace Casino.API.Components.Roulettes
             return entity;
         }
 
-        public override async Task<Roulette> SetIdentityUserToEntity(Roulette entity)
+        protected override async Task OnBeforeCreate(Roulette entity)
         {
-            entity.UserRegister = await base.IdentityApp.GetUser(base.ContextCRUD.AppDbContext);
-
-            return entity;
+            entity.UserRegister = await _identityApp.GetUser(AppDbContext);
         }
 
-        public override IPagedRecords MapPagedRecordsToModelDTO(IPagedRecords pagedRecords)
+        public override IPagedRecords<Roulette> MapPagedRecordsToModelDTO(IPagedRecords<Roulette> pagedRecords)
         {
             pagedRecords.Result = Mapper.Map<List<RouletteShowDTO>>(pagedRecords.Result);
 

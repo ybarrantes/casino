@@ -10,11 +10,11 @@ namespace Casino.Data.Models.DTO.Rounds
     {
         public long Id { get; set; }
 
-        public RoundState State { get; set; }
+        public RoundStateDTO State { get; set; }
 
         public string WinNumber { get; set; }
 
-        public DateTime? CloseAt { get; set; }
+        public DateTime? ClosedAt { get; set; }
 
         public DateTime? CreatedAt { get; set; }
 

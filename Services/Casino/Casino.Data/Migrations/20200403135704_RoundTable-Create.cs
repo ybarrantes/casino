@@ -16,7 +16,7 @@ namespace Casino.Data.Migrations
                     RouletteId = table.Column<long>(nullable: false),
                     StateId = table.Column<long>(nullable: false),
                     WinNumber = table.Column<string>(maxLength: 2, nullable: true),
-                    CloseAt = table.Column<DateTime>(nullable: true),
+                    ClosedAt = table.Column<DateTime>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GetDate()"),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GetDate()"),
                     DeletedAt = table.Column<DateTime>(nullable: true)

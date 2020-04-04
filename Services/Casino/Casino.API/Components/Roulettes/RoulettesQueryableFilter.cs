@@ -1,6 +1,8 @@
 ﻿using Casino.Data.Models.Entities;
+using Casino.Services.DB.SQL.Contracts.Model;
 using Casino.Services.DB.SQL.Queryable;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Casino.API.Components.Roulettes
