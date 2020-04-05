@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Casino.API.Services;
 using Casino.Data.Models.Default;
 using Casino.Data.Models.DTO.Rounds;
 using Casino.Data.Models.Entities;
@@ -18,13 +19,17 @@ namespace Casino.API.Components.Rounds
     public class RoundsCrudComponent : SqlContextCrud<Round>, IRoundComponent
     {
         private readonly ISqlContextCrud<Roulette> _rouletteCrudController;
+        private readonly IIdentityApp<User> _identityApp;
 
         public RoundsCrudComponent(
             IMapper mapper,
             IPagedRecords<Round> pagedRecords,
-            ISqlContextCrud<Roulette> rouletteContext)
+            ISqlContextCrud<Roulette> rouletteContext,
+            IIdentityApp<User> identityApp)
             : base(mapper, pagedRecords)
         {
+            _identityApp = identityApp;
+
             ShowModelDTOType = typeof(RoundShowDTO);
 
             _rouletteCrudController = rouletteContext;
@@ -35,6 +40,11 @@ namespace Casino.API.Components.Rounds
             pagedRecords.Result = Mapper.Map<List<RoundShowDTO>>(pagedRecords.Result);
 
             return pagedRecords;
+        }
+
+        protected override async Task OnBeforeCreate(Round entity)
+        {
+            entity.UserOpen = await _identityApp.GetUser(AppDbContext);
         }
 
         public async Task<ActionResult<WebApiResponse>> GetAllRouletteRoundsPagedRecordsAsync(long rouletteId, int page)
@@ -140,6 +150,7 @@ namespace Casino.API.Components.Rounds
 
             round.State = await GetRoundState(RoundStates.Closed);
             round.ClosedAt = DateTime.Now;
+            round.UserClose = await _identityApp.GetUser(AppDbContext);
 
             AppDbContext.Entry(round).State = EntityState.Modified;
 

@@ -28,6 +28,12 @@ namespace Casino.Data.Context
         public DbSet<RoundState> RoundStates { get; set; }
         public DbSet<Round> Rounds { get; set; }
 
+        public DbSet<UserAccountType> UserAccountTypes { get; set; }
+        public DbSet<UserAccountState> UserAccountStates { get; set; }
+        public DbSet<UserAccount> UserAccounts { get; set; }
+
+        //public DbSet<Bet> Bets { get; set; }
+
         #endregion
 
 
@@ -61,7 +67,11 @@ namespace Casino.Data.Context
 
             modelBuilder.ApplyConfiguration(new RouletteStateConfiguration());
             modelBuilder.ApplyConfiguration(new RouletteTypeConfiguration());
+
             modelBuilder.ApplyConfiguration(new RoundStateConfiguration());
+            
+            modelBuilder.ApplyConfiguration(new UserAccountStateConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAccountTypeConfiguration());
         }
 
 

@@ -6,3 +6,6 @@ dotnet ef migrations remove --project Casino.Data
 
 -- apply changes to database
 dotnet ef database update --project Casino.Data
+
+-- ignore entity on build migration. Note: add this line before base.OnModelCreating(modelBuilder);
+modelBuilder.Ignore<Round>();

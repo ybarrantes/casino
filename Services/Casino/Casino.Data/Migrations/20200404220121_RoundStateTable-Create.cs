@@ -21,12 +21,40 @@ namespace Casino.Data.Migrations
                 {
                     table.PrimaryKey("PK_RoundStates", x => x.Id);
                 });
+
+            migrationBuilder.UpdateData(
+                table: "RouletteTypes",
+                keyColumn: "Id",
+                keyValue: 1L,
+                column: "Type",
+                value: "European");
+
+            migrationBuilder.UpdateData(
+                table: "RouletteTypes",
+                keyColumn: "Id",
+                keyValue: 2L,
+                column: "Type",
+                value: "American");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "RoundStates");
+
+            migrationBuilder.UpdateData(
+                table: "RouletteTypes",
+                keyColumn: "Id",
+                keyValue: 1L,
+                column: "Type",
+                value: "American");
+
+            migrationBuilder.UpdateData(
+                table: "RouletteTypes",
+                keyColumn: "Id",
+                keyValue: 2L,
+                column: "Type",
+                value: "European");
         }
     }
 }

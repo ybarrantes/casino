@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Casino.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200403135704_RoundTable-Create")]
+    [Migration("20200404230208_RoundTable-Create")]
     partial class RoundTableCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,23 +91,23 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 453, DateTimeKind.Local).AddTicks(6885),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 546, DateTimeKind.Local).AddTicks(6842),
                             State = "Active",
-                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5088)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 548, DateTimeKind.Local).AddTicks(2399)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5632),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 548, DateTimeKind.Local).AddTicks(3449),
                             State = "Inactive",
-                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5644)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 548, DateTimeKind.Local).AddTicks(3472)
                         },
                         new
                         {
                             Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5651),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 548, DateTimeKind.Local).AddTicks(3482),
                             State = "Suspended",
-                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 454, DateTimeKind.Local).AddTicks(5652)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 548, DateTimeKind.Local).AddTicks(3483)
                         });
                 });
 
@@ -139,16 +139,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 455, DateTimeKind.Local).AddTicks(9081),
-                            Type = "American",
-                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 455, DateTimeKind.Local).AddTicks(9782)
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 552, DateTimeKind.Local).AddTicks(2802),
+                            Type = "European",
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 552, DateTimeKind.Local).AddTicks(4322)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(287),
-                            Type = "European",
-                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(304)
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 552, DateTimeKind.Local).AddTicks(5586),
+                            Type = "American",
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 552, DateTimeKind.Local).AddTicks(5640)
                         });
                 });
 
@@ -179,6 +179,12 @@ namespace Casino.Data.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
+                    b.Property<long?>("UserCloseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserOpenId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("WinNumber")
                         .HasColumnType("nvarchar(2)")
                         .HasMaxLength(2);
@@ -188,6 +194,10 @@ namespace Casino.Data.Migrations
                     b.HasIndex("RouletteId");
 
                     b.HasIndex("StateId");
+
+                    b.HasIndex("UserCloseId");
+
+                    b.HasIndex("UserOpenId");
 
                     b.ToTable("Rounds");
                 });
@@ -220,16 +230,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(4541),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 553, DateTimeKind.Local).AddTicks(5215),
                             State = "Opened",
-                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(5005)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 553, DateTimeKind.Local).AddTicks(5967)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(5467),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 553, DateTimeKind.Local).AddTicks(6650),
                             State = "Closed",
-                            UpdatedAt = new DateTime(2020, 4, 3, 8, 57, 4, 456, DateTimeKind.Local).AddTicks(5478)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 2, 7, 553, DateTimeKind.Local).AddTicks(6664)
                         });
                 });
 
@@ -300,6 +310,16 @@ namespace Casino.Data.Migrations
                     b.HasOne("Casino.Data.Models.Entities.RoundState", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Casino.Data.Models.Entities.User", "UserClose")
+                        .WithMany()
+                        .HasForeignKey("UserCloseId");
+
+                    b.HasOne("Casino.Data.Models.Entities.User", "UserOpen")
+                        .WithMany()
+                        .HasForeignKey("UserOpenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

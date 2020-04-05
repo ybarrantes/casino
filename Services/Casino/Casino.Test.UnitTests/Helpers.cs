@@ -4,8 +4,9 @@ using Casino.Data.Context;
 using Casino.Data.Models.DTO.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
-namespace Casino.UnitTests
+namespace Casino.Test.UnitTests
 {
     public class Helpers
     {
@@ -63,15 +64,6 @@ namespace Casino.UnitTests
         public static ApplicationDbContext GetNewDbContext(string dbName = "CasinoUnitTestDb")
         {
             return new ApplicationDbContext(OptionsDBContext(dbName));
-        }
-
-        public static UserSignInDTO GetDefaultUsernameAndPassword()
-        {
-            return new UserSignInDTO
-            {
-                Username = "yonicristhbl",
-                Password = "123456Yb"
-            };
         }
     }
 }

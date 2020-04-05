@@ -16,6 +16,8 @@ namespace Casino.Data.Migrations
                     RouletteId = table.Column<long>(nullable: false),
                     StateId = table.Column<long>(nullable: false),
                     WinNumber = table.Column<string>(maxLength: 2, nullable: true),
+                    UserOpenId = table.Column<long>(nullable: false),
+                    UserCloseId = table.Column<long>(nullable: true),
                     ClosedAt = table.Column<DateTime>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GetDate()"),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GetDate()"),
@@ -29,13 +31,25 @@ namespace Casino.Data.Migrations
                         column: x => x.RouletteId,
                         principalTable: "Roulettes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Rounds_RoundStates_StateId",
                         column: x => x.StateId,
                         principalTable: "RoundStates",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Rounds_Users_UserCloseId",
+                        column: x => x.UserCloseId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Rounds_Users_UserOpenId",
+                        column: x => x.UserOpenId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -47,6 +61,16 @@ namespace Casino.Data.Migrations
                 name: "IX_Rounds_StateId",
                 table: "Rounds",
                 column: "StateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rounds_UserCloseId",
+                table: "Rounds",
+                column: "UserCloseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rounds_UserOpenId",
+                table: "Rounds",
+                column: "UserOpenId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

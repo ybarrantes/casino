@@ -23,6 +23,9 @@ namespace Casino.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "SuperAdmin")]
+        [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> GetAll(int page = 1)
         {
             return await _rouletteStateCrud.GetAllPagedRecordsAndMakeResponseAsync(page, 10);
@@ -30,6 +33,9 @@ namespace Casino.API.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "SuperAdmin")]
+        [Authorize(Policy = "SystemManager")]
         public async Task<ActionResult<WebApiResponse>> GetOne(long id)
         {
             return await _rouletteStateCrud.FirstByIdAndMakeResponseAsync(id);

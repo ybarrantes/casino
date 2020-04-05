@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Casino.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200403060058_RoundStateTable-Create")]
+    [Migration("20200404220121_RoundStateTable-Create")]
     partial class RoundStateTableCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,23 +91,23 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 686, DateTimeKind.Local).AddTicks(9252),
+                            CreatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 762, DateTimeKind.Local).AddTicks(5548),
                             State = "Active",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 687, DateTimeKind.Local).AddTicks(7369)
+                            UpdatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 763, DateTimeKind.Local).AddTicks(5245)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 687, DateTimeKind.Local).AddTicks(7920),
+                            CreatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 763, DateTimeKind.Local).AddTicks(6037),
                             State = "Inactive",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 687, DateTimeKind.Local).AddTicks(7932)
+                            UpdatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 763, DateTimeKind.Local).AddTicks(6051)
                         },
                         new
                         {
                             Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 687, DateTimeKind.Local).AddTicks(7940),
+                            CreatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 763, DateTimeKind.Local).AddTicks(6061),
                             State = "Suspended",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 687, DateTimeKind.Local).AddTicks(7941)
+                            UpdatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 763, DateTimeKind.Local).AddTicks(6062)
                         });
                 });
 
@@ -139,16 +139,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 689, DateTimeKind.Local).AddTicks(1463),
-                            Type = "American",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 689, DateTimeKind.Local).AddTicks(1937)
+                            CreatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 765, DateTimeKind.Local).AddTicks(1502),
+                            Type = "European",
+                            UpdatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 765, DateTimeKind.Local).AddTicks(2009)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 689, DateTimeKind.Local).AddTicks(2394),
-                            Type = "European",
-                            UpdatedAt = new DateTime(2020, 4, 3, 1, 0, 57, 689, DateTimeKind.Local).AddTicks(2409)
+                            CreatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 765, DateTimeKind.Local).AddTicks(2495),
+                            Type = "American",
+                            UpdatedAt = new DateTime(2020, 4, 4, 17, 1, 20, 765, DateTimeKind.Local).AddTicks(2515)
                         });
                 });
 

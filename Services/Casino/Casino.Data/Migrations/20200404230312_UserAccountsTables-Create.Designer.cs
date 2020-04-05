@@ -4,14 +4,16 @@ using Casino.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Casino.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200404230312_UserAccountsTables-Create")]
+    partial class UserAccountsTablesCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,23 +91,23 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 450, DateTimeKind.Local).AddTicks(3730),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 580, DateTimeKind.Local).AddTicks(2480),
                             State = "Active",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 451, DateTimeKind.Local).AddTicks(9725)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 581, DateTimeKind.Local).AddTicks(4206)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 452, DateTimeKind.Local).AddTicks(707),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 581, DateTimeKind.Local).AddTicks(4824),
                             State = "Inactive",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 452, DateTimeKind.Local).AddTicks(730)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 581, DateTimeKind.Local).AddTicks(4838)
                         },
                         new
                         {
                             Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 452, DateTimeKind.Local).AddTicks(742),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 581, DateTimeKind.Local).AddTicks(4845),
                             State = "Suspended",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 452, DateTimeKind.Local).AddTicks(743)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 581, DateTimeKind.Local).AddTicks(4846)
                         });
                 });
 
@@ -137,16 +139,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 454, DateTimeKind.Local).AddTicks(3730),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 584, DateTimeKind.Local).AddTicks(235),
                             Type = "European",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 454, DateTimeKind.Local).AddTicks(4303)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 584, DateTimeKind.Local).AddTicks(1570)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 454, DateTimeKind.Local).AddTicks(4831),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 584, DateTimeKind.Local).AddTicks(2329),
                             Type = "American",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 454, DateTimeKind.Local).AddTicks(4851)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 584, DateTimeKind.Local).AddTicks(2362)
                         });
                 });
 
@@ -228,16 +230,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(416),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 584, DateTimeKind.Local).AddTicks(9832),
                             State = "Opened",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(1049)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 585, DateTimeKind.Local).AddTicks(550)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(1627),
+                            CreatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 585, DateTimeKind.Local).AddTicks(1259),
                             State = "Closed",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(1641)
+                            UpdatedAt = new DateTime(2020, 4, 4, 18, 3, 11, 585, DateTimeKind.Local).AddTicks(1279)
                         });
                 });
 
@@ -337,29 +339,6 @@ namespace Casino.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserAccountStates");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(8428),
-                            State = "Active",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(9145)
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(9757),
-                            State = "Inactive",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(9774)
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(9791),
-                            State = "Suspended",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 455, DateTimeKind.Local).AddTicks(9793)
-                        });
                 });
 
             modelBuilder.Entity("Casino.Data.Models.Entities.UserAccountType", b =>
@@ -385,22 +364,6 @@ namespace Casino.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserAccountTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 456, DateTimeKind.Local).AddTicks(6478),
-                            Type = "Free",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 456, DateTimeKind.Local).AddTicks(7013)
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 456, DateTimeKind.Local).AddTicks(7576),
-                            Type = "Real",
-                            UpdatedAt = new DateTime(2020, 4, 4, 18, 10, 30, 456, DateTimeKind.Local).AddTicks(7587)
-                        });
                 });
 
             modelBuilder.Entity("Casino.Data.Models.Entities.Roulette", b =>

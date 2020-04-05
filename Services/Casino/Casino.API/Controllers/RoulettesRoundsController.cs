@@ -12,6 +12,8 @@ namespace Casino.API.Controllers
 {
     [Authorize]
     [ApiController]
+    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "SuperAdmin")]
     [Route("api/roulettes/{rouletteId}/rounds")]
     public class RoulettesRoundsController
     {
