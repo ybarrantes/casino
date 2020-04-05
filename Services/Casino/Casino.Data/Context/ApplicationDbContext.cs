@@ -7,15 +7,18 @@ using System;
 using Casino.Services.DB.SQL.Contracts;
 using Casino.Services.DB.SQL.Contracts.Model;
 using Casino.Data.Migrations.Configuration;
+using Casino.Data.Models.Views;
+using Casino.Services.DB.SQL.Context;
 
 namespace Casino.Data.Context
 {
-    public class ApplicationDbContext : DbContext, ISqlTransaction
+    public class ApplicationDbContext : ApplicationDbContextBase
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             :base(options)
         {
         }
+        
 
         #region Datasets
 
@@ -32,30 +35,13 @@ namespace Casino.Data.Context
         public DbSet<UserAccountState> UserAccountStates { get; set; }
         public DbSet<UserAccount> UserAccounts { get; set; }
 
-        //public DbSet<Bet> Bets { get; set; }
+        public DbSet<Bet> Bets { get; set; }
 
-        #endregion
+        public DbSet<AccountTransactionState> AccountTransactionStates { get; set; }
+        public DbSet<AccountTransactionType> AccountTransactionTypes { get; set; }
+        public DbSet<AccountTransaction> AccountTransactions { get; set; }
 
-
-        #region Save Changes
-
-        public override int SaveChanges()
-        {
-            OnBeforeSave();
-            return base.SaveChanges();
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            OnBeforeSave();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        private void OnBeforeSave()
-        {
-            IEntityModelTimestamps.BeforeSave(ChangeTracker);
-            IEntityModelSoftDeletes.BeforeSave(ChangeTracker);
-        }
+        public DbSet<UserAccountBalance> UserAccountBalances { get; set; }
 
         #endregion
 
@@ -63,6 +49,8 @@ namespace Casino.Data.Context
         // TODO: add filter to skip records marked as soft-deleted
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Ignore<Bet>();
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new RouletteStateConfiguration());
@@ -72,76 +60,9 @@ namespace Casino.Data.Context
             
             modelBuilder.ApplyConfiguration(new UserAccountStateConfiguration());
             modelBuilder.ApplyConfiguration(new UserAccountTypeConfiguration());
+
+            modelBuilder.ApplyConfiguration(new AccountTransactionStateConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountTransactionTypeConfiguration());
         }
-
-
-        #region Implemented Members
-
-        private IDbContextTransaction _transaction = null;
-        
-        private IDbContextTransaction Transaction
-        {
-            get => _transaction;
-            set
-            {
-                _transaction = value;
-                TransactionId = (Transaction == null) ? "" : Transaction.TransactionId.ToString();
-            }
-        }
-
-        public bool HasTransaction => Transaction != null;
-        public string TransactionId { get; internal set; }
-
-        public async Task BeginTransactionAsync()
-        {
-            if (HasTransaction)
-                throw new InvalidOperationException($"Transaction '{_transaction.TransactionId}' in process");
-
-            Transaction = await Database.BeginTransactionAsync();
-        }
-
-        public async Task CommitTransactionAsync()
-        {
-            await ApplyActionTransactionAsync(ActionTransaction.Commit);
-            await ApplyActionTransactionAsync(ActionTransaction.Dispose);
-            Transaction = null;
-        }
-
-        public async Task RollbackTransactionAsync(bool throwException = true)
-        {
-            await ApplyActionTransactionAsync(ActionTransaction.Rollback);
-            await ApplyActionTransactionAsync(ActionTransaction.Dispose);
-            Transaction = null;
-
-            if (throwException)
-                throw new DbUpdateException("rollback transaction");
-        }
-
-        private async Task ApplyActionTransactionAsync(ActionTransaction action)
-        {
-            ThrowExceptionIfNotHasTransaction();
-
-            try
-            {
-                if(action.Equals(ActionTransaction.Commit))
-                    await Transaction.CommitAsync();
-                else if(action.Equals(ActionTransaction.Rollback))
-                    await Transaction.RollbackAsync();
-                else if (action.Equals(ActionTransaction.Dispose))
-                    await Transaction.DisposeAsync();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-        
-        private void ThrowExceptionIfNotHasTransaction()
-        {
-            if(!HasTransaction)
-                throw new NullReferenceException("No transacction in process");
-        }
-
-        #endregion
     }
 }

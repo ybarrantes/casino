@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Casino.API.Services
 {
-    public sealed class IdentityApp<T> : IIdentityApp<T> where T : class
+    public sealed class IdentityAppMock<T> : IIdentityApp<T> where T : class
     {
         private bool _authenticated = false;
         private bool _initialized = false;
@@ -22,7 +22,7 @@ namespace Casino.API.Services
 
         public IEnumerable<Claim> Claims => GetClaims();
 
-        public IdentityApp(IHttpContextAccessor httpContext)
+        public IdentityAppMock(IHttpContextAccessor httpContext)
         {
             _httpContext = httpContext;
 

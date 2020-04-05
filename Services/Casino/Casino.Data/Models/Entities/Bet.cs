@@ -13,6 +13,9 @@ namespace Casino.Data.Models.Entities
         [Required]
         public Round Round { get; set; }
 
+        /*[Required]
+        public AccountTransaction AccountTransaction { get; set; }*/
+
         [Required]
         public User UserRegister { get; set; }
 

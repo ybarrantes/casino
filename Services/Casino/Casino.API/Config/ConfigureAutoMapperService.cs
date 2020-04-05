@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using AutoMapper.Configuration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using Casino.Data.Models.DTO.Users;
+using Casino.Data.Models.DTO.UserAccounts;
+using Casino.Data.Models.Views;
 
 namespace Casino.API.Config
 {
@@ -26,15 +28,19 @@ namespace Casino.API.Config
             config.CreateMap<RouletteStateDTO, RouletteState>();
 
             config.CreateMap<RouletteType, RouletteTypeDTO>();
-            config.CreateMap<RouletteTypeDTO, RouletteType>();
 
             config.CreateMap<Round, RoundShowDTO>();
-            config.CreateMap<RoundShowDTO, Round>();
 
             config.CreateMap<RoundState, RoundStateDTO>();
-            config.CreateMap<RoundStateDTO, RoundState>();
 
             config.CreateMap<User, UserShowDTO>();
+
+            config.CreateMap<UserAccount, UserAccountShowDTO>();
+            config.CreateMap<UserAccountState, UserAccountStateShowDTO>();
+            config.CreateMap<UserAccountType, UserAccountTypeShowDTO>();
+
+            config.CreateMap<UserAccountWithBalanceDTO, UserAccountShowDTO>();
+            config.CreateMap<UserAccountBalance, UserAccountShowDTO>();
 
             return config;
         }

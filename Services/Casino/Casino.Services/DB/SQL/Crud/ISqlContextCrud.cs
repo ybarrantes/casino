@@ -4,6 +4,7 @@ using Casino.Services.DB.SQL.Queryable;
 using Casino.Services.Util.Collections;
 using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace Casino.Services.DB.SQL.Crud
         #region Core
 
         IMapper Mapper { get; }
+
+        Type ShowModelDTOType { get; set; }
 
         IQueryableFilter<T> QueryFilter { get; set; }
 

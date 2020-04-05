@@ -18,7 +18,7 @@ namespace Casino.Test.UnitTests.Config.Mocks
 
         public async Task<User> GetUser(DbContext dbContext)
         {
-            return await Task.Run(() => (new User { CloudIdentityId = "xxxxxxx", Username = "test", Email = "test@test.com", Id = 99999 }));
+            return await Task.Run(() => (new User { CloudIdentityId = "xxxxxxx", Username = "test", Email = "test@test.com", Id = 1 }));
         }
     }
 }

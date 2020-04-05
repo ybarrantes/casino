@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Casino.Services.DB.SQL.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Casino.Services.DB
 {
     public interface IDbContext
     {
-        DbContext AppDbContext { get; set; }
+        ApplicationDbContextBase AppDbContext { get; set; }
     }
 }

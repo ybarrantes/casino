@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Casino.Services.DB.SQL.Context;
 using Casino.Services.DB.SQL.Contracts.Model;
 using Casino.Services.DB.SQL.Queryable;
 using Casino.Services.Util.Collections;
@@ -16,15 +17,23 @@ namespace Casino.Services.DB.SQL.Crud
     {
         private readonly IMapper _mapper = null;
         private readonly IPagedRecords<T> _pagedRecords = null;
+        private ApplicationDbContextBase _dbContext = null;
 
         protected string EntityClassName => typeof(T).Name;
 
         protected IPagedRecords<T> PagedRecords => _pagedRecords;
 
-        public DbContext AppDbContext { get; set; }
+        public ApplicationDbContextBase AppDbContext
+        {
+            get => _dbContext;
+            set
+            {
+                _dbContext = value;
+                OnDbContextChange(_dbContext);
+            }
+        }
         public IMapper Mapper => _mapper;
-        public IQueryableFilter<T> QueryFilter { get; set; }
-        protected Type ShowModelDTOType { get; set; }
+        public IQueryableFilter<T> QueryFilter { get; set; }        
 
         public SqlContextCrud(IMapper mapper, IPagedRecords<T> pagedRecords)
         {
@@ -33,6 +42,10 @@ namespace Casino.Services.DB.SQL.Crud
 
             QueryFilter = new QueryableDefaultFilter<T>();
         }
+
+        protected virtual void OnDbContextChange(ApplicationDbContextBase dbContext) { }
+
+        public Type ShowModelDTOType { get; set; }
 
         #region Queryables section
 
@@ -113,12 +126,16 @@ namespace Casino.Services.DB.SQL.Crud
 
             AppDbContext.Set<T>().Add(entity);
 
-            await TrySaveChangesAsync();
+            await TrySaveChangesAsync(Action.Create);
+
+            await OnAfterCreate(entity);
 
             return entity;
         }
 
         protected virtual Task OnBeforeCreate(T entity) => Task.CompletedTask;
+
+        protected virtual Task OnAfterCreate(T entity) => Task.CompletedTask;
         
         public async Task<T> UpdateFromModelDTOAsync(long id, IModelDTO modelDTO)
         {
@@ -135,12 +152,16 @@ namespace Casino.Services.DB.SQL.Crud
 
             AppDbContext.Entry(entity).State = EntityState.Modified;
 
-            await TrySaveChangesAsync();
+            await TrySaveChangesAsync(Action.Update);
+
+            await OnAfterUpdate(entity);
 
             return entity;
         }
 
         protected virtual Task OnBeforeUpdate(T entity) => Task.CompletedTask;
+
+        protected virtual Task OnAfterUpdate(T entity) => Task.CompletedTask;
 
         public async Task<T> DeleteByIdAsync(long id)
         {
@@ -155,27 +176,37 @@ namespace Casino.Services.DB.SQL.Crud
 
             AppDbContext.Set<T>().Remove(entity);
 
-            await TrySaveChangesAsync();
+            await TrySaveChangesAsync(Action.Delete);
+
+            await OnAfterDelete(entity);
 
             return entity;
         }
 
         protected virtual Task OnBeforeDelete(T entity) => Task.CompletedTask;
 
-        private async Task TrySaveChangesAsync()
+        protected virtual Task OnAfterDelete(T entity) => Task.CompletedTask;
+
+        private async Task TrySaveChangesAsync(Action action)
         {
             try
             {
                 await OnBeforeSave();
                 await AppDbContext.SaveChangesAsync();
+                await OnAfterSave();
             }
             catch (Exception e)
             {
+                await OnSaveFailed(e);
                 throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, $"Fails when trying to save changes to database: {e.Message}");
             }
         }
 
         protected virtual Task OnBeforeSave() => Task.CompletedTask;
+
+        protected virtual Task OnAfterSave() => Task.CompletedTask;
+
+        protected virtual Task OnSaveFailed(Exception e) => Task.CompletedTask;
 
         #endregion
 
@@ -186,6 +217,7 @@ namespace Casino.Services.DB.SQL.Crud
 
         public virtual IModelDTO MapEntityToModelDTO(T entity)
         {
+            
             return (IModelDTO)Mapper.Map(entity, typeof(T), ShowModelDTOType);
         }
 
@@ -249,5 +281,12 @@ namespace Casino.Services.DB.SQL.Crud
         }
 
         #endregion
+
+        private enum Action
+        {
+            Create,
+            Update,
+            Delete 
+        }
     }
 }

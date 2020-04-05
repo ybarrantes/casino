@@ -144,9 +144,7 @@ namespace Casino.API.Components.Rounds
 
         private async Task<Round> CloseRoundAndStartPlayRoulette(Round round)
         {
-            ISqlTransaction sqlTransaction = (ISqlTransaction)AppDbContext;
-
-            await sqlTransaction.BeginTransactionAsync();
+            await AppDbContext.BeginTransactionAsync();
 
             round.State = await GetRoundState(RoundStates.Closed);
             round.ClosedAt = DateTime.Now;
@@ -160,7 +158,7 @@ namespace Casino.API.Components.Rounds
 
             // TODO: launch process to collect bets
 
-            await sqlTransaction.CommitTransactionAsync();
+            await AppDbContext.CommitTransactionAsync();
 
             return round;
         }

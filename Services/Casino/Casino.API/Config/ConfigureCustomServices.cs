@@ -1,5 +1,6 @@
 ﻿using Casino.API.Components.Roulettes;
 using Casino.API.Components.Rounds;
+using Casino.API.Components.UserAccounts;
 using Casino.API.Components.Users;
 using Casino.API.Services;
 using Casino.Data.Models.Entities;
@@ -21,19 +22,18 @@ namespace Casino.API.Config
 
             services.AddScoped(typeof(IAwsCognitoUserGroups), typeof(AwsCognitoUserGroups));
 
-            services.AddScoped(typeof(IIdentityApp<>), typeof(IdentityApp<>));
+            services.AddScoped(typeof(IIdentityApp<>), typeof(IdentityAppMock<>));
 
             services.AddScoped(typeof(IPagedRecords<>), typeof(PagedRecords<>));
 
+            services.AddScoped(typeof(ISqlContextCrud<>), typeof(SqlContextCrud<>));
+
             services.AddScoped<ISqlContextCrud<User>, UsersCrudComponent>();
-
             services.AddScoped<ISqlContextCrud<Roulette>, RoulettesCrudComponent>();
-
             services.AddScoped<ISqlContextCrud<RouletteState>, RoulettesStatesCrudComponent>();
-
             services.AddScoped<ISqlContextCrud<RouletteType>, RoulettesTypesCrudComponent>();
-
             services.AddScoped<ISqlContextCrud<Round>, RoundsCrudComponent>();
+            services.AddScoped<ISqlContextCrud<UserAccount>, UserAccountsCrudComponent>();
         }
     }
 }

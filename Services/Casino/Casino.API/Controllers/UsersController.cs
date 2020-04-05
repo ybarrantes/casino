@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.Entities;
 using Casino.Services.Authentication.Contracts;
-using Casino.API.Components;
 using Casino.Services.DB.SQL.Crud;
 using Casino.Data.Context;
 
@@ -34,21 +33,34 @@ namespace Casino.API.Controllers
             _crudComponent.AppDbContext = dbContext;
         }
 
+        [HttpGet]
         [Authorize]
-        [HttpGet("{id}", Name = "GetUsuario")]
-        public async Task<ActionResult<WebApiResponse>> GetUser(long id)
+        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "SuperAdmin")]
+        [Authorize(Policy = "SystemManager")]
+        public async Task<ActionResult<WebApiResponse>> GetAll(int page = 1)
         {
-            return await _crudComponent.FirstByIdAndMakeResponseAsync(id);
+            return await _crudComponent.GetAllPagedRecordsAndMakeResponseAsync(page, 20);
         }
 
+        [Authorize]
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<WebApiResponse>> GetUser(long userId)
+        {
+            // TODO: pending validate policies, if rol is player,
+            // can only see its own user, other roles can see all users
+            return await _crudComponent.FirstByIdAndMakeResponseAsync(userId);
+        }
+
+        [HttpPost("{userId}/roles")]
         [Authorize(Policy = "SuperAdmin")]
-        [HttpPost("{id}/roles")]
-        public async Task<ActionResult<WebApiResponse>> AddRole(long id, [FromBody] UserRoleDTO role)
+        [Authorize(Policy = "SystemManager")]
+        public async Task<ActionResult<WebApiResponse>> AddRole(long userId, [FromBody] UserRoleDTO role)
         {
             if (!CheckRoleIsAuthorized(role.Role))
                 throw new WebApiException(System.Net.HttpStatusCode.BadRequest, $"The role '{role.Role}' is not authorized in aws cognito groups, see configuration");
 
-            User user = await _crudComponent.FirstByIdAsync(id);
+            User user = await _crudComponent.FirstByIdAsync(userId);
 
             await _cognitoUserGroups.AddUserToGroup(user.Username, role.Role);
 

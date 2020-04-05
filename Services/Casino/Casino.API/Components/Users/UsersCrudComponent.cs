@@ -16,10 +16,24 @@ namespace Casino.API.Components.Users
 {
     public class UsersCrudComponent : SqlContextCrud<User>, IUserComponent
     {
-        public UsersCrudComponent(IMapper mapper, IPagedRecords<User> pagedRecords)
+        private ISqlContextCrud<UserAccount> _userAccountCrud = null;
+
+        public UsersCrudComponent(
+            IMapper mapper,
+            IPagedRecords<User> pagedRecords,
+            ISqlContextCrud<UserAccount> userAccountCrud)
             : base(mapper, pagedRecords)
         {
             ShowModelDTOType = typeof(UserShowDTO);
+
+            _userAccountCrud = userAccountCrud;
+        }
+
+        public override IPagedRecords<User> MapPagedRecordsToModelDTO(IPagedRecords<User> pagedRecords)
+        {
+            pagedRecords.Result = Mapper.Map<List<UserShowDTO>>(pagedRecords.Result);
+
+            return pagedRecords;
         }
 
         public async Task<ActionResult<WebApiResponse>> CreateUserAndUserAccountsAsync(UserSignUpDTO userDTO, string cloudIdentityId)
@@ -31,21 +45,21 @@ namespace Casino.API.Components.Users
                 CloudIdentityId = cloudIdentityId,
             };
 
-            ISqlTransaction transaction = ((ISqlTransaction)AppDbContext);
-
-            await transaction.BeginTransactionAsync();
+            await AppDbContext.BeginTransactionAsync();
 
             User user = await CreateFromEntityAsync(userEntity);
 
             await CreateUserAccountsAsync(user);
 
-            await transaction.CommitTransactionAsync();
+            await AppDbContext.CommitTransactionAsync();
 
             return new WebApiResponse().Success();
         }
 
         private async Task CreateUserAccountsAsync(User user)
         {
+            _userAccountCrud.AppDbContext = AppDbContext;
+
             UserAccountState userAccountActiveState = await AppDbContext
                 .Set<UserAccountState>()
                 .FirstOrDefaultAsync(x => x.Id.Equals((long)UserAccountStates.Active));
@@ -59,10 +73,8 @@ namespace Casino.API.Components.Users
                 UserAccount userAccount = new UserAccount {
                     UserOwner = user, State = userAccountActiveState, Type = accountType };
 
-                AppDbContext.Set<UserAccount>().Add(userAccount);
+                await _userAccountCrud.CreateFromEntityAsync(userAccount);
             }
-
-            await AppDbContext.SaveChangesAsync();
         }
     }
 }

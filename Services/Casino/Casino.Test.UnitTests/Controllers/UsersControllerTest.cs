@@ -13,8 +13,11 @@ using Casino.Test.UnitTests.Config.Mocks;
 using Casino.Data.Models.DTO.Users;
 using Casino.Services.DB.SQL.Crud;
 using Casino.API.Components.Users;
+using Casino.API.Components.UserAccounts;
 using Casino.Services.Util.Collections;
 using AutoMapper;
+using Casino.API.Services;
+using Casino.Data.Models.Views;
 
 namespace Casino.Test.UnitTests.Controllers
 {
@@ -26,8 +29,13 @@ namespace Casino.Test.UnitTests.Controllers
         private IAwsCognitoUserGroups _cognitoUserGroups = null;
         private List<string> _authorizedRoles = new List<string> { };
         private ISqlContextCrud<User> _userCrudComponent = null;
+        private ISqlContextCrud<UserAccount> _sqlContextCrudUserAccount = null;
+        private ISqlContextCrud<UserAccountBalance> _sqlContextCrudUserAccountBalance = null;
         private IPagedRecords<User> _pagedRecords = new PagedRecords<User>();
+        private IPagedRecords<UserAccount> _pagedRecordsUserAccount = new PagedRecords<UserAccount>();
         private IMapper _mapper = Helpers.GetAutoMapperConfiguration();
+        
+        private IIdentityApp<User> _identityApp = new IdentityAppMock();
 
         private bool initialized = false;
 
@@ -40,7 +48,10 @@ namespace Casino.Test.UnitTests.Controllers
             _dbContext = Helpers.GetNewDbContext("CasinoDbUsersControllerTest");
             _configuration = Helpers.GetConfiguration();
             _cognitoUserGroups = new AwsCognitoUserGroupsMock();
-            _userCrudComponent = new UsersCrudComponent(_mapper, _pagedRecords);
+            _sqlContextCrudUserAccountBalance = new SqlContextCrud<UserAccountBalance>(_mapper, new PagedRecords<UserAccountBalance>());
+            _sqlContextCrudUserAccount = new UserAccountsCrudComponent(
+                _mapper, _pagedRecordsUserAccount, _identityApp, _sqlContextCrudUserAccountBalance);
+            _userCrudComponent = new UsersCrudComponent(_mapper, _pagedRecords, _sqlContextCrudUserAccount);
 
             _controller = new UsersController(_dbContext, _configuration, _cognitoUserGroups, _userCrudComponent);
 
