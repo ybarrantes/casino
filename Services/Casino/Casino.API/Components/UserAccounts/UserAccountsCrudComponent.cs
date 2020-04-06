@@ -13,27 +13,31 @@ using System.Linq;
 using Casino.Data.Models.Views;
 using Casino.API.BusisnessLogic;
 using Casino.Services.DB.SQL.Context;
-using Casino.Data.Models.Default;
+using Casino.Data.Models.DTO.AccountTransanctions;
+using Casino.API.Components.AccountTransactions;
 
 namespace Casino.API.Components.UserAccounts
 {
     public class UserAccountsCrudComponent : SqlContextCrud<UserAccount>, IUserAccountComponent
     {
         private readonly IIdentityApp<User> _identityApp;
-        private readonly ISqlContextCrud<UserAccountBalance> _sqlUserAccountCrudComponent;
+        private readonly ISqlContextCrud<UserAccountBalance> _sqlUserAccountBalanceCrudComponent;
+        private readonly ISqlContextCrud<AccountTransaction> _sqlAccountTransactionContextCrud;
 
         public UserAccountsCrudComponent(
             IMapper mapper,
             IPagedRecords<UserAccount> pagedRecords,
             IIdentityApp<User> identityApp,
-            ISqlContextCrud<UserAccountBalance> sqlContextCrud)
+            ISqlContextCrud<UserAccountBalance> sqlUserAccountBalanceContextCrud,
+            ISqlContextCrud<AccountTransaction> sqlAccountTransactionContextCrud)
             : base(mapper, pagedRecords)
         {
             _identityApp = identityApp;
-            _sqlUserAccountCrudComponent = sqlContextCrud;
+            _sqlUserAccountBalanceCrudComponent = sqlUserAccountBalanceContextCrud;
+            _sqlAccountTransactionContextCrud = sqlAccountTransactionContextCrud;
 
             ShowModelDTOType = typeof(UserAccountShowDTO);
-            _sqlUserAccountCrudComponent.ShowModelDTOType = typeof(UserAccountShowDTO);
+            _sqlUserAccountBalanceCrudComponent.ShowModelDTOType = typeof(UserAccountShowDTO);
         }
 
         public override IPagedRecords<UserAccount> MapPagedRecordsToModelDTO(IPagedRecords<UserAccount> pagedRecords)
@@ -45,23 +49,19 @@ namespace Casino.API.Components.UserAccounts
 
         protected override void OnDbContextChange(ApplicationDbContextBase dbContext)
         {
-            _sqlUserAccountCrudComponent.AppDbContext = dbContext;
+            _sqlUserAccountBalanceCrudComponent.AppDbContext = dbContext;
+            _sqlAccountTransactionContextCrud.AppDbContext = dbContext;
         }
 
-        /// <summary>
         /// Apply welcome bonus on register a UserAccountEntity
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
         protected override async Task OnAfterCreate(UserAccount entity)
         {
             // TODO: use dependency injection
             IApplyBonus applyBonus = new ApplyWelcomeBonus();
                 
             await applyBonus.ApplyBonus(AppDbContext, entity);
-        }    
+        }
         
-
 
         public async Task<ActionResult<WebApiResponse>> GetAllUserAccountsPagedRecordsAsync(long userId, int page)
         {
@@ -69,15 +69,15 @@ namespace Casino.API.Components.UserAccounts
 
             SetFilterCrudComponent(userId);
 
-            IQueryable<UserAccountBalance> query = _sqlUserAccountCrudComponent.GetQueryableWithFilter();
+            IQueryable<UserAccountBalance> query = _sqlUserAccountBalanceCrudComponent.GetQueryableWithFilter();
 
-            IPagedRecords<UserAccountBalance> pagedRecords = await _sqlUserAccountCrudComponent.GetPagedRecordsAsync(query, page, 20);
+            IPagedRecords<UserAccountBalance> pagedRecords = await _sqlUserAccountBalanceCrudComponent.GetPagedRecordsAsync(query, page, 20);
 
             pagedRecords.Result = Mapper.Map<List<UserAccountShowDTO>>(pagedRecords.Result);
 
             return MakeSuccessResponse(pagedRecords);
         }
-
+        
         private async Task<User> AbortOnUserNotExistsAsync(long userId)
         {
             User user = await AppDbContext.Set<User>()
@@ -90,95 +90,49 @@ namespace Casino.API.Components.UserAccounts
             return user;
         }
 
-        private async Task AbortIfAuthUserIsNotOwnerAccount(long userOwnerAccountId)
-        {
-            User userSigned = await _identityApp.GetUser(AppDbContext);
-
-            if (userOwnerAccountId != userSigned.Id)
-                throw new WebApiException(System.Net.HttpStatusCode.Forbidden, "access denied");
-        }
-
         private void SetFilterCrudComponent(long userId)
         {
-            _sqlUserAccountCrudComponent.QueryFilter = new UserAccountsBalanceQueryFilter(AppDbContext, userId);
+            _sqlUserAccountBalanceCrudComponent.QueryFilter = new UserAccountsBalanceQueryFilter(AppDbContext, userId);
         }
-
+                      
         public async Task<ActionResult<WebApiResponse>> GetOneUserAccountsAsync(long userId, long accountId)
         {
             await AbortOnUserNotExistsAsync(userId);
 
             SetFilterCrudComponent(userId);
 
-            IQueryable<UserAccountBalance> query = _sqlUserAccountCrudComponent.GetQueryableWithFilter()
+            IQueryable<UserAccountBalance> query = _sqlUserAccountBalanceCrudComponent.GetQueryableWithFilter()
                 .Where(x => x.Id == accountId);
 
-            return await _sqlUserAccountCrudComponent.FirstFromQueryAndMakeResponseAsync(query);
+            return await _sqlUserAccountBalanceCrudComponent.FirstFromQueryAndMakeResponseAsync(query);
         }
-
 
 
         public async Task<ActionResult<WebApiResponse>> SetAccountTransactionAsync(long userId, long accountId, AccountTransactionCreateDTO modelDTO)
         {
             await AbortOnUserNotExistsAsync(userId);
 
-            await CheckIfTransactionIsAvilable(userId, modelDTO);
-
-            QueryFilter = new OnlyAccountsUserOwnQueryFilter(userId);
+            QueryFilter = new OnlyOwnerUserAccountsQueryFilter(userId);
 
             UserAccount userAccount = await FirstByIdAsync(accountId);
 
-            AccountTransaction accountTransaction = await SaveAccountTransaction(userAccount, (AccountTransactionTypes)modelDTO.Type, modelDTO.Amount);
+            await ((IAccountTransactionComponent)_sqlAccountTransactionContextCrud)
+                .SetAccountTransactionAsync(userAccount, modelDTO);
 
             return await GetOneUserAccountsAsync(userId, accountId);
         }
 
-        private async Task CheckIfTransactionIsAvilable(long userId, AccountTransactionCreateDTO modelDTO)
+        public async Task<ActionResult<WebApiResponse>> GetAllAccountTransactionsPagedRecordsAsync(long userId, long accountId, int page)
         {
-            bool failTransaction = false;
+            await AbortOnUserNotExistsAsync(userId);
 
-            if (modelDTO.Amount <= 0)
-                failTransaction = true;
-            else if (modelDTO.Type == (long)AccountTransactionTypes.Deposit || modelDTO.Type == (long)AccountTransactionTypes.Withdrawal)
-                await AbortIfAuthUserIsNotOwnerAccount(userId);
-            else if (modelDTO.Type == (long)AccountTransactionTypes.Bonus)
-                await CheckIfAuthUserIsSuperAdmin();
-            else
-                failTransaction = true;
+            QueryFilter = new OnlyOwnerUserAccountsQueryFilter(userId);
 
-            if(failTransaction)
-                throw new WebApiException(System.Net.HttpStatusCode.BadRequest, "invalid operation");
-        }
+            await FirstByIdAsync(accountId);
 
-        private Task CheckIfAuthUserIsSuperAdmin()
-        {
-            // TODO: validate when auth user not is super admin for throw exception
-            return Task.CompletedTask;
-        }
+            _sqlAccountTransactionContextCrud.QueryFilter = new OnlyTransactionsFromUserAccountQueryFilter(userId, accountId);
 
-        private async Task<AccountTransaction> SaveAccountTransaction(UserAccount userAccount, AccountTransactionTypes transactionType, decimal amount)
-        {
-            // when transaction is withdrawal type then amount becomes negative
-            if (transactionType == AccountTransactionTypes.Withdrawal)
-                amount *= -1;
-
-            User authUser = await _identityApp.GetUser(AppDbContext);
-
-            AccountTransaction accountTransaction = new AccountTransaction
-            {
-                UserAccount = userAccount,
-                Amount = amount,
-                UserRegister = authUser,
-                State = await AppDbContext
-                    .FindGenericElementByIdAsync<AccountTransactionState>((long)AccountTransactionStates.Approved),
-                Type = await AppDbContext
-                    .FindGenericElementByIdAsync<AccountTransactionType>((long)transactionType)
-            };
-
-            AppDbContext.Set<AccountTransaction>().Add(accountTransaction);
-
-            await AppDbContext.SaveChangesAsync();
-
-            return accountTransaction;
+            return await _sqlAccountTransactionContextCrud.GetAllPagedRecordsAndMakeResponseAsync(page, 20);
         }
     }
 }

@@ -8,6 +8,7 @@ using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.DTO.UserAccounts;
 using Casino.Data.Models.Views;
+using Casino.Data.Models.DTO.AccountTransanctions;
 
 namespace Casino.API.Config
 {
@@ -41,6 +42,10 @@ namespace Casino.API.Config
 
             config.CreateMap<UserAccountWithBalanceDTO, UserAccountShowDTO>();
             config.CreateMap<UserAccountBalance, UserAccountShowDTO>();
+
+            config.CreateMap<AccountTransaction, AccountTransactionShowDTO>();
+            config.CreateMap<AccountTransactionState, AccountTransactionStateShowDTO>();
+            config.CreateMap<AccountTransactionType, AccountTransactionTypeShowDTO>();
 
             return config;
         }

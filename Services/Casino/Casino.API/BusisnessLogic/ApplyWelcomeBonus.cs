@@ -1,10 +1,6 @@
-﻿
-using Casino.Data.Context;
-using Casino.Data.Models.Default;
+﻿using Casino.Data.Models.Enums;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Context;
-using Casino.Services.DB.SQL.Contracts.Model;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace Casino.API.BusisnessLogic
@@ -13,7 +9,9 @@ namespace Casino.API.BusisnessLogic
     {
         private ApplicationDbContextBase _dbContext = null;
 
-        public async Task<AccountTransaction> ApplyBonus(ApplicationDbContextBase dbContext, UserAccount userAccount)
+        public async Task<AccountTransaction> ApplyBonus(
+            ApplicationDbContextBase dbContext,
+            UserAccount userAccount)
         {
             _dbContext = dbContext;
 

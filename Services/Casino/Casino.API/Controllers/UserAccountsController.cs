@@ -1,5 +1,6 @@
 ﻿using Casino.API.Components.UserAccounts;
 using Casino.Data.Context;
+using Casino.Data.Models.DTO.AccountTransanctions;
 using Casino.Data.Models.DTO.UserAccounts;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Crud;
@@ -38,11 +39,21 @@ namespace Casino.API.Controllers
             return await ((IUserAccountComponent)_userAccountCrudComponent).GetOneUserAccountsAsync(userId, accountId);
         }
 
+        [HttpGet("{accountId}/transactions")]
+        public async Task<ActionResult<WebApiResponse>> GetAllTransactions(long userId, long accountId, int page = 1)
+        {
+            return await ((IUserAccountComponent)_userAccountCrudComponent)
+                .GetAllAccountTransactionsPagedRecordsAsync(userId, accountId, page);
+        }
+
         [HttpPost("{accountId}/transactions")]
         public async Task<ActionResult<WebApiResponse>> SetAccountTransaction(
             long userId, long accountId, [FromBody] AccountTransactionCreateDTO data)
         {
-            return await ((IUserAccountComponent)_userAccountCrudComponent).SetAccountTransactionAsync(userId, accountId, data);
+            return await ((IUserAccountComponent)_userAccountCrudComponent)
+                .SetAccountTransactionAsync(userId, accountId, data);
         }
+
+
     }
 }

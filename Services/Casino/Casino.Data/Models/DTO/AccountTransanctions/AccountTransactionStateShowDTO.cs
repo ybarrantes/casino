@@ -1,8 +1,8 @@
 ﻿using Casino.Services.DB.SQL.Contracts.Model;
 
-namespace Casino.Data.Models.DTO.UserAccounts
+namespace Casino.Data.Models.DTO.AccountTransanctions
 {
-    public class UserAccountStateShowDTO : IModelDTO
+    public class AccountTransactionStateShowDTO : IModelDTO
     {
         public long Id { get; set; }
 

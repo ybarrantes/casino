@@ -1,4 +1,4 @@
-﻿using Casino.Data.Models.Default;
+﻿using Casino.Data.Models.Enums;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Queryable;
 using Microsoft.EntityFrameworkCore;

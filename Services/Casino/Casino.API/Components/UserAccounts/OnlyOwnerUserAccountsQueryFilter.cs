@@ -1,16 +1,15 @@
-﻿using Casino.Data.Models.Default;
-using Casino.Data.Models.Entities;
+﻿using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Queryable;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Casino.API.Components.UserAccounts
 {
-    public class OnlyAccountsUserOwnQueryFilter : IQueryableFilter<UserAccount>
+    public class OnlyOwnerUserAccountsQueryFilter : IQueryableFilter<UserAccount>
     {
         private long _userId = -1;
 
-        public OnlyAccountsUserOwnQueryFilter(long userId)
+        public OnlyOwnerUserAccountsQueryFilter(long userId)
         {
             _userId = userId;
         }
@@ -18,6 +17,7 @@ namespace Casino.API.Components.UserAccounts
         public IQueryable<UserAccount> SetFilter(IQueryable<UserAccount> query)
         {
             return query
+                .Include(x => x.UserOwner)
                 .Include(x => x.State)
                 .Include(x => x.Type)
                 .Where(x =>

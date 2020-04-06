@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Casino.Services.WebApi;
 using Casino.Services.DB.SQL.Contracts;
 using System;
-using Casino.Data.Models.Default;
+using Casino.Data.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -61,8 +61,7 @@ namespace Casino.API.Components.Users
             _userAccountCrud.AppDbContext = AppDbContext;
 
             UserAccountState userAccountActiveState = await AppDbContext
-                .Set<UserAccountState>()
-                .FirstOrDefaultAsync(x => x.Id.Equals((long)UserAccountStates.Active));
+                .FindGenericElementByIdAsync<UserAccountState>((long)UserAccountStates.Active);
 
             List<UserAccountType> userAccountTypes = await AppDbContext
                 .Set<UserAccountType>()

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Casino.API.Services;
-using Casino.Data.Models.Default;
+using Casino.Data.Models.Enums;
 using Casino.Data.Models.DTO.Rounds;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Contracts;

@@ -1,4 +1,4 @@
-﻿namespace Casino.Data.Models.Default
+﻿namespace Casino.Data.Models.Enums
 {
     public enum RoundStates
     {

@@ -1,7 +1,4 @@
-﻿
-
-using Casino.Data.Models.Entities;
-using Casino.Services.DB.SQL.Contracts.Model;
+﻿using Casino.Services.DB.SQL.Contracts.Model;
 using System;
 
 namespace Casino.Data.Models.DTO.Rounds

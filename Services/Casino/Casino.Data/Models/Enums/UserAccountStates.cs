@@ -1,9 +1,10 @@
-﻿namespace Casino.Data.Models.Default
+﻿namespace Casino.Data.Models.Enums
 {
-    public enum RouletteStates
+    public enum UserAccountStates
     {
         Active = 1,
         Inactive = 2,
         Suspended = 3
     }
 }
+

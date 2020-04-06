@@ -1,4 +1,6 @@
 ﻿using Casino.Data.Models.DTO.Users;
+using Casino.Data.Models.Entities;
+using Casino.Services.DB.SQL.Crud;
 using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

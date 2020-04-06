@@ -50,7 +50,12 @@ namespace Casino.Test.UnitTests.Controllers
             _cognitoUserGroups = new AwsCognitoUserGroupsMock();
             _sqlContextCrudUserAccountBalance = new SqlContextCrud<UserAccountBalance>(_mapper, new PagedRecords<UserAccountBalance>());
             _sqlContextCrudUserAccount = new UserAccountsCrudComponent(
-                _mapper, _pagedRecordsUserAccount, _identityApp, _sqlContextCrudUserAccountBalance);
+                _mapper,
+                _pagedRecordsUserAccount,
+                _identityApp,
+                _sqlContextCrudUserAccountBalance,
+                null);
+
             _userCrudComponent = new UsersCrudComponent(_mapper, _pagedRecords, _sqlContextCrudUserAccount);
 
             _controller = new UsersController(_dbContext, _configuration, _cognitoUserGroups, _userCrudComponent);

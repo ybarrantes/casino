@@ -1,8 +1,5 @@
 ﻿using Casino.Services.Authentication.Contracts;
 using Casino.Services.WebApi;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Casino.Test.UnitTests.Config.Mocks
