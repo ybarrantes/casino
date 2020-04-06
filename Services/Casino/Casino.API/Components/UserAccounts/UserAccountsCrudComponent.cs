@@ -78,6 +78,7 @@ namespace Casino.API.Components.UserAccounts
             return MakeSuccessResponse(pagedRecords);
         }
         
+        // TODO: pending refactory to use UserCrudComponent without circular reference
         private async Task<User> AbortOnUserNotExistsAsync(long userId)
         {
             User user = await AppDbContext.Set<User>()
@@ -110,11 +111,7 @@ namespace Casino.API.Components.UserAccounts
 
         public async Task<ActionResult<WebApiResponse>> SetAccountTransactionAsync(long userId, long accountId, AccountTransactionCreateDTO modelDTO)
         {
-            await AbortOnUserNotExistsAsync(userId);
-
-            QueryFilter = new OnlyOwnerUserAccountsQueryFilter(userId);
-
-            UserAccount userAccount = await FirstByIdAsync(accountId);
+            UserAccount userAccount = await CheckUserExistsAndGetUserAccount(userId, accountId);
 
             await ((IAccountTransactionComponent)_sqlAccountTransactionContextCrud)
                 .SetAccountTransactionAsync(userAccount, modelDTO);
@@ -122,13 +119,18 @@ namespace Casino.API.Components.UserAccounts
             return await GetOneUserAccountsAsync(userId, accountId);
         }
 
-        public async Task<ActionResult<WebApiResponse>> GetAllAccountTransactionsPagedRecordsAsync(long userId, long accountId, int page)
+        private async Task<UserAccount> CheckUserExistsAndGetUserAccount(long userId, long accountId)
         {
             await AbortOnUserNotExistsAsync(userId);
 
             QueryFilter = new OnlyOwnerUserAccountsQueryFilter(userId);
 
-            await FirstByIdAsync(accountId);
+            return await FirstByIdAsync(accountId);
+        }
+
+        public async Task<ActionResult<WebApiResponse>> GetAllAccountTransactionsPagedRecordsAsync(long userId, long accountId, int page)
+        {
+            await CheckUserExistsAndGetUserAccount(userId, accountId);
 
             _sqlAccountTransactionContextCrud.QueryFilter = new OnlyTransactionsFromUserAccountQueryFilter(userId, accountId);
 

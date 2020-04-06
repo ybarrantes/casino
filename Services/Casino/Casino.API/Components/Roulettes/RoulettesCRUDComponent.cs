@@ -2,6 +2,7 @@
 using Casino.API.Services;
 using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
+using Casino.Data.Models.Enums;
 using Casino.Services.DB.SQL.Contracts.Model;
 using Casino.Services.DB.SQL.Crud;
 using Casino.Services.Util.Collections;
@@ -114,14 +115,14 @@ namespace Casino.API.Components.Roulettes
             }
         }        
 
-        private async Task<bool> RouletteHasRoundsAsync(Roulette entity, RouletteRoundState roundState = RouletteRoundState.All)
+        private async Task<bool> RouletteHasRoundsAsync(Roulette entity, RoundStates? roundState = null)
         {
             IQueryable<Round> query = AppDbContext.Set<Round>()
                 .Where(x => x.Roulette.Id.Equals(entity.Id));
 
-            if (roundState == RouletteRoundState.Open)
+            if (roundState == RoundStates.Opened)
                 query = query.Where(x => x.ClosedAt == null);
-            else if(roundState == RouletteRoundState.Close)
+            else if(roundState == RoundStates.Closed)
                 query = query.Where(x => x.ClosedAt != null);
 
             return (await query.LongCountAsync()) > 0;
@@ -138,17 +139,10 @@ namespace Casino.API.Components.Roulettes
         {
             if (currentRoulette.State.Id != newRoulette.State.Id)
             {
-                if (await RouletteHasRoundsAsync(newRoulette, RouletteRoundState.Open))
+                if (await RouletteHasRoundsAsync(newRoulette, RoundStates.Opened))
                     throw new WebApiException(System.Net.HttpStatusCode.Forbidden,
                         "the roulette has open rounds, it's not possible to change the type state");
             }
-        }
-
-        private enum RouletteRoundState
-        {
-            All,
-            Open,
-            Close
         }
     }
 }

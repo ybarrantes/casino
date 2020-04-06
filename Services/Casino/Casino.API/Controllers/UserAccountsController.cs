@@ -1,7 +1,6 @@
 ﻿using Casino.API.Components.UserAccounts;
 using Casino.Data.Context;
 using Casino.Data.Models.DTO.AccountTransanctions;
-using Casino.Data.Models.DTO.UserAccounts;
 using Casino.Data.Models.Entities;
 using Casino.Services.DB.SQL.Crud;
 using Casino.Services.WebApi;
@@ -27,20 +26,19 @@ namespace Casino.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<WebApiResponse>> GetAll(long userId, int page = 1)
-        {
-            
+        public async Task<ActionResult<WebApiResponse>> GetAllAccountOfUser(long userId, int page = 1)
+        {            
             return await ((IUserAccountComponent)_userAccountCrudComponent).GetAllUserAccountsPagedRecordsAsync(userId, page);
         }
 
         [HttpGet("{accountId}")]
-        public async Task<ActionResult<WebApiResponse>> GetOne(long userId, long accountId)
+        public async Task<ActionResult<WebApiResponse>> GetOneUserAccount(long userId, long accountId)
         {
             return await ((IUserAccountComponent)_userAccountCrudComponent).GetOneUserAccountsAsync(userId, accountId);
         }
 
         [HttpGet("{accountId}/transactions")]
-        public async Task<ActionResult<WebApiResponse>> GetAllTransactions(long userId, long accountId, int page = 1)
+        public async Task<ActionResult<WebApiResponse>> GetAllAccountTransactions(long userId, long accountId, int page = 1)
         {
             return await ((IUserAccountComponent)_userAccountCrudComponent)
                 .GetAllAccountTransactionsPagedRecordsAsync(userId, accountId, page);
@@ -53,7 +51,5 @@ namespace Casino.API.Controllers
             return await ((IUserAccountComponent)_userAccountCrudComponent)
                 .SetAccountTransactionAsync(userId, accountId, data);
         }
-
-
     }
 }

@@ -3,7 +3,6 @@ using Casino.Data.Models.DTO.Rounds;
 using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper.Configuration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.DTO.UserAccounts;

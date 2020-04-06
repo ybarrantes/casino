@@ -12,13 +12,9 @@ namespace Casino.API.Components.UserAccounts
         private long _userOwnerId = -1;
         private readonly ApplicationDbContextBase _dbContext = null;
 
-        public UserAccountsBalanceQueryFilter(ApplicationDbContextBase dbContext)
+        public UserAccountsBalanceQueryFilter(ApplicationDbContextBase dbContext, long userOwnerId)
         {
             _dbContext = dbContext;
-        }
-
-        public UserAccountsBalanceQueryFilter(ApplicationDbContextBase dbContext, long userOwnerId) : this(dbContext)
-        {
             _userOwnerId = userOwnerId;
         }
 

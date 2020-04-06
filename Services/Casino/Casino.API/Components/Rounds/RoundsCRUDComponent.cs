@@ -3,7 +3,6 @@ using Casino.API.Services;
 using Casino.Data.Models.Enums;
 using Casino.Data.Models.DTO.Rounds;
 using Casino.Data.Models.Entities;
-using Casino.Services.DB.SQL.Contracts;
 using Casino.Services.DB.SQL.Crud;
 using Casino.Services.Util.Collections;
 using Casino.Services.WebApi;
@@ -113,9 +112,7 @@ namespace Casino.API.Components.Rounds
 
         private async Task<RoundState> GetRoundState(RoundStates state)
         {
-            RoundState roundState = await AppDbContext
-                .Set<RoundState>()
-                .FirstOrDefaultAsync(x => x.Id == (long)state);
+            RoundState roundState = await AppDbContext.FindGenericElementByIdAsync<RoundState>((long)state);
 
             if (roundState == null)
                 throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, "round state not found!");

@@ -6,8 +6,6 @@ using Casino.Services.Util.Collections;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Casino.Services.WebApi;
-using Casino.Services.DB.SQL.Contracts;
-using System;
 using Casino.Data.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
