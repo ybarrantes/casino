@@ -28,6 +28,9 @@ namespace Casino.Data.Context
         public DbSet<RouletteState> RouletteStates { get; set; }
         public DbSet<Roulette> Roulettes { get; set; }
 
+        public DbSet<RouletteRuleType> RouletteRuleTypes { get; set; }
+        public DbSet<RouletteRule> RouletteRules { get; set; }
+
         public DbSet<RoundState> RoundStates { get; set; }
         public DbSet<Round> Rounds { get; set; }
 
@@ -41,6 +44,7 @@ namespace Casino.Data.Context
         public DbSet<AccountTransactionType> AccountTransactionTypes { get; set; }
         public DbSet<AccountTransaction> AccountTransactions { get; set; }
 
+        // this is a view, not real table
         public DbSet<UserAccountBalance> UserAccountBalances { get; set; }
 
         #endregion
@@ -50,6 +54,7 @@ namespace Casino.Data.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Ignore<Bet>();
+            modelBuilder.Ignore<UserAccountBalance>();
 
             base.OnModelCreating(modelBuilder);
 
@@ -63,6 +68,8 @@ namespace Casino.Data.Context
 
             modelBuilder.ApplyConfiguration(new AccountTransactionStateConfiguration());
             modelBuilder.ApplyConfiguration(new AccountTransactionTypeConfiguration());
+
+            modelBuilder.ApplyConfiguration(new RouletteRuleTypeConfiguration());
         }
     }
 }

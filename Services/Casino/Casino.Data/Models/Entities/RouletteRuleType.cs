@@ -5,22 +5,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Casino.Data.Models.Entities
 {
-    public class Bet : IEntityModelBase, IEntityModelTimestamps
+    public class RouletteRuleType : IEntityModelBase, IEntityModelTimestamps
     {
         [Key]
         public long Id { get; set; }
 
         [Required]
-        public Round Round { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public AccountTransaction AccountTransaction { get; set; }
+        public RouletteType Type { get; set; }
+
+        public string Description { get; set; }
 
         [Required]
-        public RouletteRule RouletteRule { get; set; }
+        public float DefaultPay { get; set; }
 
         [Required]
-        public User UserRegister { get; set; }
+        public byte Numbers { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreatedAt { get; set; }

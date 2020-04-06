@@ -68,9 +68,37 @@ namespace Casino.API.Components.Roulettes
             entity.UserRegister = await _identityApp.GetUser(AppDbContext);
         }
 
+        protected async override Task OnAfterCreate(Roulette entity)
+        {
+            await InsertRouletteDefaultRules(entity);
+        }
+
+        private async Task InsertRouletteDefaultRules(Roulette entity)
+        {
+            IEnumerable<RouletteRuleType> rouletteRuleTypeList = await AppDbContext.Set<RouletteRuleType>()
+                .Where(x => x.Type.Id == entity.Type.Id)
+                .ToListAsync();
+
+            foreach (RouletteRuleType rouletteRuleType in rouletteRuleTypeList)
+            {
+                AppDbContext.Set<RouletteRule>().Add(
+                    new RouletteRule
+                    {
+                        Roulette = entity,
+                        Type = rouletteRuleType,
+                        Pay = rouletteRuleType.DefaultPay
+                    }
+                    );
+            }
+
+            await AppDbContext.SaveChangesAsync();
+        }
+
         protected override async Task OnBeforeUpdate(Roulette entity)
         {
             await RouletteRoundsConditionsOrAbort(entity);
+
+            // TODO: if roulette type change, delete roulette rules and add default rules for new type
         }
 
         private async Task RouletteRoundsConditionsOrAbort(Roulette entity)
