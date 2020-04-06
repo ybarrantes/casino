@@ -17,8 +17,7 @@ namespace Casino.Data.Models.Entities
         [Required]
         public RoundState State { get; set; }
 
-        [StringLength(2)]
-        public string WinNumber { get; set; }
+        public Number WinNumber { get; set; }
 
         [Required]
         public User UserOpen { get; set; }

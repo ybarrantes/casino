@@ -4,14 +4,16 @@ using Casino.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Casino.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200406035016_RoundTable_ModifyWinNumberType_AlterTable")]
+    partial class RoundTable_ModifyWinNumberType_AlterTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,30 +95,30 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 794, DateTimeKind.Local).AddTicks(9110),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(2782),
                             State = "Approved",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 794, DateTimeKind.Local).AddTicks(9586)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(3260)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(56),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(3889),
                             State = "Pending",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(66)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(3908)
                         },
                         new
                         {
                             Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(76),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(3916),
                             State = "Cancelled",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(78)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(3917)
                         },
                         new
                         {
                             Id = 4L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(79),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(3918),
                             State = "Rejected",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(80)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(3920)
                         });
                 });
 
@@ -148,141 +150,30 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(5155),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(9256),
                             Type = "Deposit",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(5635)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 115, DateTimeKind.Local).AddTicks(9744)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(6100),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 116, DateTimeKind.Local).AddTicks(231),
                             Type = "Withdrawal",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(6112)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 116, DateTimeKind.Local).AddTicks(242)
                         },
                         new
                         {
                             Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(6119),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 116, DateTimeKind.Local).AddTicks(251),
                             Type = "Bet",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(6120)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 116, DateTimeKind.Local).AddTicks(252)
                         },
                         new
                         {
                             Id = 4L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(6122),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 116, DateTimeKind.Local).AddTicks(253),
                             Type = "Bonus",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 795, DateTimeKind.Local).AddTicks(6123)
-                        });
-                });
-
-            modelBuilder.Entity("Casino.Data.Models.Entities.Bet", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("AccountTransactionId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("RouletteRuleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RoundId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("StateId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("UserRegisterId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountTransactionId");
-
-                    b.HasIndex("RouletteRuleId");
-
-                    b.HasIndex("RoundId");
-
-                    b.HasIndex("StateId");
-
-                    b.HasIndex("UserRegisterId");
-
-                    b.ToTable("Bets");
-                });
-
-            modelBuilder.Entity("Casino.Data.Models.Entities.BetNumber", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("BetId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("NumberId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BetId");
-
-                    b.HasIndex("NumberId");
-
-                    b.ToTable("BetNumbers");
-                });
-
-            modelBuilder.Entity("Casino.Data.Models.Entities.BetState", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BetStates");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 798, DateTimeKind.Local).AddTicks(1793),
-                            State = "Active",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 798, DateTimeKind.Local).AddTicks(2270)
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 798, DateTimeKind.Local).AddTicks(2734),
-                            State = "Canceled",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 798, DateTimeKind.Local).AddTicks(2749)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 116, DateTimeKind.Local).AddTicks(254)
                         });
                 });
 
@@ -860,23 +751,23 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 790, DateTimeKind.Local).AddTicks(1353),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 109, DateTimeKind.Local).AddTicks(7319),
                             State = "Active",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 790, DateTimeKind.Local).AddTicks(9687)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 110, DateTimeKind.Local).AddTicks(7453)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 791, DateTimeKind.Local).AddTicks(240),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 110, DateTimeKind.Local).AddTicks(8082),
                             State = "Inactive",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 791, DateTimeKind.Local).AddTicks(252)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 110, DateTimeKind.Local).AddTicks(8094)
                         },
                         new
                         {
                             Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 791, DateTimeKind.Local).AddTicks(260),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 110, DateTimeKind.Local).AddTicks(8105),
                             State = "Suspended",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 791, DateTimeKind.Local).AddTicks(261)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 110, DateTimeKind.Local).AddTicks(8106)
                         });
                 });
 
@@ -908,270 +799,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 792, DateTimeKind.Local).AddTicks(3741),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 112, DateTimeKind.Local).AddTicks(3528),
                             Type = "European",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 792, DateTimeKind.Local).AddTicks(4226)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 112, DateTimeKind.Local).AddTicks(4087)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 792, DateTimeKind.Local).AddTicks(4694),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 112, DateTimeKind.Local).AddTicks(4607),
                             Type = "American",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 792, DateTimeKind.Local).AddTicks(4710)
-                        });
-                });
-
-            modelBuilder.Entity("Casino.Data.Models.Entities.RouletteTypeNumber", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("NumberId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("TypeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NumberId");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("RouletteTypeNumbers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            NumberId = 1L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            NumberId = 4L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            NumberId = 5L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 4L,
-                            NumberId = 6L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 5L,
-                            NumberId = 7L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 6L,
-                            NumberId = 8L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 7L,
-                            NumberId = 9L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 8L,
-                            NumberId = 10L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 9L,
-                            NumberId = 11L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 10L,
-                            NumberId = 12L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 11L,
-                            NumberId = 13L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 12L,
-                            NumberId = 14L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 13L,
-                            NumberId = 15L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 14L,
-                            NumberId = 16L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 15L,
-                            NumberId = 17L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 16L,
-                            NumberId = 18L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 17L,
-                            NumberId = 19L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 18L,
-                            NumberId = 20L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 19L,
-                            NumberId = 21L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 20L,
-                            NumberId = 22L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 21L,
-                            NumberId = 23L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 22L,
-                            NumberId = 24L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 23L,
-                            NumberId = 25L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 24L,
-                            NumberId = 26L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 25L,
-                            NumberId = 27L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 26L,
-                            NumberId = 28L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 27L,
-                            NumberId = 29L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 28L,
-                            NumberId = 30L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 29L,
-                            NumberId = 31L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 30L,
-                            NumberId = 32L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 31L,
-                            NumberId = 33L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 32L,
-                            NumberId = 34L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 33L,
-                            NumberId = 35L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 34L,
-                            NumberId = 36L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 35L,
-                            NumberId = 37L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 36L,
-                            NumberId = 38L,
-                            TypeId = 1L
-                        },
-                        new
-                        {
-                            Id = 37L,
-                            NumberId = 39L,
-                            TypeId = 1L
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 112, DateTimeKind.Local).AddTicks(4626)
                         });
                 });
 
@@ -1254,16 +891,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(350),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 112, DateTimeKind.Local).AddTicks(9418),
                             State = "Opened",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(825)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 112, DateTimeKind.Local).AddTicks(9944)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(1292),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 113, DateTimeKind.Local).AddTicks(737),
                             State = "Closed",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(1302)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 113, DateTimeKind.Local).AddTicks(754)
                         });
                 });
 
@@ -1368,23 +1005,23 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(7025),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 113, DateTimeKind.Local).AddTicks(8193),
                             State = "Active",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(7548)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 113, DateTimeKind.Local).AddTicks(8957)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(8055),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 113, DateTimeKind.Local).AddTicks(9741),
                             State = "Inactive",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(8066)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 113, DateTimeKind.Local).AddTicks(9763)
                         },
                         new
                         {
                             Id = 3L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(8075),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 113, DateTimeKind.Local).AddTicks(9777),
                             State = "Suspended",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 793, DateTimeKind.Local).AddTicks(8076)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 113, DateTimeKind.Local).AddTicks(9778)
                         });
                 });
 
@@ -1416,16 +1053,16 @@ namespace Casino.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 794, DateTimeKind.Local).AddTicks(2968),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 114, DateTimeKind.Local).AddTicks(5502),
                             Type = "Free",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 794, DateTimeKind.Local).AddTicks(3443)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 114, DateTimeKind.Local).AddTicks(6045)
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 794, DateTimeKind.Local).AddTicks(3944),
+                            CreatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 114, DateTimeKind.Local).AddTicks(6574),
                             Type = "Real",
-                            UpdatedAt = new DateTime(2020, 4, 5, 23, 20, 50, 794, DateTimeKind.Local).AddTicks(3956)
+                            UpdatedAt = new DateTime(2020, 4, 5, 22, 50, 16, 114, DateTimeKind.Local).AddTicks(6590)
                         });
                 });
 
@@ -1452,54 +1089,6 @@ namespace Casino.Data.Migrations
                     b.HasOne("Casino.Data.Models.Entities.User", "UserRegister")
                         .WithMany()
                         .HasForeignKey("UserRegisterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Casino.Data.Models.Entities.Bet", b =>
-                {
-                    b.HasOne("Casino.Data.Models.Entities.AccountTransaction", "AccountTransaction")
-                        .WithMany()
-                        .HasForeignKey("AccountTransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Casino.Data.Models.Entities.RouletteRule", "RouletteRule")
-                        .WithMany()
-                        .HasForeignKey("RouletteRuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Casino.Data.Models.Entities.Round", "Round")
-                        .WithMany("Bets")
-                        .HasForeignKey("RoundId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Casino.Data.Models.Entities.BetState", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Casino.Data.Models.Entities.User", "UserRegister")
-                        .WithMany()
-                        .HasForeignKey("UserRegisterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Casino.Data.Models.Entities.BetNumber", b =>
-                {
-                    b.HasOne("Casino.Data.Models.Entities.Bet", "Bet")
-                        .WithMany()
-                        .HasForeignKey("BetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Casino.Data.Models.Entities.Number", "Number")
-                        .WithMany()
-                        .HasForeignKey("NumberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1551,21 +1140,6 @@ namespace Casino.Data.Migrations
 
             modelBuilder.Entity("Casino.Data.Models.Entities.RouletteRuleType", b =>
                 {
-                    b.HasOne("Casino.Data.Models.Entities.RouletteType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Casino.Data.Models.Entities.RouletteTypeNumber", b =>
-                {
-                    b.HasOne("Casino.Data.Models.Entities.Number", "Number")
-                        .WithMany()
-                        .HasForeignKey("NumberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Casino.Data.Models.Entities.RouletteType", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")

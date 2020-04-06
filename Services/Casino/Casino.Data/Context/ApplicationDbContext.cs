@@ -19,7 +19,6 @@ namespace Casino.Data.Context
         {
         }
         
-
         #region Datasets
 
         public DbSet<User> Users { get; set; }
@@ -38,11 +37,19 @@ namespace Casino.Data.Context
         public DbSet<UserAccountState> UserAccountStates { get; set; }
         public DbSet<UserAccount> UserAccounts { get; set; }
 
+        public DbSet<BetState> BetStates { get; set; }
         public DbSet<Bet> Bets { get; set; }
+        public DbSet<BetNumber> BetNumbers { get; set; }
 
         public DbSet<AccountTransactionState> AccountTransactionStates { get; set; }
         public DbSet<AccountTransactionType> AccountTransactionTypes { get; set; }
         public DbSet<AccountTransaction> AccountTransactions { get; set; }
+
+
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Number> Numbers { get; set; }
+
+        public DbSet<RouletteTypeNumber> RouletteTypeNumbers { get; set; }
 
         // this is a view, not real table
         public DbSet<UserAccountBalance> UserAccountBalances { get; set; }
@@ -50,10 +57,8 @@ namespace Casino.Data.Context
         #endregion
 
 
-        // TODO: add filter to skip records marked as soft-deleted
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Ignore<Bet>();
             modelBuilder.Ignore<UserAccountBalance>();
 
             base.OnModelCreating(modelBuilder);
@@ -70,6 +75,13 @@ namespace Casino.Data.Context
             modelBuilder.ApplyConfiguration(new AccountTransactionTypeConfiguration());
 
             modelBuilder.ApplyConfiguration(new RouletteRuleTypeConfiguration());
+
+            modelBuilder.ApplyConfiguration(new ColorConfiguration());
+            modelBuilder.ApplyConfiguration(new NumberConfiguration());
+
+            modelBuilder.ApplyConfiguration(new RouletteTypeNumbersConfiguration());
+
+            modelBuilder.ApplyConfiguration(new BetStateConfiguration());
         }
     }
 }
