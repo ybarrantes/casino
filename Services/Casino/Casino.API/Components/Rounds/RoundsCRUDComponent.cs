@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Casino.API.BusisnessLogic;
+using Casino.Services.DB.SQL.Context;
 
 namespace Casino.API.Components.Rounds
 {
@@ -19,19 +21,27 @@ namespace Casino.API.Components.Rounds
     {
         private readonly ISqlContextCrud<Roulette> _rouletteCrudController;
         private readonly IIdentityApp<User> _identityApp;
+        private readonly PlayRoulette _playRoulette;
 
         public RoundsCrudComponent(
             IMapper mapper,
             IPagedRecords<Round> pagedRecords,
             ISqlContextCrud<Roulette> rouletteContext,
-            IIdentityApp<User> identityApp)
+            IIdentityApp<User> identityApp,
+            PlayRoulette playRoulette)
             : base(mapper, pagedRecords)
         {
             _identityApp = identityApp;
+            _playRoulette = playRoulette;
 
             ShowModelDTOType = typeof(RoundShowDTO);
 
             _rouletteCrudController = rouletteContext;
+        }
+
+        protected override void OnDbContextChange(ApplicationDbContextBase dbContext)
+        {
+            _playRoulette.AppDbContext = dbContext;
         }
 
         public override IPagedRecords<Round> MapPagedRecordsToModelDTO(IPagedRecords<Round> pagedRecords)
@@ -151,9 +161,7 @@ namespace Casino.API.Components.Rounds
 
             round = await UpdateFromEntityAsync(round);
 
-            // TODO: launch process to get the winning number
-
-            // TODO: launch process to collect bets
+            await _playRoulette.PlayRouletteAndApplyPays(round);
 
             await AppDbContext.CommitTransactionAsync();
 

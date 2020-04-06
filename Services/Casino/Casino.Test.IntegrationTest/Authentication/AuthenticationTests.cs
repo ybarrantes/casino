@@ -13,7 +13,7 @@ namespace Casino.Test.IntegrationTest.Authentication
         public string SignupUrl => "/api/auth/signup";
         public UserSignInDTO TestingCredentials => new UserSignInDTO
         {
-            Username = "yonicristhb",
+            Username = "system-1",
             Password = "123456Yb"
         };
 
