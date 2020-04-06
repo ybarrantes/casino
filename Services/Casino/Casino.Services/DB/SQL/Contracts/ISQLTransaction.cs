@@ -2,13 +2,13 @@
 
 namespace Casino.Services.DB.SQL.Contracts
 {
-    public interface ISQLTransaction
+    public interface ISqlTransaction
     {
         Task BeginTransactionAsync();
 
         Task CommitTransactionAsync();
 
-        Task RollbackTransactionAsync();
+        Task RollbackTransactionAsync(bool throwException = true);
 
         bool HasTransaction { get; }
 

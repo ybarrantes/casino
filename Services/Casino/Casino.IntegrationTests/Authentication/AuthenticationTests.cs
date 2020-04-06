@@ -1,4 +1,5 @@
 using Casino.API;
+using Casino.Data.Models.DTO.Users;
 using Casino.Services.Authentication.Contracts;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -6,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using Casino.UnitTests;
 
 namespace Casino.IntegrationTests.Authentication
 {
@@ -32,12 +36,14 @@ namespace Casino.IntegrationTests.Authentication
         }
 
         [TestMethod]
-        public async Task IfSigninSuccessfulReturnJson()
+        public async Task When_SignIn_Ok()
         {
             var client = GetWebHostBuilded().CreateClient();
             var url = "/api/auth/signin";
 
-            var content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json");
+            var dto2Json = JsonSerializer.Serialize<UserSignInDTO>(Helpers.GetDefaultUsernameAndPassword());
+
+            var content = new StringContent(dto2Json.ToString(), System.Text.Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(url, content);
 

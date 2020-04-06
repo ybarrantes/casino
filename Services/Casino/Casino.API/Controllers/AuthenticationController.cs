@@ -1,14 +1,13 @@
 ﻿using Casino.Services.WebApi;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 using Casino.Data.Context;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.Entities;
 using Casino.Services.Authentication.Contracts;
 using Casino.Services.Authentication.Model;
-using Casino.Services.DB.SQL.Contracts.CRUD;
+using Casino.Services.DB.SQL.Crud;
+using Casino.API.Components.Users;
 
 namespace Casino.API.Controllers
 {
@@ -16,18 +15,15 @@ namespace Casino.API.Controllers
     [Route("api/auth")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ILogger<UsersController> _logger;
         private readonly IAuthentication _authentication;
-        private readonly ContextCRUD<User> _contextCRUD;
+        private readonly ISqlContextCrud<User> _contextCRUD;
 
         public AuthenticationController(
-            IAuthentication authentication,
             ApplicationDbContext dbContext,
-            ILogger<UsersController> logger,
-            ContextCRUD<User> contextCRUD)
+            IAuthentication authentication,
+            ISqlContextCrud<User> contextCRUD)
         {
             _authentication = authentication;
-            _logger = logger;
             _contextCRUD = contextCRUD;
 
             _contextCRUD.AppDbContext = dbContext;
@@ -42,36 +38,12 @@ namespace Casino.API.Controllers
                 Password = userDTO.Password,
                 Email = userDTO.Email,
                 Name = userDTO.Name,
-                MiddleName = userDTO.MiddleName,
-                BirthDate = userDTO.BirthDate
+                MiddleName = userDTO.MiddleName
             };
 
             string cloudIdentityId = await _authentication.SignUpUser(signupModelUser);
 
-            await TrySaveUserInLocalDB(userDTO, cloudIdentityId);
-
-            return new WebApiResponse().Success();
-        }
-
-        private async Task TrySaveUserInLocalDB(UserSignUpDTO userDTO, string cloudIdentityId)
-        {
-            try
-            {
-                User userEntity = new User()
-                {
-                    Username = userDTO.Username,
-                    Email = userDTO.Email,
-                    CloudIdentityId = cloudIdentityId,
-                };
-
-                await _contextCRUD.CreateFromEntityAsync(userEntity);
-
-                _logger.LogInformation($"user '{userDTO.Username}' has been saved in local db");
-            }
-            catch (Exception e)
-            {
-                throw new WebApiException(System.Net.HttpStatusCode.InternalServerError, e.Message);
-            }
+            return await ((IUserComponent)_contextCRUD).CreateUserAndUserAccountsAsync(userDTO, cloudIdentityId);
         }
 
         [HttpPost("signup/confirmation")]

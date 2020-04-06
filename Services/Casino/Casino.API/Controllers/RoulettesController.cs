@@ -1,71 +1,62 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Casino.Data.Context;
-using Casino.Data.Models.DTO;
+using Casino.Data.Models.DTO.Roulettes;
 using Casino.Data.Models.Entities;
 using Casino.Services.WebApi;
-using Casino.API.Services;
-using Casino.Services.DB.SQL.Contracts.CRUD;
-using Casino.Services.Util.Collections;
-using AutoMapper;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Casino.API.Components;
+using Casino.Services.DB.SQL.Crud;
+using Casino.Data.Context;
 
 namespace Casino.API.Controllers
 {
     [Authorize]
-    [Route("api/roulettes")]
     [ApiController]
+    [Route("api/roulettes")]
+    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "SuperAdmin")]
     public class RoulettesController : ControllerBase
     {
-        private readonly CRUDComponent<Roulette> _CRUD;
+        private readonly ISqlContextCrud<Roulette> _rouletteCrud;
 
-        public RoulettesController(CRUDComponent<Roulette> contextCRUD)
+        public RoulettesController(ApplicationDbContext dbContext, ISqlContextCrud<Roulette> contextCRUD)
         {
-            _CRUD = contextCRUD;
+            _rouletteCrud = contextCRUD;
+            _rouletteCrud.AppDbContext = dbContext;
         }
 
 
         [HttpGet]
         public async Task<ActionResult<WebApiResponse>> GetAll(int page = 1)
         {
-            return await _CRUD.FindAllAndResponseAsync(page, 10);
+            return await _rouletteCrud.GetAllPagedRecordsAndMakeResponseAsync(page, 10);
         }
 
 
         [HttpGet("{id}", Name = "GetRoulette")]
         public async Task<ActionResult<WebApiResponse>> GetOne(long id)
         {
-            return await _CRUD.FindFromIdAndResponseAsync(id);
+            return await _rouletteCrud.FirstByIdAndMakeResponseAsync(id);
         }
 
 
         [HttpPost]
-        [Authorize(Policy = "Admin")]
-        [Authorize(Policy = "SuperAdmin")]
         public async Task<ActionResult<WebApiResponse>> Create([FromBody] RouletteCreateDTO modelDTO)
         {
-            return await _CRUD.CreateFromModelDTOAndResponseAsync(modelDTO);
+            return await _rouletteCrud.CreateFromModelDTOAndMakeResponseAsync(modelDTO);
         }
 
 
         [HttpPut("{id}")]
-        [Authorize(Policy = "Admin")]
-        [Authorize(Policy = "SuperAdmin")]
         public async Task<ActionResult<WebApiResponse>> Update(long id, [FromBody] RouletteCreateDTO modelDTO)
         {
-            return await _CRUD.UpdateFromModelDTOAndResponseAsync(id, modelDTO);
+            return await _rouletteCrud.UpdateFromModelDTOAndMakeResponseAsync(id, modelDTO);
         }        
         
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "Admin")]
-        [Authorize(Policy = "SuperAdmin")]
         public async Task<ActionResult<WebApiResponse>> Delete(long id)
         {
-            return await _CRUD.DeleteFromIdAndResponseAsync(id);
+            return await _rouletteCrud.DeleteByIdAndMakeResponseAsync(id);
         }
 
     }

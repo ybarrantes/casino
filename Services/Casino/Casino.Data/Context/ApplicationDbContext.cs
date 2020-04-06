@@ -4,137 +4,84 @@ using System.Threading;
 using Casino.Data.Models.Entities;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
-using Microsoft.Extensions.Logging;
 using Casino.Services.DB.SQL.Contracts;
 using Casino.Services.DB.SQL.Contracts.Model;
 using Casino.Data.Migrations.Configuration;
+using Casino.Data.Models.Views;
+using Casino.Services.DB.SQL.Context;
 
 namespace Casino.Data.Context
 {
-    public class ApplicationDbContext : DbContext, ISQLTransaction
+    public class ApplicationDbContext : ApplicationDbContextBase
     {
-        //private readonly ILogger<ApplicationDbContext> _logger = null;
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             :base(options)
         {
-            //_logger = logger;
         }
-
+        
         #region Datasets
 
         public DbSet<User> Users { get; set; }
+
         public DbSet<RouletteType> RouletteTypes { get; set; }
         public DbSet<RouletteState> RouletteStates { get; set; }
         public DbSet<Roulette> Roulettes { get; set; }
 
+        public DbSet<RouletteRuleType> RouletteRuleTypes { get; set; }
+        public DbSet<RouletteRule> RouletteRules { get; set; }
+
+        public DbSet<RoundState> RoundStates { get; set; }
+        public DbSet<Round> Rounds { get; set; }
+
+        public DbSet<UserAccountType> UserAccountTypes { get; set; }
+        public DbSet<UserAccountState> UserAccountStates { get; set; }
+        public DbSet<UserAccount> UserAccounts { get; set; }
+
+        public DbSet<BetState> BetStates { get; set; }
+        public DbSet<Bet> Bets { get; set; }
+        public DbSet<BetNumber> BetNumbers { get; set; }
+
+        public DbSet<AccountTransactionState> AccountTransactionStates { get; set; }
+        public DbSet<AccountTransactionType> AccountTransactionTypes { get; set; }
+        public DbSet<AccountTransaction> AccountTransactions { get; set; }
+
+
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Number> Numbers { get; set; }
+
+        public DbSet<RouletteTypeNumber> RouletteTypeNumbers { get; set; }
+
+        // this is a view, not real table
+        public DbSet<UserAccountBalance> UserAccountBalances { get; set; }
+
         #endregion
 
 
-        #region Save Changes
-
-        public override int SaveChanges()
-        {
-            OnBeforeSave();
-            return base.SaveChanges();
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            OnBeforeSave();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        private void OnBeforeSave()
-        {
-            IEntityModelTimestamps.BeforeSave(ChangeTracker);
-            IEntityModelSoftDeletes.BeforeSave(ChangeTracker);
-        }
-
-        #endregion
-
-
-        // TODO: add filter to skip records marked as soft-deleted
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // TODO: ignore models on creating migrations, delete lines
-            //modelBuilder.Ignore<User>();
-            //modelBuilder.Ignore<Roulette>();
+            modelBuilder.Ignore<UserAccountBalance>();
 
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new RouletteStateConfiguration());
             modelBuilder.ApplyConfiguration(new RouletteTypeConfiguration());
+
+            modelBuilder.ApplyConfiguration(new RoundStateConfiguration());
+            
+            modelBuilder.ApplyConfiguration(new UserAccountStateConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAccountTypeConfiguration());
+
+            modelBuilder.ApplyConfiguration(new AccountTransactionStateConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountTransactionTypeConfiguration());
+
+            modelBuilder.ApplyConfiguration(new RouletteRuleTypeConfiguration());
+
+            modelBuilder.ApplyConfiguration(new ColorConfiguration());
+            modelBuilder.ApplyConfiguration(new NumberConfiguration());
+
+            modelBuilder.ApplyConfiguration(new RouletteTypeNumbersConfiguration());
+
+            modelBuilder.ApplyConfiguration(new BetStateConfiguration());
         }
-
-
-        #region Implemented Members
-
-        private IDbContextTransaction _transaction = null;
-        
-        private IDbContextTransaction Transaction
-        {
-            get => _transaction;
-            set
-            {
-                _transaction = value;
-                TransactionId = (Transaction == null) ? "" : Transaction.TransactionId.ToString();
-            }
-        }
-
-        public bool HasTransaction => Transaction != null;
-        public string TransactionId { get; internal set; }
-
-        public async Task BeginTransactionAsync()
-        {
-            if (HasTransaction)
-                throw new InvalidOperationException($"Transaction '{_transaction.TransactionId}' in process");
-
-            Transaction = await Database.BeginTransactionAsync();
-        }
-
-        public async Task CommitTransactionAsync()
-        {
-            await ApplyActionTransactionAsync(ActionTransaction.Commit);
-            await ApplyActionTransactionAsync(ActionTransaction.Dispose);
-            Transaction = null;
-        }
-
-        public async Task RollbackTransactionAsync()
-        {
-            await ApplyActionTransactionAsync(ActionTransaction.Rollback);
-            await ApplyActionTransactionAsync(ActionTransaction.Dispose);
-            Transaction = null;
-        }
-
-        private async Task ApplyActionTransactionAsync(ActionTransaction action)
-        {
-            ThrowExceptionIfNotHasTransaction();
-
-            try
-            {
-                //_logger.LogInformation($"Trying to {action.ToString()} transaction [{TransactionId}]");
-
-                if(action.Equals(ActionTransaction.Commit))
-                    await Transaction.CommitAsync();
-                else if(action.Equals(ActionTransaction.Rollback))
-                    await Transaction.RollbackAsync();
-                else if (action.Equals(ActionTransaction.Dispose))
-                    await Transaction.DisposeAsync();
-            }
-            catch (Exception e)
-            {
-                //_logger.LogError(e, $"{action.ToString()} failed, transaction id: {TransactionId}");
-                throw e;
-            }
-        }
-        
-        private void ThrowExceptionIfNotHasTransaction()
-        {
-            if(!HasTransaction)
-                throw new NullReferenceException("No transacction in process");
-        }
-
-        #endregion
     }
 }

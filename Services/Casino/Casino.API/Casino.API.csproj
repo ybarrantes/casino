@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\" />
+    <Folder Include="Helpers\" />
     <Folder Include="Runtime\Logs\" />
   </ItemGroup>
 

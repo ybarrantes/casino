@@ -13,8 +13,8 @@ namespace Casino.Data.Migrations.Configuration
 
             builder.HasData
                 (
-                    new RouletteType { Id = 1, Type = "American", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-                    new RouletteType { Id = 2, Type = "European", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now }
+                    new RouletteType { Id = 1, Type = "European", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
+                    new RouletteType { Id = 2, Type = "American", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now }
                 );
         }
     }
