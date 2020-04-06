@@ -31,7 +31,7 @@ namespace Casino.API.Controllers
             _roundContextCrud.QueryFilter = new GetRoundsOrderByDescending();
         }
 
-        [HttpGet("active")]
+        [HttpGet("/api/rounds-active")]
         public async Task<ActionResult<WebApiResponse>> GetAllOpenedRounds(int page = 1)
         {
             _roundContextCrud.QueryFilter = new OnlyRoundsActiveQueryFilter();

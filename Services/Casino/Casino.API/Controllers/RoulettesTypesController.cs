@@ -11,7 +11,7 @@ namespace Casino.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/roulettes/types")]
+    [Route("api/roulettes-types")]
     public class RoulettesTypesController : ControllerBase
     {
         private readonly ISqlContextCrud<RouletteType> _rouletteTypeCrud;

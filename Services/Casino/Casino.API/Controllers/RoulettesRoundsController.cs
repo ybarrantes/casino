@@ -34,7 +34,7 @@ namespace Casino.API.Controllers
                 .GetAllRouletteRoundsPagedRecordsAsync(rouletteId, page);
         }
 
-        [HttpPost("open")]
+        [HttpPost("/api/roulettes/{rouletteId}/rounds-open")]
         public async Task<ActionResult<WebApiResponse>> OpenRound(long rouletteId)
         {
             return await ((IRoundComponent)_roundCrudComponent).OpenRouletteRoundAsync(rouletteId);

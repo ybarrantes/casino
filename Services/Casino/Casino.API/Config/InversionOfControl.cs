@@ -1,9 +1,11 @@
-﻿using Casino.API.Filters;
+﻿using Microsoft.OpenApi.Models;
+using Casino.API.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Casino.Data.Context;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Casino.API.Config
 {
@@ -22,6 +24,8 @@ namespace Casino.API.Config
             _services = services;
             _configuration = configuration;
 
+            AddSwaggerToServicesContainer();
+
             _services.AddHttpContextAccessor();
 
             AddControllersToServicesContainer();
@@ -35,6 +39,14 @@ namespace Casino.API.Config
             ConfigureAuthorizationService.AddDependencies(services, configuration);
 
             ConfigureCustomServices.AddDependencies(services, configuration);
+        }
+
+        private static void AddSwaggerToServicesContainer()
+        {
+            _services.AddSwaggerGen(config =>
+            {
+                config.SwaggerDoc("v1", new OpenApiInfo { Title = "Casino", Version = "v1" });
+            });
         }
 
         private static void AddControllersToServicesContainer()

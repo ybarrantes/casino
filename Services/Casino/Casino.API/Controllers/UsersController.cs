@@ -67,7 +67,7 @@ namespace Casino.API.Controllers
             return new WebApiResponse().Success();
         }
 
-        public bool CheckRoleIsAuthorized(string role)
+        private bool CheckRoleIsAuthorized(string role)
         {
             List<string> roles = _configuration.GetSection("AWS:Cognito:AuthorizedGroups").Get<List<string>>();
 
