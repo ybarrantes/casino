@@ -8,6 +8,7 @@ using Casino.Data.Models.DTO.Users;
 using Casino.Data.Models.DTO.UserAccounts;
 using Casino.Data.Models.Views;
 using Casino.Data.Models.DTO.AccountTransanctions;
+using Casino.Data.Models.DTO.Bets;
 
 namespace Casino.API.Config
 {
@@ -45,6 +46,16 @@ namespace Casino.API.Config
             config.CreateMap<AccountTransaction, AccountTransactionShowDTO>();
             config.CreateMap<AccountTransactionState, AccountTransactionStateShowDTO>();
             config.CreateMap<AccountTransactionType, AccountTransactionTypeShowDTO>();
+
+            config.CreateMap<Round, RoundForBetsShowDTO>();
+
+            config.CreateMap<RouletteRuleType, RouletteRuleTypeShowDTO>();
+            config.CreateMap<RouletteRule, RouletteRulesShowDTO>();
+            config.CreateMap<Roulette, RouletteBetsShowDTO>();
+            config.CreateMap<Round, RoundForBetsShowDTO>();
+
+            config.CreateMap<Bet, BetShowDTO>();
+            config.CreateMap<BetState, BetStateShowDTO>();
 
             return config;
         }

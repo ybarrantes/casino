@@ -33,5 +33,7 @@ namespace Casino.Data.Models.Entities
 
         // relations
         public List<Round> Rounds { get; set; }
+
+        public List<RouletteRule> Rules { get; set; }
     }
 }

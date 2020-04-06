@@ -24,7 +24,8 @@ namespace Casino.API.Components.UserAccounts
                 .Where(x =>
                     x.UserAccount.Id.Equals(_userAccountId) &&
                     x.UserAccount.UserOwner.Id.Equals(_userId) &&
-                    x.DeletedAt == null);
+                    x.DeletedAt == null)
+                .OrderByDescending(x => x.Id);
         }
     }
 }

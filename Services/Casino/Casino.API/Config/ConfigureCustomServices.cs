@@ -1,4 +1,6 @@
-﻿using Casino.API.Components.AccountTransactions;
+﻿using Casino.API.BusisnessLogic;
+using Casino.API.Components.AccountTransactions;
+using Casino.API.Components.Bets;
 using Casino.API.Components.Roulettes;
 using Casino.API.Components.Rounds;
 using Casino.API.Components.UserAccounts;
@@ -36,6 +38,9 @@ namespace Casino.API.Config
             services.AddScoped<ISqlContextCrud<Round>, RoundsCrudComponent>();
             services.AddScoped<ISqlContextCrud<UserAccount>, UserAccountsCrudComponent>();
             services.AddScoped<ISqlContextCrud<AccountTransaction>, AccountTransactionsCrudComponent>();
+            services.AddScoped<ISqlContextCrud<Bet>, BetsCrudComponent>();
+
+            services.AddScoped<PlayRoulette, PlayRoulette>();
         }
     }
 }

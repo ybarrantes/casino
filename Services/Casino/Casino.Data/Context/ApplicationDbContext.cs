@@ -59,7 +59,7 @@ namespace Casino.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Ignore<UserAccountBalance>();
+            //modelBuilder.Ignore<UserAccountBalance>();
 
             base.OnModelCreating(modelBuilder);
 
@@ -82,6 +82,9 @@ namespace Casino.Data.Context
             modelBuilder.ApplyConfiguration(new RouletteTypeNumbersConfiguration());
 
             modelBuilder.ApplyConfiguration(new BetStateConfiguration());
+
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAccountConfiguration());
         }
     }
 }
